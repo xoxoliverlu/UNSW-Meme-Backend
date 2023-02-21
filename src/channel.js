@@ -29,3 +29,9 @@ function ChannelJoinV1(authUserId, channelId) {
 
     }
 }
+
+function channelInviteV1(authUserId, channelId, uId){
+    return {
+        
+    }
+}
