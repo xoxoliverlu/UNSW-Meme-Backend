@@ -21,5 +21,11 @@ function channelDetailsV1(authUserId, channelId) {
                 }
             ],
         }
+    };
+}
+
+function ChannelJoinV1(authUserId, channelId) {
+    return {
+
     }
 }
