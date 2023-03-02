@@ -3,8 +3,8 @@ import { authLoginV1, authRegisterV1 } from '../auth.js';
 describe('Valid inputs', () => {
     test('Valid return type (object)', () => {
         const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-        const login1 = authLoginV1('alice.sith@gmail.com', '123456');
-        expect(login1).toHaveProperty(authUserId);
+        const login1 = authLoginV1('alice.smith@gmail.com', '123456');
+        expect(login1).toHaveProperty('authUserId');
     });
     test('Valid userId', () => {
         const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
