@@ -3,8 +3,25 @@ import validator from 'validator';
 
 // Stub function for authLoginV1
 function authLoginV1(email, password) {
+    let data = getData();
+    // Error checking
+    // Email does not belong to a user
+    let emailExist = false;
+    let user;
+    for (const userObject of data.users) {
+        if (userObject.email === email) {
+            emailExist = true;
+            user = userObject;
+        }
+    }
+    if (emailExist === false || user.password != password) {
+        return {
+            error: 'Invalid email or password',
+        };
+    }
+
     return {
-        authUserId: 1
+        authUserId: user.uId,
     };
 }
 
