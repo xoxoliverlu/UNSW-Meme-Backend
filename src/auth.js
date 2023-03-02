@@ -53,7 +53,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
         };
     }
     // Length of name
-    if (nameFirst.length < 1 || nameFirst.length > 50 || nameLast.length < 1 || nameLast.length > 50) {
+    if (nameFirst.length <= 1 || nameFirst.length >= 50 || nameLast.length <= 1 || nameLast.length >= 50) {
         return {
             error: 'Invalid name length',
         };
