@@ -1,9 +1,13 @@
 import { authRegisterV1 } from '../auth.js';
 
+// beforeEach(() => {
+//     clearV1();
+// });
+
 describe ('Testing Valid Registration', () => {
     test('Valid Return Type (object)', () => {
         const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-        expect(register1).toHaveProperty(authUserId);
+        expect(register1).toHaveProperty('authUserId');
     });
     test('A unique user ID', () => {
         const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
@@ -11,8 +15,8 @@ describe ('Testing Valid Registration', () => {
         expect(register2.authUserId).not.toEqual(register1.authUserId);
     });
     test('Same name', () => {
-        const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-        const register2 = authRegisterV1('bob.langford@gmail.com', 'password', 'Alice', 'Smith');
+        const register1 = authRegisterV1('alice.langford@gmail.com', '123456', 'Alice', 'Smith');
+        const register2 = authRegisterV1('bob.smith@gmail.com', 'password', 'Alice', 'Smith');
         expect(register2.authUserId).not.toEqual(register1.authUserId);
     });
 });
@@ -20,7 +24,7 @@ describe ('Testing Valid Registration', () => {
 describe('Invalid inputs', () => {
     test('Invalid email', () => {
         const register1 = authRegisterV1('alice.smithgmail.com', 'password', 'Alice', 'Smith');
-        expect(register1).toEqual({error: 'error'});
+        expect(register1).toEqual({error: expect.any(String)});
     });
     test('Already in use email', () => {
         const register1 = authRegisterV1('alice.smith@gmail.com', 'password', 'Alice', 'Smith');
