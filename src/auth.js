@@ -1,6 +1,5 @@
 import {getData, setData} from './dataStore.js';
 import validator from 'validator';
-
 // Stub function for authLoginV1
 function authLoginV1(email, password) {
     let data = getData();
@@ -25,8 +24,6 @@ function authLoginV1(email, password) {
     };
 }
 
-//authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-//authRegisterV1('bob.langfo-rd@gmail.com', 'password', 'Alice', 'Smith');
 
 // Stub function for authRegisterV1
 function authRegisterV1(email, password, nameFirst, nameLast) {
