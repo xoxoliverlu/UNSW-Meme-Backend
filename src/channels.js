@@ -11,7 +11,7 @@ function channelsListV1(authUserId){
   let validId = false;
 
   for (user of data.users){
-    if (user.uid == authUserId){
+    if (user.uId === authUserId){
       validId = true
     }
   }
@@ -37,7 +37,7 @@ function channelsListAllV1(authUserId){
   let validId = false;
 
   for (user of data.users){
-    if (user.uid == authUserId){
+    if (user.uId === authUserId){
       validId = true
     }
   }
