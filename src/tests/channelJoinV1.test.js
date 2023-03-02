@@ -1,7 +1,11 @@
-import { authRegisterV1 } from '../auth';
-import { channelJoinV1 } from '../channel'
-import { channelsCreateV1 } from '../channels';
-import { clearV1 } from '../other'
+import { authRegisterV1 } from '../auth.js';
+import { channelJoinV1 } from '../channel.js'
+import { channelsCreateV1 } from '../channels.js';
+import { clearV1 } from '../other.js'
+
+beforeEach(() => {
+    clearV1();
+});
 
 describe('Failed Tests.', () => {
     test('Invalid channelId.', () => {
@@ -10,7 +14,7 @@ describe('Failed Tests.', () => {
         const register2 = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
         const auth2 = register2.authUserId;
         const newChannel = channelsCreateV1(auth1, 'Channel1', true);
-        const channelID = 'wrong';
+        const channelID = newChannel.channelId + 1;
         const channelJoin = channelJoinV1(auth2, channelID);
         expect(channelJoin).toEqual({error: 'error'});
     });

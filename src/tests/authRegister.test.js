@@ -3,7 +3,7 @@ import { clearV1 } from '../other.js';
 
 beforeEach(() => {
     clearV1();
-  });
+});
 
 describe ('Testing Valid Registration', () => {
     test('Valid Return Type (object)', () => {
