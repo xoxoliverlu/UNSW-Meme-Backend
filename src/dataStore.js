@@ -1,5 +1,64 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-let data = {};
+let data = { 
+  users: [
+      {
+          uId: 1,
+          nameFirst: 'Akanksha',
+          nameLast: 'Sood',
+          email: 'akanksha.sood@gmail.com',
+          password: '123456',
+          handleStr: 'akankshasood',
+      }, 
+      {
+        uId: 2,
+        nameFirst: 'Oliver',
+        nameLast: 'lu',
+        email: 'oliverwlu@gmail.com',
+        password: '123456',
+        handleStr: 'oliverwlu',
+    }, 
+  ],
+  channels: [
+      {
+          isPublic: true,
+          name: 'Hayden',
+          channelId: 1,
+          ownerMembers:[1],
+          allMembers: [1],
+          noOfMembers: 1,
+          maxMembers: 50,
+          messages: [
+              {
+                  messageId: 1,
+                  uId: 1,
+                  message: 'Hello world',
+                  timeSent: 1582426789,
+          }
+          ],
+          start: 0,
+          end: 50
+      },  
+      {
+        isPublic: true,
+        name: 'Oli',
+        channelId: 2,
+        ownerMembers:[2],
+        allMembers: [1,2],
+        noOfMembers: 1,
+        maxMembers: 50,
+        messages: [
+            {
+                messageId: 1,
+                uId: 1,
+                message: 'Hello world',
+                timeSent: 1582426789,
+        }
+        ],
+        start: 0,
+        end: 50
+    }, 
+  ], 
+}
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
 
