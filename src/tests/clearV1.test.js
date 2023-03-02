@@ -17,7 +17,7 @@ describe('Test for a clear dataObject', () => {
         clearV1();
         const user1Id = authLoginV1('alice.smith@gmail.com', 'password');
         const user2Id = authLoginV1('bob.langford@gmail.com', '123456', 'Bob', 'Langford');
-        expect(user1Id.authUserId).toEqual({error: expect.any(String)});
-        expect(user2Id.authUserId).toEqual({error: expect.any(String)});
+        expect(user1Id.authUserId).toEqual(undefined);
+        expect(user2Id.authUserId).toEqual(undefined);
     })
 });
