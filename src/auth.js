@@ -8,6 +8,9 @@ function authLoginV1(email, password) {
     };
 }
 
+//authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+//authRegisterV1('bob.langfo-rd@gmail.com', 'password', 'Alice', 'Smith');
+
 // Stub function for authRegisterV1
 function authRegisterV1(email, password, nameFirst, nameLast) {
     const data = getData();
@@ -20,15 +23,14 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     }
 
     // Email already in use
-    if (data.users.length != 0) {
-        for (const userObject of data.users) {
-            if (userObject.email === email) {
-                return {
-                    error: 'Email already in use',
-                };
-            }
+     for (const userObject of data.users) {
+        if (userObject.email === email.toLowerCase()) {
+            return {
+                error: 'Email already in use',
+            };
         }
     }
+
 
     // Password length
     if (password.length < 6) {
@@ -108,7 +110,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     data.users.push(newUser);
     setData(data);
     return {
-        authUserId: newUserId,
+        authUserId: newUser.uId,
     };
 }
 
