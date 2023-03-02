@@ -1,8 +1,8 @@
 import { authRegisterV1 } from '../auth.js';
 
-beforeEach(() => {
-    clearV1();
-});
+// beforeEach(() => {
+//     clearV1();
+// });
 
 describe ('Testing Valid Registration', () => {
     test('Valid Return Type (object)', () => {
@@ -15,8 +15,8 @@ describe ('Testing Valid Registration', () => {
         expect(register2.authUserId).not.toEqual(register1.authUserId);
     });
     test('Same name', () => {
-        const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-        const register2 = authRegisterV1('bob.langford@gmail.com', 'password', 'Alice', 'Smith');
+        const register1 = authRegisterV1('alice.langford@gmail.com', '123456', 'Alice', 'Smith');
+        const register2 = authRegisterV1('bob.smith@gmail.com', 'password', 'Alice', 'Smith');
         expect(register2.authUserId).not.toEqual(register1.authUserId);
     });
 });
