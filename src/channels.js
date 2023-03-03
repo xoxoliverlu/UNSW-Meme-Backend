@@ -44,6 +44,7 @@ import { getData,setData } from "./dataStore";
     // Assign information to the new channel
     data.channels.push({
       channelId: Id, 
+      name: name,
       isPublic: isPublic,
       allMembers: [authUserId],
       ownerMembers: [authUserId]
