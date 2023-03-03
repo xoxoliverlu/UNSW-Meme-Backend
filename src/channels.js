@@ -87,7 +87,7 @@ export function channelsListAllV1(authUserId){
   const data = getData();
   let validId = false;
 
-  for (user of data.users){
+  for (let user of data.users){
     if (user.uId === authUserId){
       validId = true
     }
@@ -99,13 +99,13 @@ export function channelsListAllV1(authUserId){
   
   let result = [];
 
-  for (channel of data.channels){
+  for (let channel of data.channels){
     result.push({channelId: channel.channelId, name: channel.name})  
   }
   
-    return {
-        channels: result,
-    };
+  return {
+    channels: result,
+  };
 }
 
 
