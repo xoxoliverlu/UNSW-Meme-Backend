@@ -36,7 +36,6 @@ test('Invalid authId', () => {
         nameFirst: 'Akanksha',
         nameLast: 'Sood',
         email: 'AkankshaS@gmail.com',
-        password: 'password',
         handleStr: 'akankshasood',
     });
 });
