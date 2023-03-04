@@ -4,15 +4,29 @@ export function userProfileV1(authUserId, uId) {
 
     const data = getData();
     // Checks if authUserId is valid
-    if (!data.users.includes(authUserId)) {
-        return {error: 'error'}
+    let validAuthId = false;
+    for (let user of data.users) {
+        if (user.uId === authUserId) {
+            validAuthId = true
+        }
+    }
+    
+    if (!validAuthId){
+        return {error: 'error'};
     }
     // Checks if uId is valid
-    if (!data.users.includes(uId)) {
-        return {error: 'error'}
+    let validUserId = false;
+    for (let user of data.users) {
+        if (user.uId === uId) {
+            validUserId = true
+        }
+    }
+    
+    if (!validUserId){
+        return {error: 'error'};
     }
     // Finds the uId and prints relevant data
-    for (const user of data.users) {
+    for (let user of data.users) {
         if (user.uId === uId) {
             return {
                 uId: user.uId,
