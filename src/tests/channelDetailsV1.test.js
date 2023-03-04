@@ -1,7 +1,7 @@
 import { authRegisterV1 } from '../auth.js';
 import { channelDetailsV1 } from '../channel.js'
 import { channelsCreateV1 } from '../channels.js';
-import { clearV1 } from '../other.js'
+import { clearV1 } from '../other.js';
 
 beforeEach(() => {
     clearV1();
@@ -21,7 +21,6 @@ describe('Invalid input tests.', () => {
         const authId = register.authUserId;
         const newChannel = channelsCreateV1(authId, 'Channel1', false);
         const channelID = newChannel.channelID;
-        // Send invalid channelId
         const channelDetails = channelDetailsV1(authId + 1, channelID);
         expect(channelDetails).toEqual({error: 'error'});
     });
