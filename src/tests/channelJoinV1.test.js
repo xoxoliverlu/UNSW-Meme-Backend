@@ -1,7 +1,7 @@
 import { authRegisterV1 } from '../auth.js';
 import { channelJoinV1 } from '../channel.js'
 import { channelsCreateV1 } from '../channels.js';
-import { clearV1 } from '../other.js'
+import { clearV1 } from '../other.js';
 
 beforeEach(() => {
     clearV1();
@@ -40,10 +40,10 @@ describe('Failed Tests.', () => {
         const register1 = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
         const auth1 = register1.authUserId;
         const register2 = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
-        const auth2 = 'xyz';
+        const auth2 = register2.authUserId;
         const newChannel = channelsCreateV1(auth1, 'Channel1', true);
         const channelID = newChannel.channelID;
-        const channelJoin = channelJoinV1(auth2, channelID);
+        const channelJoin = channelJoinV1(auth2 + 1, channelID);
         expect(channelJoin).toEqual({error: 'error'});
     });
 });
