@@ -1,24 +1,43 @@
-function channelDetailsV1(authUserId, channelId) {
+import { getData,setData } from "./dataStore.js";
+
+export function channelDetailsV1(authUserId, channelId) {
+
+    const data = getData();
+    let channelToFind;
+    let ownerMemArr = [];
+    let allMemArr = [];
+    // checks if the channelId is valid
+    let validChannelId = false;
+    for (let channel of data.channels) {
+        if (channelId === channel.channelId) {
+            validChannelId = true;
+            channelToFind = channel;
+            ownerMemArr = channel.ownerMembers;
+            allMemArr = channel.allMembers;
+        }
+    }
+    if (!validChannelId){
+        return {error: 'error'};
+    }
+    // checks if the auth is a member of the channel
+    let validAuthId = true;
+    for (let channel of data.channels){
+        if (channel.channelId === channelId) {
+            if (!channel.allMembers.includes(authUserId)) {
+                validAuthId = false;
+            }
+        }
+    }
+    if (!validAuthId){
+        return {error: 'error'};
+    }
+
+
     return {
-        name: 'Hayden',
-        ownerMembers: [
-            {
-            uId: 1,
-            email: 'example@gmail.com',
-            nameFirst: 'Hayden',
-            nameLast: 'Jacobs',
-            handleStr: 'haydenjacobs',
-            }
-        ],
-        allMembers: [
-            {
-            uId: 1,
-            email: 'example@gmail.com',
-            nameFirst: 'Hayden',
-            nameLast: 'Jacobs',
-            handleStr: 'haydenjacobs',
-            }
-        ],
+        name: channelToFind.name,
+        isPublic: channelToFind.isPublic,
+        ownerMembers: ownerMemArr,
+        allMembers: allMemArr,
     };
 }
 
