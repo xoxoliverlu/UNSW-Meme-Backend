@@ -94,7 +94,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   let userInfo = '';
 
   // Check that channelId refers to a valid channel
-  for (const channel of channelKeys) {
+  for (const channel of data.channel.keys()) {
     if (data.channels[channel].channelId === channelId) {
       valid = true; 
     }
@@ -107,7 +107,7 @@ export function channelInviteV1(authUserId, channelId, uId){
 
   // Check that uId refers to a valid user
   valid = false 
-  for (const user of userKeys) {
+  for (const user in userKeys) {
     if (data.users[user].authUserId === uId) {
       valid = true;
       userInfo = user;
@@ -122,7 +122,7 @@ export function channelInviteV1(authUserId, channelId, uId){
 
   // Check that authUserId is valid
   valid = false;
-  for (const user of userKeys) {
+  for (const user in userKeys) {
     if (data.users[user].authUserId === authUserId) {
       valid = true;
     }
@@ -177,15 +177,17 @@ export function channelMessagesV1(authUserId, channelId, start){
 const data = getData();
 let valid = false;   
 let channelPosition;
+const channelKeys = data.channels;
 
 // ERROR CHECKING
 // Check if channelId refers to a valid channel
-for (const channel of channelKeys) {  
+for (const channel in channelKeys) {  
 if (data.channels[channel].channelId === channelId) {
     valid = true;
     channelPosition = channel;
 }      
 }
+const userKeys = data.users;
 
 if (valid === false) {
 return {
@@ -195,8 +197,8 @@ return {
 
 // Check if authUserId refers to a valid user
 valid = false;
-for (const user of userKeys) {
-if (data.users[user].authUserId === authUserId) {
+for (const user in userKeys) {
+if (data.users[user].uId === authUserId) {
     valid = true;
 }  
 }
@@ -208,9 +210,9 @@ return {
 }
 // Check if the user is a member of the given channel
 valid = false;
-for (const channel of channelKeys) {
+for (const channel in channelKeys) {
 for (const aId of data.channels[channel].allMembers) {
-    if (aId.authUserId === authUserId && channelId === data.channels[channel].channelId) {
+    if (aId === authUserId && channelId === data.channels[channel].channelId) {
     valid = true; 
     }
     

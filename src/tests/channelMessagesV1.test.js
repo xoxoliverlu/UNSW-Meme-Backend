@@ -1,7 +1,7 @@
 import {channelMessagesV1} from '../channel.js'
-import {channelsCreateV1} from './channels.js'
+import {channelsCreateV1} from '../channels.js'
 import {authRegisterV1} from '../auth.js'
-import { clearV1 } from './other.js';
+import { clearV1 } from '../other.js';
 
 beforeEach(() => {
     clearV1();
