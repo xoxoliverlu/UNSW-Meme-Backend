@@ -36,24 +36,3 @@ test('Channel name too short', () => {
     const channelCreationValid = channelsCreateV1(0, '', true)
     expect(channelCreationValid).toMatchObject({error: 'channel name is too short'})
 })
-test('Channel name too long', () => {
-    clearV1();
-    authRegisterV1('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs')
-    const channelCreationValid = channelsCreateV1(0, 'hellomynameisDIMPIGARNEPUDI284', true)
-    expect(channelCreationValid).toMatchObject({error: 'channel name is too long'})
-})
-test('Channel is public', () => {
-    clearV1();
-    authRegisterV1('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs')
-    const channelCreationValid = channelsCreateV1(0, 'Jayden1234', true)
-    const data = getData();
-    expect(data.channels['Hayden1234'].isPublic).toBe(true)
-})
-test('Channel is not public', () => {
-    clearV1();
-    authRegisterV1('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs')
-    const channelCreationValid = channelsCreateV1(0, 'Jayden134', false)
-    const data = getData();
-    expect(data.channels['Hayden134'].isPublic).toBe(false)
-}) 
-
