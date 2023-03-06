@@ -41,7 +41,48 @@ export function channelDetailsV1(authUserId, channelId) {
     };
 }
 
-function channelJoinV1(authUserId, channelId) {
+export function channelJoinV1(authUserId, channelId) {
+
+    const data = getData();
+    // checks if the user is valid
+    let validAuthId = false;
+    for (let user of data.users) {
+        if (user.uId === authUserId) {
+            validAuthId = true
+        }
+    }
+    if (!validAuthId) {
+        return {error: 'error'};
+    }
+    // checks if the channelId is valid 
+    let validChannelId = false;
+    let authIsMem = false;
+    for (let channel of data.channels) {
+        if (channel.channelId === channelId) {
+            // checks if the channel is public
+            if (channel.isPublic === true) {
+                validChannelId = true;
+            }
+            // checks if the user is already a member of the channel
+            if (!channel.allMembers.includes(authUserId)) {
+                authIsMem = true;
+            }
+        }
+    }
+    if (!validChannelId) {
+        return {error: 'error'};
+    }
+    if (!authIsMem) {
+        return {error: 'error'};
+    }
+
+    for (let channel of data.channels) {
+        if (channel.channelId === channelId) {
+            channel.allMembers.push(authUserId);
+        }
+    }
+    setData(data);
+
     return {
         
     }
