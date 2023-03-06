@@ -17,7 +17,7 @@ test('no channel', () => {
 })
 
 test('multiple channels', () => {
-    const user1 = authRegisterV1('oliver@gmail.com','123456','oliver','lu')
+    const user1 = authRegisterV1('oliver@gmail.com','12345678','oliver','lu')
     const channel1 = channelsCreateV1(user1.authUserId,"test1",true);
     const channel2 = channelsCreateV1(user1.authUserId,"test2",true);
     const channel3 = channelsCreateV1(user1.authUserId,"test3",true);
