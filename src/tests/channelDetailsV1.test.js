@@ -20,7 +20,7 @@ describe('Invalid input tests.', () => {
         const register = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
         const authId = register.authUserId;
         const newChannel = channelsCreateV1(authId, 'Channel1', false);
-        const channelID = newChannel.channelID;
+        const channelID = newChannel.channelId;
         const channelDetails = channelDetailsV1(authId + 1, channelID);
         expect(channelDetails).toEqual({error: 'error'});
     });
@@ -30,7 +30,7 @@ describe('Invalid input tests.', () => {
         const registerInvalid = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
         const authInvalid = registerInvalid.authUserId;
         const newChannel = channelsCreateV1(authValid, 'Channel1', false);
-        const channelID = newChannel.channelID;
+        const channelID = newChannel.channelId;
         const channelDetails = channelDetailsV1(authInvalid, channelID);
         expect(channelDetails).toEqual({error: 'error'});
     });
@@ -40,27 +40,16 @@ test('Succesful ChannelDetailsV1 test.', () => {
     const register = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
     const authId = register.authUserId;
     const newChannel = channelsCreateV1(authId, 'Channel1', false);
-    const channelID = newChannel.channelID;
+    const channelID = newChannel.channelId;
     const channelDetails = channelDetailsV1(authId, channelID);
     expect(channelDetails).toEqual({
-        name: 'Fady',
-        ownerMembers: [
-            {
-            uId: authId,
-            email: 'fadyS@gmail.com',
-            nameFirst: 'Fady',
-            nameLast: 'Sadek',
-            handleStr: 'fadysadek',
-            }
-        ],
         allMembers: [
-            {
-            uId: authId,
-            email: 'fadyS@gmail.com',
-            nameFirst: 'Fady',
-            nameLast: 'Sadek',
-            handleStr: 'fadysadek',
-            }
+            authId
+        ],
+        isPublic: false,
+        name: 'Channel1',
+        ownerMembers: [
+            authId
         ],
     });
 });
