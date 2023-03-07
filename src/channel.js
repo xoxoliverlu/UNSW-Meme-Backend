@@ -219,6 +219,7 @@ if (start === channelInfo.messages.length) {
 }
 let messagesArray = [];
 let newEnd; 
+
 for (let i = start; i < start + 50; i++) {
   if(channelInfo.messages.length === 50) {
     newEnd = -1;
