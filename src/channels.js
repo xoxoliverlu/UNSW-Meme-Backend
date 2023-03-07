@@ -47,6 +47,7 @@ export function channelsCreateV1(authUserId, name, isPublic){
     name: name,
     isPublic: isPublic,
     allMembers: [authUserId],
+    messages:[],
     ownerMembers: [authUserId]
   })
 
