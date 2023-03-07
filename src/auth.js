@@ -26,6 +26,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     const data = getData();
     // Error checking
     // Invalid email using validator package
+    email = email.toLowerCase();
     if (validator.isEmail(email) === false) {
         return {
             error: 'Invalid email',
@@ -34,7 +35,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 
     // Email already in use
      for (const userObject of data.users) {
-        if (userObject.email === email.toLowerCase()) {
+        if (userObject.email === email) {
             return {
                 error: 'Email already in use',
             };
