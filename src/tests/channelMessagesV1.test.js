@@ -9,12 +9,12 @@ beforeEach(() => {
 
 
 describe('Testing channelMessages1, errors', () =>{
-    test('the channelId does not refer to a valid channel', () => {
-        const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
-        const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
-        const channelMessagesInvalidId = channelMessagesV1(registerAcc.authUserId, channelCreationValid.channelId + 1, 0);
-        expect(channelMessagesInvalidId).toMatchObject({error: 'error'});
-    })
+  test('the channelId does not refer to a valid channel', () => {
+    const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
+    const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
+    const channelMessagesInvalidId = channelMessagesV1(registerAcc.authUserId, -1, 0);
+    expect(channelMessagesInvalidId).toMatchObject({error: 'error'});
+  })
 
   test('start is greater than the total number of messages in the channel', () => {
     const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
@@ -31,13 +31,12 @@ describe('Testing channelMessages1, errors', () =>{
     expect(channelMessagesUserNotMember).toMatchObject({error: 'error'});
   })
 
-    test('authUserId is invalid', () => {
-        const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
-        const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
-        const channelMessagesInvalidUser = channelMessagesV1(registerAcc.authUserId - 1, channelCreationValid.channelId, 0);
-        expect(channelMessagesInvalidUser).toMatchObject({error: 'error'});
-        
-    })
+  test('authUserId is invalid', () => {
+    const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
+    const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
+    const channelMessagesInvalidUser = channelMessagesV1(-1, channelCreationValid.channelId, 0);
+    expect(channelMessagesInvalidUser).toMatchObject({error: 'error'});
+  })
 
   test('function: channelMessagesV1 success', () => {
     const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
