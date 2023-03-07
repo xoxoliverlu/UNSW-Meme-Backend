@@ -1,4 +1,9 @@
 import { authLoginV1, authRegisterV1 } from '../auth.js';
+import { clearV1 } from '../other.js';
+
+beforeEach(() => {
+    clearV1();
+});
 
 describe('Valid inputs', () => {
     test('Valid return type (object)', () => {
@@ -13,7 +18,7 @@ describe('Valid inputs', () => {
     });
     test('Valid userId', () => {
         const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-        const login1 = authLoginV1('alice.sith@gmail.com', '123456');
+        const login1 = authLoginV1('alice.smith@gmail.com', '123456');
         expect(register1.authUserId).toEqual(login1.authUserId);
     });
 });
