@@ -47,7 +47,8 @@ import { getData,setData } from "./dataStore";
       name: name,
       isPublic: isPublic,
       allMembers: [authUserId],
-      ownerMembers: [authUserId]
+      ownerMembers: [authUserId],
+      messages:[],
     })
   
     setData(data);
