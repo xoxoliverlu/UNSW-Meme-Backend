@@ -90,97 +90,70 @@ export function channelJoinV1(authUserId, channelId) {
 
 export function channelInviteV1(authUserId, channelId, uId){
   const data = getData();
-  let valid = false;
+  let validChannel = false;
   let userInfo = '';
   const channelKeys = data.channels;
   const userKeys = data.users;
+  let channelInfo; 
 
   // Check that channelId refers to a valid channel
-  for (const channel in data.channels) {
-    if (data.channels[channel].channelId === channelId) {
-      valid = true; 
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      validChannel = true;
+      channelInfo = channel; 
     }
   }
-  if (valid === false) {
+  if (validChannel === false) {
     return {
       error: 'error'
     }
   }
 
-  // Check that uId refers to a valid user
-  valid = false 
-  for (const user in userKeys) {
-    if (data.users[user].uId === uId) {
-      valid = true;
+  // Check that uId and authUserId refers to a valid user
+  let validUser = false; 
+  let validAuthUser = false;
+  for (const user of userKeys) {
+    if (user.uId === uId) {
+      validUser = true;
       userInfo = user;
 
     }
-  }
-  if (valid === false) {
-    return {
-      error: 'error'
+    if (user.uId === authUserId) {
+      validAuthUser = true;
     }
   }
-  for(const channel of data.channels){
-    if(channel.channelId === channelId) {
-      for(const member of channel.allMembers){
-        if(member === uId){
-          return {
-            error: 'error'
-          }
-        }
-      }
-    }
-  }
-
-  // Check that authUserId is valid
-  valid = false;
-  for (const user in userKeys) {
-    if (data.users[user].uId === authUserId) {
-      valid = true;
-    }
-  }
-  if (valid === false) {
+  if (validUser === false || validAuthUser === false) {
     return {
       error: 'error'
     }
   }
 
-  // Check that user is not already a member of the channel
-  for (const channel in channelKeys) {
-    for (const id of data.channels[channel].allMembers) {
-      if (id === uId) {
-        return {
-          error: 'error'
-        }
-      }  
+  // checking if uId is a member
+  for(const member of channelInfo.allMembers){
+    if(member === uId){
+      return {
+        error: 'error'
+      }
     }
   }
 
-  // check that the authorised user is a member of the channel
-  valid = false;
-  for (const channel in channelKeys) {
-    for (const aId of data.channels[channel].ownerMembers) {
-      if (aId === authUserId && channelId === data.channels[channel].channelId) {
-        valid = true;
-      }
-      if (authUserId === 0) {
-        valid = true;
-      }
-    }  
-  }
-  if (!valid) {
-    return {
-      error: 'error'
+  // Check if authUserId is a member
+  let isMember = false
+  for(const member of channelInfo.allMembers){
+    if(member === authUserId){
+      isMember = true;
     }
   }
+  if (isMember === false) {
+    return {
+      error: 'error',
+    }
+  }
+
+ 
 
   // Add invited user to the channel
-  for (const channel in channelKeys) {
-    if (data.channels[channel].channelId === channelId) {
-      data.channels[channel].allMembers.push(uId);
-    }
-  }
+  channelInfo.allMembers.push(uId); 
   setData(data);
   return {
 
