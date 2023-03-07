@@ -35,7 +35,7 @@ test('Successful userProfileV1 Test. ', () => {
         uId: userId,
         nameFirst: 'Akanksha',
         nameLast: 'Sood',
-        email: 'AkankshaS@gmail.com',
+        email: 'akankshas@gmail.com',
         handleStr: 'akankshasood',
     });
 });
