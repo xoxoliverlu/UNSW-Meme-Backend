@@ -203,7 +203,6 @@ if (isMember === false) {
 }
 }
   
-
 // Check if starting index is not greater than the total number
 // of messages in the channel
 if (start > channelInfo.messages.length) { 

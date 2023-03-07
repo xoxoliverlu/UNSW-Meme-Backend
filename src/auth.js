@@ -1,27 +1,23 @@
 import {getData, setData} from './dataStore.js';
 import validator from 'validator';
+
+
 // Stub function for authLoginV1
 function authLoginV1(email, password) {
     let data = getData();
     // Error checking
-    // Email does not belong to a user
-    let emailExist = false;
-    let user;
+    // change email to lowercase
+    email = email.toLowerCase();
     for (const userObject of data.users) {
-        if (userObject.email === email) {
-            emailExist = true;
-            user = userObject;
+        if (userObject.email === email && userObject.password === password) {
+            return {
+                authUserId: userObject.uId,
+            }
         }
     }
-    if (emailExist === false || user.password != password) {
-        return {
-            error: 'Invalid email or password',
-        };
-    }
-
     return {
-        authUserId: user.uId,
-    };
+        error: 'Invalid email or password'
+    }
 }
 
 
@@ -30,6 +26,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     const data = getData();
     // Error checking
     // Invalid email using validator package
+    email = email.toLowerCase();
     if (validator.isEmail(email) === false) {
         return {
             error: 'Invalid email',
@@ -38,7 +35,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 
     // Email already in use
      for (const userObject of data.users) {
-        if (userObject.email === email.toLowerCase()) {
+        if (userObject.email === email) {
             return {
                 error: 'Email already in use',
             };
@@ -53,9 +50,14 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
         };
     }
     // Length of name
-    if (nameFirst.length <= 1 || nameFirst.length >= 50 || nameLast.length <= 1 || nameLast.length >= 50) {
+    if (nameFirst === " " || nameLast === " ") {
         return {
-            error: 'Invalid name length',
+            error: 'Invalid first name length'
+        }
+    }
+    if (nameFirst.length > 50 || nameLast.length > 50) {
+        return {
+            error: 'Invalid last name length',
         };
     }
 
