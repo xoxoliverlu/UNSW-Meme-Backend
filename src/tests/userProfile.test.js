@@ -39,3 +39,13 @@ test('Successful userProfileV1 Test. ', () => {
         handleStr: 'akankshasood',
     });
 });
+
+test('Testing unique handleStr.', () => {
+    const registerAuth = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
+    const authId = registerAuth.authUserId;
+    const registerUser = authRegisterV1('SadekF@gmail.com', 'password', 'Fady', 'Sadek');
+    const userId = registerUser.authUserId;
+    const userProfileUser = userProfileV1(authId, userId);
+    const userProfileAuth = userProfileV1(authId, authId);
+    expect(userProfileAuth.handleStr).not.toEqual(userProfileUser.handleStr);
+});
