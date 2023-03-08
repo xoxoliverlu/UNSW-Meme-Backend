@@ -1,43 +1,74 @@
 import { getData,setData } from "./dataStore.js";
-export function channelDetailsV1(authUserId, channelId) {
-    const data = getData();
-    let channelToFind;
-    let ownerMemArr = [];
-    let allMemArr = [];
-    // checks if the channelId is valid
-    let validChannelId = false;
-    for (let channel of data.channels) {
-        if (channelId === channel.channelId) {
-            validChannelId = true;
-            channelToFind = channel;
-            ownerMemArr = channel.ownerMembers;
-            allMemArr = channel.allMembers;
-        }
-    }
-    if (!validChannelId){
-        return {error: 'error'};
-    }
-    // checks if the auth is a member of the channel
-    let validAuthId = true;
-    for (let channel of data.channels){
-        if (channel.channelId === channelId) {
-            if (!channel.allMembers.includes(authUserId)) {
-                validAuthId = false;
-            }
-        }
-    }
-    if (!validAuthId){
-        return {error: 'error'};
-    }
 
-    return {
-        name: channelToFind.name,
-        isPublic: channelToFind.isPublic,
-        ownerMembers: ownerMemArr,
-        allMembers: allMemArr,
-    };
+/**
+ * Given an authUserId and a channelId, the function 
+ * prints out basic information about the channel.
+ *
+ * @param {number} authUserId - Unique identifier for a valid user.
+ * @param {number} channelId - Unique identifier for a valid channel.
+ * ...
+ * 
+ * @returns {object} - error if channelId or authUserId is invalid,
+ *                     error if the user is not a member of the channel.
+ * 
+ * @returns {string} - name of the channel.
+ * @returns {boolean} - whether the channel is public or private.
+ * @returns {array} - List of owner members of the channel.
+ * @returns {array} - List of all members of the channel.
+ */
+export function channelDetailsV1(authUserId, channelId) {
+  const data = getData();
+  let channelToFind;
+  let ownerMemArr = [];
+  let allMemArr = [];
+  // checks if the channelId is valid
+  let validChannelId = false;
+  for (let channel of data.channels) {
+    if (channelId === channel.channelId) {
+      validChannelId = true;
+      channelToFind = channel;
+      ownerMemArr = channel.ownerMembers;
+      allMemArr = channel.allMembers;
+    }
+  }
+  if (!validChannelId){
+    return {error: 'error'};
+  }
+  // checks if the auth is a member of the channel
+  let validAuthId = true;
+  for (let channel of data.channels){
+    if (channel.channelId === channelId) {
+      if (!channel.allMembers.includes(authUserId)) {
+        validAuthId = false;
+      }
+    }
+  }
+  if (!validAuthId){
+    return {error: 'error'};
+  }
+
+  return {
+    name: channelToFind.name,
+    isPublic: channelToFind.isPublic,
+    ownerMembers: ownerMemArr,
+    allMembers: allMemArr,
+  };
 }
 
+/**
+ * Given an authUserId and a channelId, the function 
+ * adds the user to the channel if it is public.
+ *
+ * @param {number} authUserId - Unique identifier for a valid user.
+ * @param {number} channelId - Unique identifier for a valid channel.
+ * ...
+ * 
+ * @returns {object} - error if channelId or authUserId is invalid,
+ *                     error if the user is already a member of the channel.
+ *                     error if the channel is private.
+ * 
+ * @returns {} - returns nothing if there is no errors.
+ */
 export function channelJoinV1(authUserId, channelId) {
 
     const data = getData();
