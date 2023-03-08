@@ -3,9 +3,9 @@ import { getData,setData } from "./dataStore.js";
 export function channelsCreateV1(authUserId, name, isPublic){
   const data = getData();
   let validUser = false;
-  
+
   // Check that the length of name is more than 1 or less than 20 characters
-  for (const user of data.users) {  
+  for (const user of data.users) {
     if (user.uId === authUserId) {
       validUser = true;
     }
@@ -19,13 +19,13 @@ export function channelsCreateV1(authUserId, name, isPublic){
     return {
       error: 'error'
     }
-  }  
+  }
   if (name.length > 20) {
     return {
       error: 'error'
     }
   }
-  
+
   // Check for any duplicate names
   for (const channel of data.channels) {
     if (name === channel.name) {
@@ -39,23 +39,24 @@ export function channelsCreateV1(authUserId, name, isPublic){
   if (data.channels.length === 0) {
       Id = 0;
   } else {
-      Id = data.channels[data.channels.length - 1] + 1;
+      Id = data.channels[data.channels.length - 1].channelId + 1;
   }
+
   // Assign information to the new channel
   data.channels.push({
-    channelId: Id, 
+    channelId: Id,
     name: name,
     isPublic: isPublic,
     allMembers: [authUserId],
     messages:[],
-    ownerMembers: [authUserId]
+    ownerMembers: [authUserId],
   })
 
   setData(data);
   return {
     channelId: Id
   }
-}  
+}
 
 
 export function channelsListV1(authUserId){
@@ -67,13 +68,13 @@ export function channelsListV1(authUserId){
       validId = true
     }
   }
-  
+
   if (!validId){
     return {error: 'error'};
   }
 
   let associatedChannels = [];
-  
+
   for (let channel of data.channels){
     if (channel.allMembers.includes(authUserId)){
       associatedChannels.push({channelId:channel.channelId, name:channel.name})
@@ -81,7 +82,7 @@ export function channelsListV1(authUserId){
   }
 
   return {channels: associatedChannels};
-      
+
 }
 
 export function channelsListAllV1(authUserId){
@@ -93,17 +94,17 @@ export function channelsListAllV1(authUserId){
       validId = true
     }
   }
-  
+
   if (!validId){
     return {error: 'error'};
   }
-  
+
   let result = [];
 
   for (let channel of data.channels){
-    result.push({channelId: channel.channelId, name: channel.name})  
+    result.push({channelId: channel.channelId, name: channel.name})
   }
-  
+
   return {
     channels: result,
   };
