@@ -122,7 +122,10 @@ export function channelJoinV1(authUserId, channelId) {
  * @param {authUserId} number - Id of person 
  * @param {channelId} number - name of the channel
  * @param {uId} number - Id of the person being invited to channel
+ * ...
+ * 
  * @returns {}
+ * @returns {object} - error if any of the Id's are invalid 
  */
 export function channelInviteV1(authUserId, channelId, uId){
   const data = getData();
@@ -198,9 +201,12 @@ export function channelInviteV1(authUserId, channelId, uId){
  * @param {authUserId} number - id of the user 
  * @param {channelId} number - chanel being inspected 
  * @param {start} number - starting message index, inclusive 
+ * ...
+ * 
  * @returns {messages: Array<messages>} - array of messages 
  * @returns {start: number} - start message index
  * @returns {end: number} - end message index
+ * @returns {object} - error if user id and channelid are invalid or start index is > 50
  */
 export function channelMessagesV1(authUserId, channelId, start){
 const data = getData();
