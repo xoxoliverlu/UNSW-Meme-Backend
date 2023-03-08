@@ -1,5 +1,4 @@
 import { getData,setData } from "./dataStore.js";
-
 export function channelDetailsV1(authUserId, channelId) {
     const data = getData();
     let channelToFind;
@@ -52,7 +51,7 @@ export function channelJoinV1(authUserId, channelId) {
     if (!validAuthId) {
         return {error: 'error'};
     }
-    // checks if the channelId is valid 
+    // checks if the channelId is valid
     let validChannelId = false;
     let authIsMem = false;
     for (let channel of data.channels) {
@@ -82,21 +81,21 @@ export function channelJoinV1(authUserId, channelId) {
     setData(data);
 
     return {
-        
+
     }
 }
 
 export function channelInviteV1(authUserId, channelId, uId){
   const data = getData();
   let validChannel = false;
-  let userInfo = ''; 
-  let channelInfo; 
+  let userInfo = '';
+  let channelInfo;
 
   // Check that channelId refers to a valid channel
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       validChannel = true;
-      channelInfo = channel; 
+      channelInfo = channel;
     }
   }
   if (validChannel === false) {
@@ -106,7 +105,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   }
 
   // Check that uId and authUserId refers to a valid user
-  let validUser = false; 
+  let validUser = false;
   let validAuthUser = false;
   for (const user of data.users) {
     if (user.uId === uId) {
@@ -147,7 +146,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   }
 
   // Add invited user to the channel
-  channelInfo.allMembers.push(uId); 
+  channelInfo.allMembers.push(uId);
   setData(data);
   return {
 
@@ -156,17 +155,17 @@ export function channelInviteV1(authUserId, channelId, uId){
 
 export function channelMessagesV1(authUserId, channelId, start){
 const data = getData();
-let validChannel = false;   
+let validChannel = false;
 const channelKeys = data.channels;
 let channelInfo;
 
 // ERROR CHECKING
 // Check if channelId refers to a valid channel
-for (const channel of data.channels) {  
+for (const channel of data.channels) {
   if (channel.channelId === channelId) {
     validChannel = true;
     channelInfo = channel;
-  }      
+  }
 }
 
 if (validChannel === false) {
@@ -180,7 +179,7 @@ let validAuthuserId = false;
 for (const user of data.users) {
   if (user.uId === authUserId) {
     validAuthuserId = true;
-  }  
+  }
 }
 
 if (validAuthuserId === false) {
@@ -188,7 +187,7 @@ if (validAuthuserId === false) {
     error: 'error'
   }
 }
-// Checking if authuserId is a member of the given channel 
+// Checking if authuserId is a member of the given channel
 let isMember = false;
 for (const member of channelInfo.allMembers) {
   if (member === authUserId) {
@@ -200,16 +199,16 @@ if (isMember === false) {
     error: 'error'
 }
 }
-  
+
 // Check if starting index is not greater than the total number
 // of messages in the channel
-if (start > channelInfo.messages.length) { 
+if (start > channelInfo.messages.length) {
   return {
       error: 'error'
   }
 }
 
-// checks if start is at the end 
+// checks if start is at the end
 if (start === channelInfo.messages.length) {
   return {
     messages:[],
@@ -218,13 +217,13 @@ if (start === channelInfo.messages.length) {
   }
 }
 let messagesArray = [];
-let newEnd; 
+let newEnd;
 
 for (let i = start; i < start + 50; i++) {
   if(channelInfo.messages.length === 50) {
     newEnd = -1;
     break;
-  } 
+  }
   messagesArray.push(channelInfo.messages[i])
 }
 if (newEnd !== -1) {
@@ -235,7 +234,7 @@ return {
   start: start,
   end: newEnd,
 }
- 
+
 }
 
 
