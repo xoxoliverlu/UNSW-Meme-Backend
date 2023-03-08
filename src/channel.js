@@ -115,7 +115,15 @@ export function channelJoinV1(authUserId, channelId) {
 
     }
 }
-
+/**
+ * Invites a user with ID UId to join a channel with Id channelId
+ * Once they are invited, the user is added to the channel immediately
+ * Both public and private channels - all members are able to invite users
+ * @param {authUserId} number - Id of person 
+ * @param {channelId} number - name of the channel
+ * @param {uId} number - Id of the person being invited to channel
+ * @returns {}
+ */
 export function channelInviteV1(authUserId, channelId, uId){
   const data = getData();
   let validChannel = false;
@@ -183,7 +191,17 @@ export function channelInviteV1(authUserId, channelId, uId){
 
   }
 }
-
+/**
+ * For a valid user and channel, returns up to 50 messages from a given start point
+ * - if there are more messages after start + 50, will return end index
+ * - no messages: end equals to -1 to indicate no new messages to load 
+ * @param {authUserId} number - id of the user 
+ * @param {channelId} number - chanel being inspected 
+ * @param {start} number - starting message index, inclusive 
+ * @returns {messages: Array<messages>} - array of messages 
+ * @returns {start: number} - start message index
+ * @returns {end: number} - end message index
+ */
 export function channelMessagesV1(authUserId, channelId, start){
 const data = getData();
 let validChannel = false;
