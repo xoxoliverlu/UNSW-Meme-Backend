@@ -1,7 +1,17 @@
 import { getData, setData } from "./dataStore.js";
 import validator from "validator";
 
-// Stub function for authLoginV1
+/**
+  * Returns a unique authUserId value with a 
+  * given registerd user email and password
+  * 
+  * @param {string} email - the email address the user is registered with
+  * @param {string} password -  the password that they will use to login with once registered
+  * ...
+  * 
+  * @returns {number} -  a unique integer as the userId
+  * @returns {object} - error if email or password is invalid
+*/
 function authLoginV1(email, password) {
   let data = getData();
   // Error checking
@@ -19,7 +29,20 @@ function authLoginV1(email, password) {
   };
 }
 
-// Stub function for authRegisterV1
+/**
+  * Register a user given their email, password, nameFirst and nameLast.
+  * Also generate a unique handleStr for each user.  
+  * 
+  * @param {string} email - the email address the user is registering with
+  * @param {string} password -  the password the user is registering with 
+  * @param {string} nameFirst - the first name of the user
+  * @param {string} nameLast - the last name of the user
+  * ...
+  * 
+  * @returns {number} -  return a unique user ID for the user
+  * @returns {object} - error if email is invaid or already exists, password is too short, 
+  *                     or there is invalid length for firstName or lastName
+*/
 function authRegisterV1(email, password, nameFirst, nameLast) {
   const data = getData();
   // Error checking
