@@ -254,12 +254,19 @@ export function channelMessagesV1(authUserId, channelId, start){
   }
   }
 
-
   // Check if starting index is not greater than the total number
   // of messages in the channel
-  if (start > channelInfo.messages.length || channelInfo.messages.length === 0) {
+  if (start > channelInfo.messages.length) {
     return {
         error: 'error'
+    }
+  }
+
+  if (start === 0 && channelInfo.messages.length === 0) {
+    return {
+      messages: [],
+      start: 0,
+      end: -1,
     }
   }
 
