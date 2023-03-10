@@ -15,6 +15,7 @@ export function channelsCreateV1(authUserId, name, isPublic){
       error: 'error'
     }
   }
+  name = name.trim;
   if (name.length < 1) {
     return {
       error: 'error'
