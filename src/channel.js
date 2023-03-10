@@ -276,11 +276,12 @@ export function channelMessagesV1(authUserId, channelId, start){
   for (let i = start; i < start + 50; i++) {
     if(i === channelInfo.messages.length - 1) {
       newEnd = -1;
+      messagesArray.push(channelInfo.messages[i])
       break;
     }
     messagesArray.push(channelInfo.messages[i])
   }
-  
+
   if (newEnd !== -1) {
     newEnd = start + 50;
   }
