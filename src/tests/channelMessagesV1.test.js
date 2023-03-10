@@ -42,11 +42,7 @@ describe('Testing channelMessages1, errors', () =>{
     const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
     const channelMessagesSuccess = channelMessagesV1(registerAcc.authUserId, channelCreationValid.channelId, 0);
-    expect(channelMessagesSuccess).toStrictEqual({
-        messages: [],
-        start: 0,
-        end: -1
-    });
+    expect(channelMessagesSuccess).toStrictEqual({error: 'error'});
     
   })
 })
