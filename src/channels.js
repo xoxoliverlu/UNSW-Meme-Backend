@@ -1,5 +1,18 @@
 import { getData,setData } from "./dataStore.js";
 
+/**
+ * Given an authUserId and a channelId, the function 
+ * prints out basic information about the channel.
+ *
+ * @param {number} authUserId - Unique identifier for a valid user.
+ * @param {number} channelId - Unique name for a valid channel.
+ * ...
+ * 
+ * @returns {object} - error if authUserId is invalid.
+ * 
+ * 
+ * @returns {number} - unique id of the channel.
+ */
 export function channelsCreateV1(authUserId, name, isPublic){
   const data = getData();
   let validUser = false;
@@ -58,7 +71,19 @@ export function channelsCreateV1(authUserId, name, isPublic){
   }
 }
 
-
+/**
+ * Given an authUserId and a channelId, the function 
+ * prints out basic information about the channel.
+ *
+ * @param {number} authUserId - Unique identifier for a valid user.
+ * ...
+ * 
+ * @returns {object} - error if authUserId is invalid.
+ * 
+ * 
+ * @returns {number} - unique id of the channel.
+ * @returns {string} - unique name of the channel.
+ */
 export function channelsListV1(authUserId){
   const data = getData();
   let validId = false;
@@ -85,6 +110,19 @@ export function channelsListV1(authUserId){
 
 }
 
+/**
+ * Given an authUserId and a channelId, the function 
+ * prints out basic information about the channel.
+ *
+ * @param {number} authUserId - Unique identifier for a valid user.
+ * ...
+ * 
+ * @returns {object} - error if authUserId is invalid.
+ * 
+ * 
+ * @returns {number} - unique id of the channel.
+ * @returns {string} - unique name of the channel.
+ */
 export function channelsListAllV1(authUserId){
   const data = getData();
   let validId = false;
