@@ -26,15 +26,6 @@ export function channelsCreateV1(authUserId, name, isPublic){
     }
   }
 
-  // Check for any duplicate names
-  for (const channel of data.channels) {
-    if (name === channel.name) {
-      return {
-        error: 'error'
-      }
-    }
-  }
-
   let Id = 0;
   if (data.channels.length === 0) {
       Id = 0;
