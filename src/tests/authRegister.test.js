@@ -42,9 +42,11 @@ describe('Invalid inputs', () => {
   });
   test('Password less than 6 characters', () => {
     const register1 = authRegisterV1('alice.smith@gmail.com', 'Pass', 'Alice', 'Smith');
-    const register2 = authRegisterV1('bob.langford@gmail.com', '12$>p', 'Bob', 'Langford');;
+    const register2 = authRegisterV1('bob.langford@gmail.com', '12$>p', 'Bob', 'Langford');
+    const register3 = authRegisterV1('john.paul@gmail.com', '        ', 'John', 'Paul');
     expect(register1).toEqual({error: expect.any(String)});
     expect(register2).toEqual({error: expect.any(String)});
+    expect(register3).toEqual({error: expect.any(String)});    
   });
   test('nameFirst is empty or > 50 characters', () => {
     const register1 = authRegisterV1('alice.smith@gmail.com', 'password', ' ', 'Smith');
