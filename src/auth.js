@@ -63,6 +63,10 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     }
   }
 
+  password = password.trim();
+  nameFirst = nameFirst.trim();
+  nameLast = nameLast.trim();
+
   // Password length
   if (password.length < 6) {
     return {
@@ -70,7 +74,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     };
   }
   // Length of name
-  if (nameFirst === " " || nameLast === " ") {
+  if (nameFirst === "" || nameLast === "") {
     return {
       error: "Invalid first name length",
     };
