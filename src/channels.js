@@ -28,6 +28,7 @@ export function channelsCreateV1(authUserId, name, isPublic){
       error: 'error'
     }
   }
+  name = name.trim();
   if (name.length < 1) {
     return {
       error: 'error'
@@ -39,14 +40,7 @@ export function channelsCreateV1(authUserId, name, isPublic){
     }
   }
 
-  // Check for any duplicate names
-  for (const channel of data.channels) {
-    if (name === channel.name) {
-      return {
-        error: 'error'
-      }
-    }
-  }
+
 
   let Id = 0;
   if (data.channels.length === 0) {
