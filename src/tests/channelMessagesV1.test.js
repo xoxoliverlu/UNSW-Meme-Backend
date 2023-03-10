@@ -43,9 +43,9 @@ describe('Testing channelMessages1, errors', () =>{
     const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
     const channelMessagesSuccess = channelMessagesV1(registerAcc.authUserId, channelCreationValid.channelId, 0);
     expect(channelMessagesSuccess).toStrictEqual({
-        messages: [],
-        start: 0,
-        end: -1
+      messages: [],
+      start: 0,
+      end: -1,
     });
     
   })
