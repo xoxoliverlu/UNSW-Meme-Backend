@@ -1,8 +1,13 @@
-const { echo } = require('./echo');
-const request = require('sync-request');
+import request from 'sync-request';
+import config from '../config.json';
 
 const OK = 200;
+const port = config.port;
+const url = config.url;
 
+/*
+Iteration 2
+*/
 describe('HTTP tests using Jest', () => {
   test('Test successful echo', () => {
     const res = request(
@@ -30,6 +35,6 @@ describe('HTTP tests using Jest', () => {
     );
     const bodyObj = JSON.parse(res.body as string);
     expect(res.statusCode).toBe(OK);
-    expect(bodyObj).toStrictEqual({ error: 'error' });
+    expect(bodyObj).toEqual({ error: 'error' });
   });
 });
