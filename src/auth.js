@@ -2,13 +2,13 @@ import { getData, setData } from "./dataStore.js";
 import validator from "validator";
 
 /**
-  * Returns a unique authUserId value with a 
+  * Returns a unique authUserId value with a
   * given registerd user email and password
-  * 
+  *
   * @param {string} email - the email address the user is registered with
   * @param {string} password -  the password that they will use to login with once registered
   * ...
-  * 
+  *
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
@@ -31,16 +31,16 @@ function authLoginV1(email, password) {
 
 /**
   * Register a user given their email, password, nameFirst and nameLast.
-  * Also generate a unique handleStr for each user.  
-  * 
+  * Also generate a unique handleStr for each user.
+  *
   * @param {string} email - the email address the user is registering with
-  * @param {string} password -  the password the user is registering with 
+  * @param {string} password -  the password the user is registering with
   * @param {string} nameFirst - the first name of the user
   * @param {string} nameLast - the last name of the user
   * ...
-  * 
+  *
   * @returns {number} -  return a unique user ID for the user
-  * @returns {object} - error if email is invaid or already exists, password is too short, 
+  * @returns {object} - error if email is invaid or already exists, password is too short,
   *                     or there is invalid length for firstName or lastName
 */
 function authRegisterV1(email, password, nameFirst, nameLast) {
@@ -74,14 +74,14 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     };
   }
   // Length of name
-  if (nameFirst === "" || nameLast === "") {
+  if (nameFirst < 1 || nameLast < 1) {
     return {
-      error: "Invalid first name length",
+      error: "First name or last name is too short",
     };
   }
   if (nameFirst.length > 50 || nameLast.length > 50) {
     return {
-      error: "Invalid last name length",
+      error: "First name or last name is too long",
     };
   }
 
@@ -89,9 +89,8 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   let concatName = nameFirst.toLowerCase() + nameLast.toLowerCase();
   // Replace alpha numeric characters
   let alphaNumericStr = concatName.replace(/[^a-z0-9]/gi, "");
-  if (alphaNumericStr.length > 20) {
-    alphaNumericStr = alphaNumericStr.slice(0, 20);
-  }
+  alphaNumericStr = alphaNumericStr.slice(0, 20);
+
 
   // Check if someone already has this handle
   let index = 0;
@@ -123,16 +122,11 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     }
   }
   // Generate userID
-  let newUserId;
-  // Find next available userID
-  if (data.users.length === 0) {
-    newUserId = 0;
-  } else {
-    newUserId = data.users[data.users.length - 1].uId + 1;
-  }
+  let newUserId = data.lastAuthUserId + 1;
+  data.lastAuthUserId = newUserId;
   // Permissions !!!
   let permission = 2;
-  if (data.users.length === 0) {
+  if (newUserId === 1) {
     // first user signing up
     permission = 1;
   }

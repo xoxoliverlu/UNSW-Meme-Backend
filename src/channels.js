@@ -1,16 +1,16 @@
 import { getData,setData } from "./dataStore.js";
-
+import {authRegisterV1 } from "./auth.js";
 /**
- * Given an authUserId and a channelId, the function 
+ * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
  *
  * @param {number} authUserId - Unique identifier for a valid user.
  * @param {number} channelId - Unique name for a valid channel.
  * ...
- * 
+ *
  * @returns {object} - error if authUserId is invalid.
- * 
- * 
+ *
+ *
  * @returns {number} - unique id of the channel.
  */
 export function channelsCreateV1(authUserId, name, isPublic){
@@ -41,13 +41,9 @@ export function channelsCreateV1(authUserId, name, isPublic){
   }
 
 
-
-  let Id = 0;
-  if (data.channels.length === 0) {
-      Id = 0;
-  } else {
-      Id = data.channels[data.channels.length - 1].channelId + 1;
-  }
+  // Assign channelId
+  let Id = data.lastChannelId + 1;
+  data.lastChannelId++;
 
   // Assign information to the new channel
   data.channels.push({
@@ -66,15 +62,15 @@ export function channelsCreateV1(authUserId, name, isPublic){
 }
 
 /**
- * Given an authUserId and a channelId, the function 
+ * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
  *
  * @param {number} authUserId - Unique identifier for a valid user.
  * ...
- * 
+ *
  * @returns {object} - error if authUserId is invalid.
- * 
- * 
+ *
+ *
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
@@ -105,15 +101,15 @@ export function channelsListV1(authUserId){
 }
 
 /**
- * Given an authUserId and a channelId, the function 
+ * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
  *
  * @param {number} authUserId - Unique identifier for a valid user.
  * ...
- * 
+ *
  * @returns {object} - error if authUserId is invalid.
- * 
- * 
+ *
+ *
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
