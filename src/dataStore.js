@@ -6,6 +6,8 @@ let data = {
   channels: [
 
   ],
+  lastAuthUserId : 0,
+  lastChannelId: 0,
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
