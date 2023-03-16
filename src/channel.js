@@ -1,16 +1,16 @@
 import { getData,setData } from "./dataStore.js";
 
 /**
- * Given an authUserId and a channelId, the function 
+ * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
  *
  * @param {number} authUserId - Unique identifier for a valid user.
  * @param {number} channelId - Unique identifier for a valid channel.
  * ...
- * 
+ *
  * @returns {object} - error if channelId or authUserId is invalid,
  *                     error if the user is not a member of the channel.
- * 
+ *
  * @returns {string} - name of the channel.
  * @returns {boolean} - whether the channel is public or private.
  * @returns {array} - List of owner members of the channel.
@@ -56,17 +56,17 @@ export function channelDetailsV1(authUserId, channelId) {
 }
 
 /**
- * Given an authUserId and a channelId, the function 
+ * Given an authUserId and a channelId, the function
  * adds the user to the channel if it is public.
  *
  * @param {number} authUserId - Unique identifier for a valid user.
  * @param {number} channelId - Unique identifier for a valid channel.
  * ...
- * 
+ *
  * @returns {object} - error if channelId or authUserId is invalid,
  *                     error if the user is already a member of the channel.
  *                     error if the channel is private.
- * 
+ *
  * @returns {} - returns nothing if there is no errors.
  */
 export function channelJoinV1(authUserId, channelId) {
@@ -119,18 +119,18 @@ export function channelJoinV1(authUserId, channelId) {
  * Invites a user with ID UId to join a channel with Id channelId
  * Once they are invited, the user is added to the channel immediately
  * Both public and private channels - all members are able to invite users
- * @param {authUserId} number - Id of person 
+ * @param {authUserId} number - Id of person
  * @param {channelId} number - name of the channel
  * @param {uId} number - Id of the person being invited to channel
  * ...
- * 
+ *
  * @returns {}
- * @returns {object} - error if any of the Id's are invalid 
+ * @returns {object} - error if any of the Id's are invalid
  */
 export function channelInviteV1(authUserId, channelId, uId){
   const data = getData();
   let validChannel = false;
-  let userInfo = '';
+  let userInfo;
   let channelInfo;
 
   // Check that channelId refers to a valid channel
@@ -142,7 +142,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   }
   if (validChannel === false) {
     return {
-      error: 'error'
+      error: 'Not a valid channel'
     }
   }
 
@@ -161,7 +161,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   }
   if (validUser === false || validAuthUser === false) {
     return {
-      error: 'error'
+      error: 'Not a valid userId or authUserId'
     }
   }
 
@@ -169,7 +169,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   for(const member of channelInfo.allMembers){
     if(member === uId){
       return {
-        error: 'error'
+        error: 'User is already a member'
       }
     }
   }
@@ -183,7 +183,7 @@ export function channelInviteV1(authUserId, channelId, uId){
   }
   if (isMember === false) {
     return {
-      error: 'error',
+      error: 'AuthUser is not a member',
     }
   }
 
@@ -197,13 +197,13 @@ export function channelInviteV1(authUserId, channelId, uId){
 /**
  * For a valid user and channel, returns up to 50 messages from a given start point
  * - if there are more messages after start + 50, will return end index
- * - no messages: end equals to -1 to indicate no new messages to load 
- * @param {authUserId} number - id of the user 
- * @param {channelId} number - chanel being inspected 
- * @param {start} number - starting message index, inclusive 
+ * - no messages: end equals to -1 to indicate no new messages to load
+ * @param {authUserId} number - id of the user
+ * @param {channelId} number - chanel being inspected
+ * @param {start} number - starting message index, inclusive
  * ...
- * 
- * @returns {messages: Array<messages>} - array of messages 
+ *
+ * @returns {messages: Array<messages>} - array of messages
  * @returns {start: number} - start message index
  * @returns {end: number} - end message index
  * @returns {object} - error if user id and channelid are invalid or start index is > 50
