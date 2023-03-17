@@ -59,13 +59,31 @@ test('Successful channelJoinV1 test.', () => {
   const channelDetails = channelDetailsV1(auth1, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
-      auth1,
-      auth2,
+      {
+        uId: auth1,
+        nameFirst: "Fady",
+        nameLast: "Sadek",
+        email: "fadys@gmail.com",
+        handleStr: "fadysadek",
+      },
+      {
+        uId: auth2,
+        nameFirst: "Akanksha",
+        nameLast: "Sood",
+        email: "akankshas@gmail.com",
+        handleStr: "akankshasood",
+      },
     ],
     isPublic: true,
     name: 'Channel1',
     ownerMembers: [
-      auth1,
+      {
+        uId: auth1,
+        nameFirst: "Fady",
+        nameLast: "Sadek",
+        email: "fadys@gmail.com",
+        handleStr: "fadysadek",
+      },
     ],
   });
   expect(channelJoin).toEqual({});
@@ -82,13 +100,71 @@ test('Successful channelJoinV1 test where user is a global member', () => {
   const channelDetails = channelDetailsV1(auth1, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
-      auth2,
-      auth1
+      {
+        uId: auth2,
+        nameFirst: "Akanksha",
+        nameLast: "Sood",
+        email: "akankshas@gmail.com",
+        handleStr: "akankshasood",
+      },
+      {
+        uId: auth1,
+        nameFirst: "Fady",
+        nameLast: "Sadek",
+        email: "fadys@gmail.com",
+        handleStr: "fadysadek",
+      }
     ],
     isPublic: false,
     name: 'Channel1',
     ownerMembers: [
-      auth2,
+      {
+        uId: auth2,
+        nameFirst: "Akanksha",
+        nameLast: "Sood",
+        email: "akankshas@gmail.com",
+        handleStr: "akankshasood",
+      },
+    ],
+  });
+  expect(channelJoin).toEqual({});
+});
+test('Successful channelJoinV1 test where user is a global member', () => {
+  const register1 = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
+  const auth1 = register1.authUserId;
+  const register2 = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
+  const auth2 = register2.authUserId;
+  const newChannel = channelsCreateV1(auth2, 'Channel1', false);
+  const channelId = newChannel.channelId;
+  const channelJoin = channelJoinV1(auth1, channelId);
+  const channelDetails = channelDetailsV1(auth1, channelId);
+  expect(channelDetails).toEqual({
+    allMembers: [
+      {
+        uId: auth2,
+        nameFirst: "Akanksha",
+        nameLast: "Sood",
+        email: "akankshas@gmail.com",
+        handleStr: "akankshasood",
+      },
+      {
+        uId: auth1,
+        nameFirst: "Fady",
+        nameLast: "Sadek",
+        email: "fadys@gmail.com",
+        handleStr: "fadysadek",
+      }
+    ],
+    isPublic: false,
+    name: 'Channel1',
+    ownerMembers: [
+      {
+        uId: auth2,
+        nameFirst: "Akanksha",
+        nameLast: "Sood",
+        email: "akankshas@gmail.com",
+        handleStr: "akankshasood",
+      },
     ],
   });
   expect(channelJoin).toEqual({});
