@@ -3,10 +3,14 @@ import { getData, setData } from './dataStore.js';
 
 
 function clearV1() {
-  const data = getData();
-  data.users = [];
-  data.channels = [];
+  const data = {
+    users: [],
+    channels: [],
+    lastAuthUserId: 0,
+    lastChannelId: 0,
+  };
   setData(data);
+  return {};
 }
 
 export {clearV1};
