@@ -70,45 +70,42 @@ export function channelDetailsV1(authUserId, channelId) {
  * @returns {} - returns nothing if there is no errors.
  */
 export function channelJoinV1(authUserId, channelId) {
-
     const data = getData();
-    // checks if the user is valid
-    let validAuthId = false;
-    for (let user of data.users) {
-        if (user.uId === authUserId) {
-            validAuthId = true
-        }
+    let validUser = false;
+    let userDetail;
+    for (const user of data.users) {
+      if (user.uId === authUserId) {
+        userDetail = user;
+      }
     }
-    if (!validAuthId) {
-        return {error: 'error'};
+    if (userDetail === undefined) {
+      return {error: 'Invalid authUserId'};
     }
     // checks if the channelId is valid
-    let validChannelId = false;
-    let authIsMem = false;
+    let channelDetail;
     for (let channel of data.channels) {
-        if (channel.channelId === channelId) {
-            // checks if the channel is public
-            if (channel.isPublic === true) {
-                validChannelId = true;
-            }
-            // checks if the user is already a member of the channel
-            if (!channel.allMembers.includes(authUserId)) {
-                authIsMem = true;
-            }
+      if (channel.channelId === channelId) {
+        channelDetail = channel;
+      }
+    }
+    if (channelDetail === undefined) {
+      return {error: 'Channel does not exist'};
+    }
+    // checks if the channel is public
+    if (channelDetail.isPublic === false) {
+        // check authuser permissions
+        if (userDetail.globalPerm === 2) {
+          return {error: 'Channel is private and authUser is not a global owner'};
         }
-    }
-    if (!validChannelId) {
-        return {error: 'error'};
-    }
-    if (!authIsMem) {
-        return {error: 'error'};
     }
 
-    for (let channel of data.channels) {
-        if (channel.channelId === channelId) {
-            channel.allMembers.push(authUserId);
-        }
+    // checks if the user is already a member of the channel
+    if (channelDetail.allMembers.includes(authUserId)) {
+        return {error: 'User is already a member'}
     }
+
+    // Add member to channe
+    channelDetail.allMembers.push(authUserId);
     setData(data);
 
     return {
