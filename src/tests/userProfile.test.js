@@ -13,7 +13,7 @@ describe('Failed tests.', () => {
     const registerUser = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
     const userProfile = userProfileV1(authId, userId + 10);
-    expect(userProfile).toStrictEqual({error: 'error'});
+    expect(userProfile).toStrictEqual({error: expect.any(String)});
   });
   test('Invalid authId', () => {
     const registerAuth = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -21,7 +21,7 @@ describe('Failed tests.', () => {
     const registerUser = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
     const userProfile = userProfileV1(authId + 10, userId);
-    expect(userProfile).toStrictEqual({error: 'error'});
+    expect(userProfile).toStrictEqual({error: expect.any(String)});
   });
 });
 
@@ -32,11 +32,13 @@ test('Successful userProfileV1 Test. ', () => {
   const userId = registerUser.authUserId;
   const userProfile = userProfileV1(authId, userId);
   expect(userProfile).toStrictEqual({
-    uId: userId,
-    nameFirst: 'Akanksha',
-    nameLast: 'Sood',
-    email: 'akankshas@gmail.com',
-    handleStr: 'akankshasood',
+    user: {
+      uId: userId,
+      nameFirst: 'Akanksha',
+      nameLast: 'Sood',
+      email: 'akankshas@gmail.com',
+      handleStr: 'akankshasood',
+    }
   });
 });
 
@@ -47,5 +49,5 @@ test('Testing unique handleStr.', () => {
   const userId = registerUser.authUserId;
   const userProfileUser = userProfileV1(authId, userId);
   const userProfileAuth = userProfileV1(authId, authId);
-  expect(userProfileAuth.handleStr).not.toEqual(userProfileUser.handleStr);
+  expect(userProfileAuth.user.handleStr).not.toEqual(userProfileUser.user.handleStr);
 });
