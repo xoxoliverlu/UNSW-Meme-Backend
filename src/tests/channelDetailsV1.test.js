@@ -14,7 +14,7 @@ describe('Invalid input tests.', () => {
     const newChannel = channelsCreateV1(authId, 'Channel1', false);
     const channelId = newChannel.channelId + 1;
     const channelDetails = channelDetailsV1(authId, channelId);
-    expect(channelDetails).toEqual({error: 'error'});
+    expect(channelDetails).toEqual({error: expect.any(String)});
   });
   test('Invalid authUserId.', () => {
     const register = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -22,7 +22,7 @@ describe('Invalid input tests.', () => {
     const newChannel = channelsCreateV1(authId, 'Channel1', false);
     const channelId = newChannel.channelId;
     const channelDetails = channelDetailsV1(authId + 1, channelId);
-    expect(channelDetails).toEqual({error: 'error'});
+    expect(channelDetails).toEqual({error: expect.any(String)});
   });
   test('Unauthorised authUserId.', () => {
     const registerValid = authRegisterV1('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -32,7 +32,7 @@ describe('Invalid input tests.', () => {
     const newChannel = channelsCreateV1(authValid, 'Channel1', false);
     const channelId = newChannel.channelId;
     const channelDetails = channelDetailsV1(authInvalid, channelId);
-    expect(channelDetails).toEqual({error: 'error'});
+    expect(channelDetails).toEqual({error: expect.any(String)});
   });
 });
 
@@ -44,12 +44,24 @@ test('Succesful ChannelDetailsV1 test.', () => {
   const channelDetails = channelDetailsV1(authId, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
-      authId
+      {
+        uId: authId,
+        email:"fadys@gmail.com",
+        handleStr: 'fadysadek',
+        nameFirst: "Fady",
+        nameLast: "Sadek",
+      },
     ],
     isPublic: false,
     name: 'Channel1',
     ownerMembers: [
-      authId
+      {
+        uId: authId,
+        email:"fadys@gmail.com",
+        handleStr: 'fadysadek',
+        nameFirst: "Fady",
+        nameLast: "Sadek",
+      },
     ],
-    });
+  });
 });

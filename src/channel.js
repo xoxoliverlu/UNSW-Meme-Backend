@@ -1,4 +1,5 @@
 import { getData,setData } from "./dataStore.js";
+import {userProfileV1} from "./users.js";
 
 /**
  * Given an authUserId and a channelId, the function
@@ -18,43 +19,58 @@ import { getData,setData } from "./dataStore.js";
  */
 export function channelDetailsV1(authUserId, channelId) {
   const data = getData();
-  let channelToFind;
-  let ownerMemArr = [];
-  let allMemArr = [];
+  // check if authUserId is valid
+  let authIsValid = false;
+  for (const user of data.users) {
+    if (user.uId === authUserId) {
+      authIsValid = true;
+    }
+  }
+  if (!authIsValid) {
+    return {error: "AuthUser is not valid"}
+  }
   // checks if the channelId is valid
   let validChannelId = false;
   for (let channel of data.channels) {
     if (channelId === channel.channelId) {
-      validChannelId = true;
-      channelToFind = channel;
-      ownerMemArr = channel.ownerMembers;
-      allMemArr = channel.allMembers;
-    }
-  }
-  if (!validChannelId){
-    return {error: 'error'};
-  }
-  // checks if the auth is a member of the channel
-  let validAuthId = true;
-  for (let channel of data.channels){
-    if (channel.channelId === channelId) {
-      if (!channel.allMembers.includes(authUserId)) {
-        validAuthId = false;
+      let isMember = false;
+      for (const user of channel.allMembers) {
+        if (user === authUserId) {
+          isMember = true;
+        }
       }
+      if (!isMember) {
+        return {error: "User is not a member of the channel"};
+      }
+      const owners = memberObject(channel.ownerMembers);
+      const members = memberObject(channel.allMembers);
+      return {
+        name: channel.name,
+        isPublic: channel.isPublic,
+        ownerMembers: owners,
+        allMembers: members,
+      };
     }
   }
-  if (!validAuthId){
-    return {error: 'error'};
-  }
-
   return {
-    name: channelToFind.name,
-    isPublic: channelToFind.isPublic,
-    ownerMembers: ownerMemArr,
-    allMembers: allMemArr,
-  };
+    error: "Invalid channelId"
+  }
 }
-
+// Helper function
+function memberObject(array) {
+  const result = [];
+  for (const userId of array) {
+    const user = userProfileV1(userId, userId);
+    result.push({
+      uId: user.user.uId,
+      nameFirst: user.user.nameFirst,
+      nameLast: user.user.nameLast,
+      email: user.user.email,
+      handleStr: user.user.handleStr,
+    });
+  }
+  return result;
+}
 /**
  * Given an authUserId and a channelId, the function
  * adds the user to the channel if it is public.
