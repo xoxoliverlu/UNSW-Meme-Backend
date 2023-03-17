@@ -2,38 +2,31 @@ import { getData, setData } from "./dataStore.js";
 
 export function userProfileV1(authUserId, uId) {
   const data = getData();
-  // Checks if authUserId is valid
+  // Checks if authUserId and userId is valid
   let validAuthId = false;
+  let validUserId = false;
+  let userInfo;
   for (let user of data.users) {
     if (user.uId === authUserId) {
       validAuthId = true;
     }
-  }
-
-  if (!validAuthId) {
-    return { error: "error" };
-  }
-  // Checks if uId is valid
-  let validUserId = false;
-  for (let user of data.users) {
     if (user.uId === uId) {
       validUserId = true;
+      userInfo = user;
     }
   }
 
-  if (!validUserId) {
-    return { error: "error" };
+  if (!validAuthId || !validUserId) {
+    return { error: "Invalid Id" };
   }
-  // Finds the uId and prints relevant data
-  for (let user of data.users) {
-    if (user.uId === uId) {
-      return {
-        uId: user.uId,
-        nameFirst: user.nameFirst,
-        nameLast: user.nameLast,
-        email: user.email,
-        handleStr: user.handleStr,
-      };
+
+  return {
+    user: {
+      uId: userInfo.uId,
+      nameFirst: userInfo.nameFirst,
+      nameLast: userInfo.nameLast,
+      email: userInfo.email,
+      handleStr: userInfo.handleStr,
     }
-  }
+  };
 }
