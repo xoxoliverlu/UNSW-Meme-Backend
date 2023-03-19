@@ -2,8 +2,14 @@ import { getData, setData } from "./dataStore"
 
 export function validUserId(id: number){
     const data = getData();
-    if (data.users.find(item => item.uId === id)){
-        return true;
+    let found = data.users.find(item => item.uId === id)
+    if (found){
+        return {
+            user: found,
+            validUserId: true,
+        };
     }
-    return false;
+    return {
+        validUserId: false
+    };
 }
