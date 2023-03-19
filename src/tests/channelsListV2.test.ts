@@ -3,7 +3,7 @@ const request = require("sync-request");
 
 test('success channels List', () => {
     let regRes = request('POST',`${url}:${port}/auth/register/v2`, {
-        json: {email: 'oliverwlu@gmail.com', password: 'cl3cl3vul4', 'Oliver', 'Lu'}
+        json: {email: 'oliverwlu@gmail.com', password: 'cl3cl3vul4', nameFirst:'Oliver', nameLast:'Lu'}
     });
     let loginRes = request('POST',`${url}:${port}/auth/login/v2`,{
         json: {email: 'oliverwlu@gmail.com', password: 'cl3cl3vul4'}
@@ -26,7 +26,7 @@ test('success channels List', () => {
 
 test('error token', () => {
     let regRes = request('POST',`${url}:${port}/auth/register/v2`, {
-        json: {email: 'oliverwlu@gmail.com', password: 'cl3cl3vul4', 'Oliver', 'Lu'}
+        json: {email: 'oliverwlu@gmail.com', password: 'cl3cl3vul4', nameFirst:'Oliver', nameLast: 'Lu'}
     });
     let loginRes = request('POST',`${url}:${port}/auth/login/v2`,{
         json: {email: 'oliverwlu@gmail.com', password: 'cl3cl3vul4'}
