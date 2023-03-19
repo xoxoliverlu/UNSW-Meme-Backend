@@ -1,5 +1,5 @@
-import { authLoginV1, authRegisterV1 } from '../auth.ts';
-import { clearV1 } from '../other.ts';
+import { authLoginV1, authRegisterV1 } from '../auth';
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();
