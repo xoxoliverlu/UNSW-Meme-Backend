@@ -1,8 +1,9 @@
 import { getData, setData } from './dataStore.js';
 
+type clearReturn = {};
 
 
-function clearV1() {
+const clearV1 = (): clearReturn => {
   const data = {
     users: [],
     channels: [],
