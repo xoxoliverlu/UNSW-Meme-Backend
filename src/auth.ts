@@ -78,7 +78,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
     };
   }
   // Length of name
-  if (nameFirst < 1 || nameLast < 1) {
+  if (nameFirst.length < 1 || nameLast.length < 1) {
     return {
       error: "First name or last name is too short",
     };
