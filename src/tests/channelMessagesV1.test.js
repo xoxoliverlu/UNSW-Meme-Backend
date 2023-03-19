@@ -1,7 +1,7 @@
 import {channelMessagesV1} from '../channel.js'
 import {channelsCreateV1} from '../channels.js'
-import {authRegisterV1} from '../auth.js'
-import { clearV1 } from '../other.js';
+import {authRegisterV1} from '../auth'
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();
@@ -47,6 +47,6 @@ describe('Testing channelMessages1, errors', () =>{
       start: 0,
       end: -1,
     });
-    
+
   })
 })
