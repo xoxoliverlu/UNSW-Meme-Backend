@@ -8,6 +8,8 @@ let data = {
   ],
   lastAuthUserId : 0,
   lastChannelId: 0,
+  lastToken: 0,
+  tokens: [],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

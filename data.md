@@ -1,5 +1,5 @@
 ```javascript
-let data = { 
+let data = {
     users: [
         {
             uId: 1,
@@ -8,7 +8,7 @@ let data = {
             email: 'akanksha.sood@gmail.com',
             password: '123456',
             handleStr: 'akankshasood',
-        }, 
+        },
         {
             uId: 2,
             nameFirst: 'Fady'
@@ -16,7 +16,7 @@ let data = {
             email: 'fady.sadek@gmail.com',
             password: 'password',
             handleStr: 'fadysadek',
-        }, 
+        },
     ],
     channels: [
         {
@@ -37,9 +37,22 @@ let data = {
             ]
             start: 0
             end: 50
-        },  
-    ], 
+        },
+    ],
+    lastAuthUserId: 0,
+    lastChannelId: 0,
+    lastToken: 0,
+    tokens: [
+        {
+            token: 0,
+            uId: 1,
+        },
+        {
+            token: 1,
+            uId: 2,
+        }
+    ],
 }
 ```
 
-[Optional] short description: 
+[Optional] short description:
