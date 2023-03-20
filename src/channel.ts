@@ -1,5 +1,5 @@
-import { getData,setData } from "./dataStore.js";
-import {userProfileV2} from "./users.js";
+import { getData,setData } from "./dataStore";
+import {userProfileV2} from "./users";
 
 /**
  * Given an authUserId and a channelId, the function
