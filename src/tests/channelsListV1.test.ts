@@ -1,4 +1,4 @@
-import {channelsListV1, channelsCreateV1} from '../channels.js';
+import {channelsListV1, channelsCreateV1} from '../channels';
 import {authRegisterV1} from '../auth';
 import {clearV1} from '../other';
 
