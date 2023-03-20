@@ -10,6 +10,7 @@ export function validUserId(id: number){
         };
     }
     return {
+        user: found,
         validUserId: false
     };
 }
