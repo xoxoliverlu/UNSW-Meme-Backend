@@ -7,9 +7,7 @@ beforeEach(() => {
 describe ('Testing Valid Registration', () => {
   test('Valid Return Type (object)', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    expect(register1.statusCode).toBe(200);
-    const body = JSON.parse(register1.getBody() as string);
-    expect(body).toHaveProperty('authUserId');
+    expect(register1).toHaveProperty('authUserId');
   });
   test('Valid return of integer', () => {
     const user = requestAuthRegister('alice.smith@gmail.com', 'password', 'Alice', 'Smith');

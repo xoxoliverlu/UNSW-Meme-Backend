@@ -32,11 +32,10 @@ export const requestAuthRegister = (email: string, password: string, nameFirst: 
             }
         }
     );
-    return res;
-    // if (res.statusCode === 200) {
-    //     return JSON.parse(res.getBody() as string);
-    // }
-    // return res.statusCode;
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
 }
 
 export const requestAuthLogout = (token: string) => {
@@ -55,9 +54,10 @@ export const requestAuthLogout = (token: string) => {
 export const requestClear = () => {
     const res = request(
         'DELETE',
-        `${url}:${port}` + '/clear/v1'
+        `${url}:${port}` + '/clear/v1',
+        {}
     );
-    //return JSON.parse(res.getBody() as string);
+    return JSON.parse(res.getBody() as string);
 }
 
 export const requestDmCreate = (token: string, uIds: number[]) => {
