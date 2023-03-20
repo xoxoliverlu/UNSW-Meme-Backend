@@ -13,7 +13,7 @@ import {authRegisterV1 } from "./auth";
  *
  * @returns {number} - unique id of the channel.
  */
-export function channelsCreateV1(authUserId: number, name: string, isPublic: boolean){
+export function channelsCreateV1(token: string, authUserId: number, name: string, isPublic: boolean){
   const data = getData();
   let validUser = false;
 
@@ -74,7 +74,7 @@ export function channelsCreateV1(authUserId: number, name: string, isPublic: boo
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
-export function channelsListV1(authUserId: number){
+export function channelsListV1(token: string, authUserId: number){
   const data = getData();
   let validId = false;
 
@@ -113,7 +113,7 @@ export function channelsListV1(authUserId: number){
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
-export function channelsListAllV1(authUserId: number){
+export function channelsListAllV1(token:string, authUserId: number){
   const data = getData();
   let validId = false;
 
