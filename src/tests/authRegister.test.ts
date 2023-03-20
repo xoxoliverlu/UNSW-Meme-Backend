@@ -1,5 +1,5 @@
-import { authRegisterV1 } from '../auth.js';
-import { clearV1 } from '../other.js';
+import { authRegisterV1 } from '../auth';
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();
@@ -46,7 +46,7 @@ describe('Invalid inputs', () => {
     const register3 = authRegisterV1('john.paul@gmail.com', '        ', 'John', 'Paul');
     expect(register1).toEqual({error: expect.any(String)});
     expect(register2).toEqual({error: expect.any(String)});
-    expect(register3).toEqual({error: expect.any(String)});    
+    expect(register3).toEqual({error: expect.any(String)});
   });
   test('nameFirst is empty or > 50 characters', () => {
     const register1 = authRegisterV1('alice.smith@gmail.com', 'password', ' ', 'Smith');

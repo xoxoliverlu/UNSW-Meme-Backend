@@ -1,6 +1,10 @@
 import { getData, setData } from "./dataStore.js";
 import validator from "validator";
 
+type authUserId = {
+  authUserId?: number,
+  error?: string
+};
 /**
   * Returns a unique authUserId value with a
   * given registerd user email and password
@@ -12,7 +16,7 @@ import validator from "validator";
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
-function authLoginV1(email, password) {
+const authLoginV1 = (email: string, password: string): authUserId => {
   let data = getData();
   // Error checking
   // change email to lowercase
@@ -43,7 +47,7 @@ function authLoginV1(email, password) {
   * @returns {object} - error if email is invaid or already exists, password is too short,
   *                     or there is invalid length for firstName or lastName
 */
-function authRegisterV1(email, password, nameFirst, nameLast) {
+const authRegisterV1 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const data = getData();
   // Error checking
   // Invalid email using validator package
@@ -74,7 +78,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     };
   }
   // Length of name
-  if (nameFirst < 1 || nameLast < 1) {
+  if (nameFirst.length < 1 || nameLast.length < 1) {
     return {
       error: "First name or last name is too short",
     };
