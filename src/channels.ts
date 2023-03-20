@@ -1,4 +1,5 @@
-import { getData,setData } from "./dataStore.js";
+import { getData,setData } from "./dataStore";
+import {authRegisterV1 } from "./auth";
 /**
  * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
@@ -12,7 +13,7 @@ import { getData,setData } from "./dataStore.js";
  *
  * @returns {number} - unique id of the channel.
  */
-export function channelsCreateV1(authUserId, name, isPublic){
+export function channelsCreateV1(authUserId: number, name: string, isPublic: boolean){
   const data = getData();
   let validUser = false;
 
@@ -73,7 +74,7 @@ export function channelsCreateV1(authUserId, name, isPublic){
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
-export function channelsListV1(authUserId){
+export function channelsListV1(authUserId: number){
   const data = getData();
   let validId = false;
 
@@ -112,7 +113,7 @@ export function channelsListV1(authUserId){
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
-export function channelsListAllV1(authUserId){
+export function channelsListAllV1(authUserId: number){
   const data = getData();
   let validId = false;
 
