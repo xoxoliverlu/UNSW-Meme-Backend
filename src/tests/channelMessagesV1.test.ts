@@ -1,5 +1,5 @@
-import {channelMessagesV1} from '../channel.js'
-import {channelsCreateV1} from '../channels.js'
+import {channelMessagesV1} from '../channel'
+import {channelsCreateV1} from '../channels'
 import {authRegisterV1} from '../auth'
 import { clearV1 } from '../other';
 

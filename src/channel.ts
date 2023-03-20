@@ -1,11 +1,11 @@
-import { getData,setData } from "./dataStore.js";
-import {userProfileV1} from "./users.js";
+import { getData,setData } from "./dataStore";
+import {userProfileV2} from "./users";
 
 /**
  * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
  *
- * @param {number} authUserId - Unique identifier for a valid user.
+ * @param {token} string - token of current user.
  * @param {number} channelId - Unique identifier for a valid channel.
  * ...
  *
@@ -17,7 +17,7 @@ import {userProfileV1} from "./users.js";
  * @returns {array} - List of owner members of the channel.
  * @returns {array} - List of all members of the channel.
  */
-export function channelDetailsV1(authUserId, channelId) {
+export function channelDetailsV1(token : string, channelId : number) {
   const data = getData();
   // check if authUserId is valid
   let authIsValid = false;
@@ -75,7 +75,7 @@ function memberObject(array) {
  * Given an authUserId and a channelId, the function
  * adds the user to the channel if it is public.
  *
- * @param {number} authUserId - Unique identifier for a valid user.
+ * @param {token} string - token of current user.
  * @param {number} channelId - Unique identifier for a valid channel.
  * ...
  *
@@ -85,7 +85,7 @@ function memberObject(array) {
  *
  * @returns {} - returns nothing if there is no errors.
  */
-export function channelJoinV1(authUserId, channelId) {
+export function channelJoinV1(token : string, channelId : number) {
     const data = getData();
     let validUser = false;
     let userDetail;
@@ -132,7 +132,7 @@ export function channelJoinV1(authUserId, channelId) {
  * Invites a user with ID UId to join a channel with Id channelId
  * Once they are invited, the user is added to the channel immediately
  * Both public and private channels - all members are able to invite users
- * @param {authUserId} number - Id of person
+ * @param {token} string - token of current user
  * @param {channelId} number - name of the channel
  * @param {uId} number - Id of the person being invited to channel
  * ...
@@ -140,7 +140,7 @@ export function channelJoinV1(authUserId, channelId) {
  * @returns {}
  * @returns {object} - error if any of the Id's are invalid
  */
-export function channelInviteV1(authUserId, channelId, uId){
+export function channelInviteV1(token : string, channelId : number, uId : number){
   const data = getData();
   let validChannel = false;
   let userInfo;
@@ -211,7 +211,7 @@ export function channelInviteV1(authUserId, channelId, uId){
  * For a valid user and channel, returns up to 50 messages from a given start point
  * - if there are more messages after start + 50, will return end index
  * - no messages: end equals to -1 to indicate no new messages to load
- * @param {authUserId} number - id of the user
+ * @param {token} string - token of current user
  * @param {channelId} number - chanel being inspected
  * @param {start} number - starting message index, inclusive
  * ...
@@ -221,7 +221,7 @@ export function channelInviteV1(authUserId, channelId, uId){
  * @returns {end: number} - end message index
  * @returns {object} - error if user id and channelid are invalid or start index is > 50
  */
-export function channelMessagesV1(authUserId, channelId, start){
+export function channelMessagesV1(token : string, channelId : string, start : string){
   const data = getData();
   let validChannel = false;
   let channelInfo;
