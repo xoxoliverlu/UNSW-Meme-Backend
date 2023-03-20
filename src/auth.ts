@@ -2,9 +2,14 @@ import { getData, setData } from "./dataStore.js";
 import validator from "validator";
 
 type authUserId = {
+  token?: string,
   authUserId?: number,
   error?: string
 };
+
+type tokenReturn = {
+  token: string
+}
 /**
   * Returns a unique authUserId value with a
   * given registerd user email and password
@@ -147,9 +152,26 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Update data
   data.users.push(newUser);
   setData(data);
+
+  const token = generateToken(newUser.uId);
   return {
+    token: token,
     authUserId: newUser.uId,
   };
 }
 
+const generateToken = (uId: number): tokenReturn => {
+  const data = getData();
+  const tokenNumber = data.lastToken + 1;
+  const tokenString = tokenNumber.toString();
+  data.lastToken = tokenNumber;
+  data.tokens.push(
+    {
+      token: tokenString,
+      uId: uId
+    }
+  );
+  setData(data);
+  return tokenString;
+}
 export { authRegisterV1, authLoginV1 };
