@@ -20,7 +20,7 @@ export const requestAuthLogin = (email: string, password: string) => {
 }
 
 export const requestAuthRegister = (email: string, password: string, nameFirst: string, nameLast: string) => {
-    const res = request(
+    const res1 = request(
         'POST',
         `${url}:${port}` + '/auth/register/v2',
         {
@@ -32,10 +32,10 @@ export const requestAuthRegister = (email: string, password: string, nameFirst: 
             }
         }
     );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
+    if (res1.statusCode === 200) {
+        return JSON.parse(res1.getBody() as string);
     }
-    return res.statusCode;
+    return res1.statusCode;
 }
 
 export const requestAuthLogout = (token: string) => {
