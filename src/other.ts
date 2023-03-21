@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore.js';
+import { getData, setData } from './dataStore';
 
 type clearReturn = {};
 type Message = {
@@ -26,6 +26,11 @@ type Channel = {
   isPublic: boolean;
 };
 
+type TokenPair = {
+  token: string;
+  authUserId: number;
+}
+
 
 const clearV1 = (): clearReturn => {
   const data = {
@@ -33,6 +38,8 @@ const clearV1 = (): clearReturn => {
     channels: [] as Channel[],
     lastAuthUserId: 0,
     lastChannelId: 0,
+    lastToken: 0,
+    tokens: [] as TokenPair[],
   };
   setData(data);
   return {};

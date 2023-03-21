@@ -1,4 +1,4 @@
-import { getData,setData } from "./dataStore.js";
+import { getData,setData } from "./dataStore";
 /**
  * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.

@@ -1,4 +1,4 @@
-import request from "sync-request";
+const request = require("sync-request");
 import { port, url} from "./config.json";
 
 export const requestAuthLogin = (email: string, password: string) => {

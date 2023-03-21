@@ -39,11 +39,14 @@ const authLoginV1 = (email: string, password: string): authUserId => {
 
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const register = authRegisterV1(email, password, nameFirst, nameLast);
-  const token = generateToken(register.authUserId);
-  return {
-    token: token,
-    authUserId: register.authUserId,
-  };
+  if (Object.hasOwn(register, 'error')) {
+    const token = generateToken(register.authUserId);
+    return {
+      token: token,
+      authUserId: register.authUserId,
+    };
+  }
+  return register;
 }
 /**
   * Register a user given their email, password, nameFirst and nameLast.
@@ -64,7 +67,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Error checking
   // Invalid email using validator package
   email = email.toLowerCase();
-  if (!validator.isEmail(email))  {
+  if (validator.isEmail(email) === false)  {
     return {
       error: "Invalid email",
     };
