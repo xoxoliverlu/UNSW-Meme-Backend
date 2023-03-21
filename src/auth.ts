@@ -2,9 +2,11 @@ import { getData, setData } from "./dataStore";
 import validator from "validator";
 
 type authUserId = {
-  token?: string,
-  authUserId?: number,
-  error?: string
+
+    token?: string;
+    authUserId?: number;
+    error?: string;
+
 };
 
 type tokenReturn = string;
@@ -39,7 +41,7 @@ const authLoginV1 = (email: string, password: string): authUserId => {
 
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const register = authRegisterV1(email, password, nameFirst, nameLast);
-  if (Object.hasOwn(register, 'error')) {
+  if (register.hasOwnProperty('authUserId')) {
     const token = generateToken(register.authUserId);
     return {
       token: token,
@@ -183,4 +185,4 @@ const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   return newHandle;
 }
 
-export { authRegisterV1, authRegisterV2, authLoginV1 };
+export { authRegisterV2, authLoginV1 };
