@@ -1,33 +1,5 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-type Message = {
-  messageId: number;
-  uId: number;
-  message: string;
-  timeSent: number;
-}
-type User = {
-  uId: number;
-  nameFirst: string;
-  nameLast: string;
-  email: string;
-  password: string;
-  handleStr: string;
-  globalPerm: number;
-};
 
-type Channel = {
-  channelId: number;
-  name: string;
-  ownerMembers: number[];
-  allMembers: number[];
-  messages: Message[];
-  isPublic: boolean;
-};
-
-type TokenPair = {
-  token: string;
-  authUserId: number;
-}
 const data = {
   users: [] as User[],
   channels: [] as Channel[],
