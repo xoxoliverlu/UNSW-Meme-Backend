@@ -185,4 +185,4 @@ const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   }
   return newHandle;
 }
-export { authRegisterV2, authLoginV1 };
+export { authRegisterV1, authRegisterV2, authLoginV1 };
