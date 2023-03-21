@@ -1,4 +1,5 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
+import { User, Channel, TokenPair } from './interfaces';
 
 const data = {
   users: [] as User[],
