@@ -5,18 +5,22 @@ beforeEach(() => {
 });
 
 describe ('Testing Valid Registration', () => {
-  test('Valid Return Type (object)', () => {
+  test('Valid Return Type (object) with correct type values', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    expect(register1).toHaveProperty('authUserId');
-  });
-  test('Valid return of integer', () => {
-    const user = requestAuthRegister('alice.smith@gmail.com', 'password', 'Alice', 'Smith');
-    expect(user.authUserId).toStrictEqual(expect.any(Number));
+    expect(register1).toStrictEqual({
+      token: expect.any(String),
+      authUserId: expect.any(Number),
+    });
   });
   test('A unique user ID', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
     const register2 = requestAuthRegister('bob.langford@gmail.com', 'password', 'Bob', 'Langford');
     expect(register2.authUserId).not.toEqual(register1.authUserId);
+  });
+  test('A unique token', () => {
+    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    const register2 = requestAuthRegister('bob.langford@gmail.com', 'password', 'Bob', 'Langford');
+    expect(register2.token).not.toEqual(register1.token);
   });
   test('Same name', () => {
     const register1 = requestAuthRegister('alice.langford@gmail.com', '123456', 'Alice', 'Smith');
