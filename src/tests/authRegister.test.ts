@@ -4,6 +4,10 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
+
 describe ('Testing Valid Registration', () => {
   test('Valid Return Type (object) with correct type values', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
