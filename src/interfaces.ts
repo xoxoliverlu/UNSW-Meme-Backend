@@ -29,3 +29,12 @@ export interface User {
     globalPerm: number;
 }
 
+export interface DataStore {
+    users: User[];
+    channels: Channel[];
+    tokens: TokenPair[];
+    lastAuthUserId: number;
+    lastChannelId: number;
+    lastToken: number;
+  }
+
