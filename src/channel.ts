@@ -322,12 +322,12 @@ export function channelAddOwnerV1(token: String, channelId: number, uId: number)
     return {error: 'invalid token'}; 
   }
 
-  let channel = data.tokens.find(item => item.channelId = channelId);
+  let channel = data.channels.find(item => item.channelId === channelId);
   if (channel === undefined){
     return {error: 'no channel found'}
   }
 
-  let ownerAdded = data.tokens.find(item => item.token == token);
+  let ownerAdded = data.users.find(item => item.uId === uId);
   if (ownerAdded === undefined) {
     return {error: 'invalid uId'}; 
   }
@@ -350,32 +350,32 @@ export function channelAddOwnerV1(token: String, channelId: number, uId: number)
 
 export function channelRemoveOwnerV1(token: String, channelId: number, uId: number){
   const data = getData();
-  let user = data.tokens.find(item => item.token == token);
+  let user = data.tokens.find(item => item.token === token);
 
   if (user === undefined) {
     return {error: 'invalid token'}; 
   }
   let {userId} = user;
 
-  let channel = data.tokens.find(item => item.channelId = channelId);
+  let channel = data.channels.find(item => item.channelId === channelId);
   if (channel === undefined){
     return {error: 'no channel found'}
   }
 
-  let ownerAdded = data.tokens.find(item => item.token == token);
-  if (ownerAdded === undefined) {
+  let ownerRemoved = data.users.find(item => item.uId === uId);
+  if (ownerRemoved === undefined) {
     return {error: 'invalid uId'}; 
   }
   
-  if (!channel.members.includes(ownerAdded)){
+  if (!channel.members.includes(ownerRemoved)){
     return {error: 'user to be added is not a member of the channel'}
   }
 
-  if (!channel.ownerMembers.includes(ownerAdded)){
+  if (!channel.ownerMembers.includes(ownerRemoved)){
     return {error: 'user is not an owner of this channel.'}
   }
 
-  if (channel.ownerMembers.includes(ownerAdded) && channel.ownerMembers.length === 1){
+  if (channel.ownerMembers.includes(ownerRemoved) && channel.ownerMembers.length === 1){
     return {error: 'user is the only owner of this channel.'}
   }
 
@@ -387,21 +387,21 @@ export function channelRemoveOwnerV1(token: String, channelId: number, uId: numb
   if (index > -1){
     channel.ownerMembers.splice(index,1)
   }
-
+  
   setData(data);
   return {};
 }
 
 export function channelLeaveV1(token: String, channelId: number){
   const data = getData();
-  let user = data.tokens.find(item => item.token == token);
+  let user = data.tokens.find(item => item.token === token);
 
   if (user === undefined) {
     return {error: 'invalid token'}; 
   }
   let {userId} = user;
 
-  let channel = data.tokens.find(item => item.channelId === channelId);
+  let channel = data.channels.find(item => item.channelId === channelId);
   if (channel === undefined){
     return {error: 'no channel found'}
   }
