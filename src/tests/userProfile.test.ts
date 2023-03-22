@@ -1,6 +1,6 @@
-import { authRegisterV1 } from '../auth.js';
-import { clearV1 } from '../other.js';
-import { userProfileV1 } from '../users.js';
+import { authRegisterV1 } from '../auth';
+import { clearV1 } from '../other';
+import { userProfileV1 } from '../users';
 
 beforeEach(() => {
   clearV1();
@@ -12,7 +12,7 @@ describe('Failed tests.', () => {
     const authId = registerAuth.authUserId;
     const registerUser = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
-    const userProfile = userProfileV1(authId, userId + 10);
+    const userProfile = userProfileV1( authId, userId + 10);
     expect(userProfile).toStrictEqual({error: expect.any(String)});
   });
   test('Invalid authId', () => {
@@ -20,7 +20,7 @@ describe('Failed tests.', () => {
     const authId = registerAuth.authUserId;
     const registerUser = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
-    const userProfile = userProfileV1(authId + 10, userId);
+    const userProfile = userProfileV1( authId + 10, userId);
     expect(userProfile).toStrictEqual({error: expect.any(String)});
   });
 });
@@ -30,7 +30,7 @@ test('Successful userProfileV1 Test. ', () => {
   const authId = registerAuth.authUserId;
   const registerUser = authRegisterV1('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
   const userId = registerUser.authUserId;
-  const userProfile = userProfileV1(authId, userId);
+  const userProfile = userProfileV1( authId, userId);
   expect(userProfile).toStrictEqual({
     user: {
       uId: userId,
@@ -47,7 +47,7 @@ test('Testing unique handleStr.', () => {
   const authId = registerAuth.authUserId;
   const registerUser = authRegisterV1('SadekF@gmail.com', 'password', 'Fady', 'Sadek');
   const userId = registerUser.authUserId;
-  const userProfileUser = userProfileV1(authId, userId);
-  const userProfileAuth = userProfileV1(authId, authId);
+  const userProfileUser = userProfileV1( authId, userId);
+  const userProfileAuth = userProfileV1( authId, authId);
   expect(userProfileAuth.user.handleStr).not.toEqual(userProfileUser.user.handleStr);
 });

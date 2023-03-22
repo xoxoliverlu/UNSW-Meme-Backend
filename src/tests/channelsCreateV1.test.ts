@@ -1,6 +1,6 @@
-import { authRegisterV1 } from '../auth.js';
-import { channelsCreateV1, channelsListV1 } from '../channels.js';
-import { clearV1 } from '../other.js';
+import { authRegisterV1 } from '../auth';
+import { channelsCreateV1, channelsListV1 } from '../channels';
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();
@@ -21,7 +21,7 @@ describe('Valid channelId produced', () => {
   test('Valid channel name - exactly one character - public channel', () => {
     clearV1();
     const user1 = authRegisterV1('Akanksha.sood@gmail.com', '12345678', 'Akanksha', 'Sood');
-    const channelId1 = channelsCreateV1(user1, 'C', true);
+    const channelId1 = channelsCreateV1(user1.authUserId, 'C', true);
     const channelCreationValid = channelsCreateV1(user1.authUserId, 'jaydensChannel', false);
     expect(channelCreationValid).toHaveProperty('channelId');
   });

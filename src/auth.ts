@@ -1,6 +1,17 @@
-import { getData, setData } from "./dataStore.js";
+import { getData, setData } from "./dataStore";
 import validator from "validator";
 
+type authUserId = {
+
+    token?: string;
+    authUserId?: number;
+    error?: string;
+
+};
+
+
+type tokenReturn = string;
+type handleReturn = string;
 /**
   * Returns a unique authUserId value with a
   * given registerd user email and password
@@ -12,7 +23,7 @@ import validator from "validator";
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
-function authLoginV1(email, password) {
+const authLoginV1 = (email: string, password: string): authUserId => {
   let data = getData();
   // Error checking
   // change email to lowercase
@@ -29,6 +40,17 @@ function authLoginV1(email, password) {
   };
 }
 
+const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
+  const register = authRegisterV1(email, password, nameFirst, nameLast);
+  if (register.hasOwnProperty("authUserId")) {
+    const token = generateToken(register.authUserId);
+    return {
+      token: token,
+      authUserId: register.authUserId,
+    };
+  }
+  return register;
+}
 /**
   * Register a user given their email, password, nameFirst and nameLast.
   * Also generate a unique handleStr for each user.
@@ -43,12 +65,12 @@ function authLoginV1(email, password) {
   * @returns {object} - error if email is invaid or already exists, password is too short,
   *                     or there is invalid length for firstName or lastName
 */
-function authRegisterV1(email, password, nameFirst, nameLast) {
+const authRegisterV1 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const data = getData();
   // Error checking
   // Invalid email using validator package
   email = email.toLowerCase();
-  if (validator.isEmail(email) === false) {
+  if (validator.isEmail(email) === false)  {
     return {
       error: "Invalid email",
     };
@@ -63,6 +85,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     }
   }
 
+  // Eliminate white spaces in parameters
   password = password.trim();
   nameFirst = nameFirst.trim();
   nameLast = nameLast.trim();
@@ -74,7 +97,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     };
   }
   // Length of name
-  if (nameFirst < 1 || nameLast < 1) {
+  if (nameFirst.length < 1 || nameLast.length < 1) {
     return {
       error: "First name or last name is too short",
     };
@@ -85,51 +108,14 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     };
   }
 
-  // Create unique handle
-  let concatName = nameFirst.toLowerCase() + nameLast.toLowerCase();
-  // Replace alpha numeric characters
-  let alphaNumericStr = concatName.replace(/[^a-z0-9]/gi, "");
-  alphaNumericStr = alphaNumericStr.slice(0, 20);
-
-
-  // Check if someone already has this handle
-  let index = 0;
-  let counter = 0;
-  // the counter will increase every time the handlestr is different to an existing user's handlestr
-  // if the handlestr is the same, it resets to 0
-  // if loop is able to loop through all users with the handlestr being unique (counter = data.users.length), break loop
-  // then the handlestr is good to go
-  let appendNumber = -1;
-  // The number to append
-
-  let newHandle = alphaNumericStr;
-
-  while (true) {
-    // Check if looped through everything with no matches
-    if (counter === data.users.length) {
-      break;
-    }
-
-    // handleStr in use
-    if (data.users[index].handleStr === newHandle) {
-      counter = 0;
-      index = 0;
-      appendNumber++;
-      newHandle = alphaNumericStr + appendNumber;
-    } else {
-      counter++;
-      index++;
-    }
-  }
+  // Generate handle
+  const newHandle = generateHandle(nameFirst, nameLast);
   // Generate userID
   let newUserId = data.lastAuthUserId + 1;
   data.lastAuthUserId = newUserId;
   // Permissions !!!
-  let permission = 2;
-  if (newUserId === 1) {
-    // first user signing up
-    permission = 1;
-  }
+  const permission = (newUserId === 1) ? 1 : 2;
+
   // Create new user Object
   let newUser = {
     uId: newUserId,
@@ -148,4 +134,55 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   };
 }
 
-export { authRegisterV1, authLoginV1 };
+const generateToken = (uId: number): tokenReturn => {
+  const data = getData();
+  const tokenNumber = data.lastToken + 1;
+  const tokenString = tokenNumber.toString();
+  data.lastToken = tokenNumber;
+  data.tokens.push(
+    {
+      token: tokenString,
+      uId: uId
+    }
+  );
+  setData(data);
+  return tokenString;
+}
+
+const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
+  const data = getData();
+  // Create unique handle
+  let concatName = nameFirst.toLowerCase() + nameLast.toLowerCase();
+  // Replace alpha numeric characters
+  let alphaNumericStr = concatName.replace(/[^a-z0-9]/gi, "");
+  alphaNumericStr = alphaNumericStr.slice(0, 20);
+
+  // Check if someone already has this handle
+  let index = 0;
+  let counter = 0;
+  // the counter will increase every time the handlestr is different to an existing user's handlestr
+  // if the handlestr is the same, it resets to 0
+  // if loop is able to loop through all users with the handlestr being unique (counter = data.users.length), break loop
+  // then the handlestr is good to go
+  let appendNumber = -1;
+  // The number to append
+  let newHandle = alphaNumericStr;
+  while (true) {
+    // Check if looped through everything with no matches
+    if (counter === data.users.length) {
+      break;
+    }
+    // handleStr in use
+    if (data.users[index].handleStr === newHandle) {
+      counter = 0;
+      index = 0;
+      appendNumber++;
+      newHandle = alphaNumericStr + appendNumber;
+    } else {
+      counter++;
+      index++;
+    }
+  }
+  return newHandle;
+}
+export { authRegisterV1, authRegisterV2, authLoginV1 };

@@ -4,6 +4,9 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 
+import { authRegisterV2 } from './auth';
+import { clearV1 } from './other';
+
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -28,7 +31,27 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });
 
+<<<<<<< HEAD
 
+=======
+/****************
+*  Auth Routes  *
+****************/
+app.post('/auth/register/v2', (req: Request, res: Response, next) => {
+  const {email, password, nameFirst, nameLast} = req.body;
+  res.json(authRegisterV2(email, password, nameFirst, nameLast));
+});
+
+/*****************
+*
+*  Other Routes
+*
+*****************/
+app.delete('/clear/v1', (req: Request, res: Response, next) => {
+  clearV1();
+  res.json({});
+});
+>>>>>>> master
 // For coverage, handle Ctrl+C gracefully
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));

@@ -1,6 +1,6 @@
-import { getData, setData } from "./dataStore.js";
+import { getData, setData } from "./dataStore";
 
-export function userProfileV1(authUserId, uId) {
+export function userProfileV1(authUserId : number, uId : number) {
   const data = getData();
   // Checks if authUserId and userId is valid
   let validAuthId = false;

@@ -1,5 +1,5 @@
 ```javascript
-let data = { 
+let data = {
     users: [
         {
             uId: 1,
@@ -8,32 +8,24 @@ let data = {
             email: 'akanksha.sood@gmail.com',
             password: '123456',
             handleStr: 'akankshasood',
-        }, 
+        },
+        {
+            uId: 2,
+            nameFirst: 'Fady'
+            nameLast: 'Sadek'
+            email: 'fady.sadek@gmail.com',
+            password: 'password',
+            handleStr: 'fadysadek',
+        },
     ],
     channels: [
         {
             isPublic: true
             name: 'Hayden'
             channelId: 1
-            ownerMembers: [
-                {
-                    uId: 1,
-                    email: 'example@gmail.com',
-                    nameFirst: 'Hayden',
-                    nameLast: 'Jacobs',
-                    handleStr: 'haydenjacobs',
-                }
-            ],
-            allMembers: [
-                {
-                    uId: 1,
-                    email: 'example@gmail.com',
-                    nameFirst: 'Hayden',
-                    nameLast: 'Jacobs',
-                    handleStr: 'haydenjacobs',
-                }
-            ],
-            noOfMembers: 1
+            ownerMembers: [ 1 ],
+            allMembers: [ 1, 2],
+            noOfMembers: 2
             maxMembers: 50
             messages: [
                 {
@@ -41,13 +33,26 @@ let data = {
                     uId: 1,
                     message: 'Hello world',
                     timeSent: 1582426789,
-            }
+                }
             ]
             start: 0
             end: 50
-        },  
-    ], 
+        },
+    ],
+    lastAuthUserId: 0,
+    lastChannelId: 0,
+    lastToken: 0,
+    tokens: [
+        {
+            token: 0,
+            uId: 1,
+        },
+        {
+            token: 1,
+            uId: 2,
+        }
+    ],
 }
 ```
 
-[Optional] short description: 
+[Optional] short description:

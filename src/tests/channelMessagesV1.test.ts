@@ -1,7 +1,7 @@
-import {channelMessagesV1} from '../channel.js'
-import {channelsCreateV1} from '../channels.js'
-import {authRegisterV1} from '../auth.js'
-import { clearV1 } from '../other.js';
+import {channelMessagesV1} from '../channel'
+import {channelsCreateV1} from '../channels'
+import {authRegisterV1} from '../auth'
+import { clearV1 } from '../other';
 
 beforeEach(() => {
   clearV1();
@@ -12,7 +12,7 @@ describe('Testing channelMessages1, errors', () =>{
   test('the channelId does not refer to a valid channel', () => {
     const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
-    const channelMessagesInvalidId = channelMessagesV1(registerAcc.authUserId, channelCreationValid - 1, 0);
+    const channelMessagesInvalidId = channelMessagesV1(registerAcc.authUserId, channelCreationValid.channelId - 1, 0);
     expect(channelMessagesInvalidId).toMatchObject({error: 'error'});
   })
 
@@ -34,7 +34,7 @@ describe('Testing channelMessages1, errors', () =>{
   test('authUserId is invalid', () => {
     const registerAcc = authRegisterV1('jayjay123@gmail.com', 'jayjay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV1(registerAcc.authUserId, 'jaydensChannel', true);
-    const channelMessagesInvalidUser = channelMessagesV1(registerAcc.channelCreationValid - 1, channelCreationValid.channelId, 0);
+    const channelMessagesInvalidUser = channelMessagesV1(registerAcc.authUserId - 1, channelCreationValid.channelId, 0);
     expect(channelMessagesInvalidUser).toMatchObject({error: 'error'});
   })
 
@@ -47,6 +47,6 @@ describe('Testing channelMessages1, errors', () =>{
       start: 0,
       end: -1,
     });
-    
+
   })
 })
