@@ -39,7 +39,7 @@ export const requestAuthRegister = (email: string, password: string, nameFirst: 
 }
 
 export const requestAuthLogout = (token: string) => {
-    const res = request(
+    const res3 = request(
         'POST',
         `${url}:${port}` + '/auth/logout/v1',
         {
@@ -48,20 +48,20 @@ export const requestAuthLogout = (token: string) => {
             }
         }
     );
-    return JSON.parse(res.getBody() as string);
+    return JSON.parse(res3.getBody() as string);
 }
 
 export const requestClear = () => {
-    const res = request(
+    const res4 = request(
         'DELETE',
         `${url}:${port}` + '/clear/v1',
         {}
     );
-    return JSON.parse(res.getBody() as string);
+    return JSON.parse(res4.getBody() as string);
 }
 
 export const requestDmCreate = (token: string, uIds: number[]) => {
-    const res = request(
+    const res5 = request(
         'POST',
         `${url}:${port}` + '/dm/create/v1',
         {
@@ -71,8 +71,8 @@ export const requestDmCreate = (token: string, uIds: number[]) => {
             }
         }
     );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
+    if (res5.statusCode === 200) {
+        return JSON.parse(res5.getBody() as string);
     }
-    return res.statusCode;
+    return res5.statusCode;
 }
