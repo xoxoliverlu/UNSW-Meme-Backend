@@ -12,6 +12,18 @@ type authUserId = {
 
 type tokenReturn = string;
 type handleReturn = string;
+
+const authLoginV2 = (email: string, password: string): authUserId => {
+  const login = authLoginV1(email, password);
+  if (login.hasOwnProperty("authUserId")) {
+    const token = generateToken(login.authUserId);
+    return {
+      token: token,
+      authUserId: login.authUserId
+    };
+  }
+  return login;
+}
 /**
   * Returns a unique authUserId value with a
   * given registerd user email and password
@@ -185,4 +197,4 @@ const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   }
   return newHandle;
 }
-export { authRegisterV1, authRegisterV2, authLoginV1 };
+export { authRegisterV1, authRegisterV2, authLoginV1, authLoginV2 };
