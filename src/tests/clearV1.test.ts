@@ -1,5 +1,5 @@
 import { clearV1 } from '../other';
-import { authRegisterV2, authLoginV1 } from '../auth';
+import { authRegisterV2, authLoginV2 } from '../auth';
 
 describe('Test for a clear dataObject', () => {
   test('Registering users in a clear dataObject', () => {
