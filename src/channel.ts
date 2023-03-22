@@ -387,7 +387,42 @@ export function channelRemoveOwnerV1(token: String, channelId: number, uId: numb
   if (index > -1){
     channel.ownerMembers.splice(index,1)
   }
+
+  setData(data);
+  return {};
+}
+
+export function channelLeaveV1(token: String, channelId: number){
+  const data = getData();
+  let user = data.tokens.find(item => item.token == token);
+
+  if (user === undefined) {
+    return {error: 'invalid token'}; 
+  }
+  let {userId} = user;
+
+  let channel = data.tokens.find(item => item.channelId === channelId);
+  if (channel === undefined){
+    return {error: 'no channel found'}
+  }
+  
+  if (!channel.members.includes(userId)){
+    return {error: 'user to be remove is not a member of the channel'}
+  }
+
+  let index = channel.ownerMembers.indexOf(userId);
+  if (index > -1){
+    channel.members.splice(index,1)
+  }
+  
+  if (channel.ownerMembers.includes(userId)){
+    const index = channel.ownerMembers.indexOf(userId);
+    if (index > -1){
+      channel.ownerMembers.splice(index,1)
+    }   
+  }
   
   setData(data);
   return {};
 }
+
