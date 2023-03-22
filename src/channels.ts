@@ -1,5 +1,4 @@
 import { getData,setData } from "./dataStore";
-import {authRegisterV1 } from "./auth";
 /**
  * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.

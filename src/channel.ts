@@ -1,5 +1,5 @@
 import { getData,setData } from "./dataStore";
-import {userProfileV2} from "./users";
+import {userProfileV1} from "./users";
 
 /**
  * Given an authUserId and a channelId, the function
@@ -17,7 +17,7 @@ import {userProfileV2} from "./users";
  * @returns {array} - List of owner members of the channel.
  * @returns {array} - List of all members of the channel.
  */
-export function channelDetailsV1(token : string, channelId : number) {
+export function channelDetailsV1(authUserId : number, channelId : number) {
   const data = getData();
   // check if authUserId is valid
   let authIsValid = false;
@@ -57,7 +57,7 @@ export function channelDetailsV1(token : string, channelId : number) {
   }
 }
 // Helper function
-function memberObject(array) {
+function memberObject(array: number[]) {
   const result = [];
   for (const userId of array) {
     const user = userProfileV1(userId, userId);
@@ -85,7 +85,7 @@ function memberObject(array) {
  *
  * @returns {} - returns nothing if there is no errors.
  */
-export function channelJoinV1(token : string, channelId : number) {
+export function channelJoinV1(authUserId : number, channelId : number) {
     const data = getData();
     let validUser = false;
     let userDetail;
@@ -140,7 +140,7 @@ export function channelJoinV1(token : string, channelId : number) {
  * @returns {}
  * @returns {object} - error if any of the Id's are invalid
  */
-export function channelInviteV1(token : string, channelId : number, uId : number){
+export function channelInviteV1(authUserId : number, channelId : number, uId : number){
   const data = getData();
   let validChannel = false;
   let userInfo;
@@ -221,7 +221,7 @@ export function channelInviteV1(token : string, channelId : number, uId : number
  * @returns {end: number} - end message index
  * @returns {object} - error if user id and channelid are invalid or start index is > 50
  */
-export function channelMessagesV1(token : string, channelId : string, start : string){
+export function channelMessagesV1(authUserId : number, channelId : number, start : number){
   const data = getData();
   let validChannel = false;
   let channelInfo;

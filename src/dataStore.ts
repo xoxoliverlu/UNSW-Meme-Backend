@@ -1,13 +1,13 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
+import { User, Channel, TokenPair, DataStore } from './interfaces';
+
 let data = {
-  users: [
-
-  ],
-  channels: [
-
-  ],
-  lastAuthUserId : 0,
+  users: [] as User[],
+  channels: [] as Channel[],
+  lastAuthUserId: 0,
   lastChannelId: 0,
+  lastToken: 0,
+  tokens: [] as TokenPair[],
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
@@ -27,7 +27,7 @@ Example usage
 */
 
 // Use get() to access the data
-function getData() {
+function getData(): DataStore {
   return data;
 }
 
@@ -35,7 +35,7 @@ function getData() {
 // - Only needs to be used if you replace the data store entirely
 // - Javascript uses pass-by-reference for objects... read more here: https://stackoverflow.com/questions/13104494/does-javascript-pass-by-reference
 // Hint: this function might be useful to edit in iteration 2
-function setData(newData) {
+function setData(newData: DataStore) {
   data = newData;
 }
 
