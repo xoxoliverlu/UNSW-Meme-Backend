@@ -347,3 +347,47 @@ export function channelAddOwnerV1(token: String, channelId: number, uId: number)
   channel.ownerMembers.push(uId);
   return {};
 }
+
+export function channelRemoveOwnerV1(token: String, channelId: number, uId: number){
+  const data = getData();
+  let user = data.tokens.find(item => item.token == token);
+
+  if (user === undefined) {
+    return {error: 'invalid token'}; 
+  }
+  let {userId} = user;
+
+  let channel = data.tokens.find(item => item.channelId = channelId);
+  if (channel === undefined){
+    return {error: 'no channel found'}
+  }
+
+  let ownerAdded = data.tokens.find(item => item.token == token);
+  if (ownerAdded === undefined) {
+    return {error: 'invalid uId'}; 
+  }
+  
+  if (!channel.members.includes(ownerAdded)){
+    return {error: 'user to be added is not a member of the channel'}
+  }
+
+  if (!channel.ownerMembers.includes(ownerAdded)){
+    return {error: 'user is not an owner of this channel.'}
+  }
+
+  if (channel.ownerMembers.includes(ownerAdded) && channel.ownerMembers.length === 1){
+    return {error: 'user is the only owner of this channel.'}
+  }
+
+  if (!channel.ownerMembers.includes(user)){
+    return {error: 'This user does not have permission to add owners.'}
+  }
+
+  const index = channel.ownerMembers.indexOf(userId);
+  if (index > -1){
+    channel.ownerMembers.splice(index,1)
+  }
+  
+  setData(data);
+  return {};
+}
