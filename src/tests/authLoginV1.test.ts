@@ -1,4 +1,4 @@
-import { requestAuthLogin, requestAuthRegister, requestClear } from './requests';
+import { requestAuthLogin, requestAuthRegister, requestClear } from '../requests';
 
 beforeEach(() => {
   requestClear();
