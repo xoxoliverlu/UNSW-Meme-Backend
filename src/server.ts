@@ -52,7 +52,6 @@ app.delete('/clear/v1', (req: Request, res: Response, next) => {
   clearV1();
   res.json({});
 });
-
 // For coverage, handle Ctrl+C gracefully
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
