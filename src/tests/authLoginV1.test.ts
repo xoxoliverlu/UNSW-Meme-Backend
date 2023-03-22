@@ -1,37 +1,53 @@
-import { authLoginV1, authRegisterV1 } from '../auth';
-import { clearV1 } from '../other';
+import { requestAuthLogin, requestAuthRegister, requestClear } from './requests';
 
 beforeEach(() => {
-  clearV1();
+  requestClear();
 });
 
-describe('Valid inputs', () => {
+afterAll(() => {
+  requestClear();
+});
+
+describe('Auth Login Valid inputs', () => {
   test('Valid return type (object)', () => {
-    const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    const login1 = authLoginV1('alice.smith@gmail.com', '123456');
-    expect(login1).toHaveProperty('authUserId');
-  });
-  test('Valid return type (number)', () => {
-    const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    const login1 = authLoginV1('alice.smith@gmail.com', '123456');
-    expect(login1.authUserId).toStrictEqual(expect.any(Number));
+    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    const login1 = requestAuthLogin('alice.smith@gmail.com', '123456');
+    expect(login1).toStrictEqual({
+      token: expect.any(String),
+      authUserId: register1.authUserId,
+    });
   });
   test('Valid userId', () => {
-    const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    const login1 = authLoginV1('alice.smith@gmail.com', '123456');
+    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    const login1 = requestAuthLogin('alice.smith@gmail.com', '123456');
     expect(register1.authUserId).toEqual(login1.authUserId);
+  });
+  test('Same user can create unique sessions', () => {
+    const registered = requestAuthRegister('valid@gmail.com', 'password', 'Harry', 'Potter');
+    const login1 = requestAuthLogin('valid@gmail.com', 'password');
+    const login2 = requestAuthLogin('valid@gmail.com', 'password');
+    expect(login1).toStrictEqual({
+      token: expect.any(String),
+      authUserId: registered.authUserId
+    });
+    expect(login2).toStrictEqual({
+      token: expect.any(String),
+      authUserId: registered.authUserId
+    });
+    expect(login1.token).not.toEqual(login2.token);
+    expect(login1.authUserId).toEqual(login2.authUserId);
   });
 });
 
 describe('Invalid inputs', () => {
   test('Email does not belong to a user', () => {
-    const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    const login1 = authLoginV1('bob.langford@gmail.com', '123456');
+    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    const login1 = requestAuthLogin('bob.langford@gmail.com', '123456');
     expect(login1).toEqual({error: expect.any(String)});
   });
   test('Incorrect password', () => {
-    const register1 = authRegisterV1('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    const login1 = authLoginV1('alice.smith@gmail.com', 'password');
+    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    const login1 = requestAuthLogin('alice.smith@gmail.com', 'password');
       expect(login1).toEqual({error: expect.any(String)});
   });
 });
