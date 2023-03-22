@@ -13,6 +13,7 @@ type authUserId = {
 type tokenReturn = string;
 type handleReturn = string;
 
+
 const authLoginV2 = (email: string, password: string): authUserId => {
   const login = authLoginV1(email, password);
   if (login.hasOwnProperty("authUserId")) {
@@ -197,4 +198,4 @@ const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   }
   return newHandle;
 }
-export { authRegisterV1, authRegisterV2, authLoginV1, authLoginV2 };
+export { authRegisterV1, authRegisterV2, authLoginV2 };
