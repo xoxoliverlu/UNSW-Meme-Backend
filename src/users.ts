@@ -1,6 +1,6 @@
 import { getData, setData } from "./dataStore";
 
-export function userProfileV1(authUserId, uId) {
+export function userProfileV2(token : string, authUserId : number, uId : number) {
   const data = getData();
   // Checks if authUserId and userId is valid
   let validAuthId = false;
@@ -29,4 +29,24 @@ export function userProfileV1(authUserId, uId) {
       handleStr: userInfo.handleStr,
     }
   };
+}
+
+export function usersAllV1(token : string) {
+
+  return {};
+}
+
+export function userProfileSetNameV1(token : string, nameFirst : string, nameLast : string) {
+
+  return {}
+}
+
+export function userProfileSetEmailV1(token : string, email : string) {
+
+  return {}
+}
+
+export function userProfileSetHandleV1(token : string, handleStr : string) {
+
+  return {}
 }
