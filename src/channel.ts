@@ -327,12 +327,14 @@ export function channelAddOwnerV1(token: String, channelId: number, uId: number)
     return {error: 'no channel found'}
   }
 
-  let ownerAdded = data.users.find(item => item.uId === uId);
-  if (ownerAdded === undefined) {
+  let ownerAddedData = data.users.find(item => item.uId === uId);
+  if (ownerAddedData === undefined) {
     return {error: 'invalid uId'}; 
   }
   
-  if (!channel.members.includes(ownerAdded)){
+  let {uId: ownerAdded} = ownerAddedData;
+
+  if (!channel.allMembers.includes(ownerAdded)){
     return {error: 'user to be added is not a member of the channel'}
   }
 
@@ -340,7 +342,7 @@ export function channelAddOwnerV1(token: String, channelId: number, uId: number)
     return {error: 'user is already an owner'}
   }
 
-  if (!channel.ownerMembers.includes(user)){
+  if (!channel.ownerMembers.includes(user.uId)){
     return {error: 'This user does not have permission to add owners.'}
   }
 
@@ -355,19 +357,20 @@ export function channelRemoveOwnerV1(token: String, channelId: number, uId: numb
   if (user === undefined) {
     return {error: 'invalid token'}; 
   }
-  let {userId} = user;
+  let {uId: userId} = user;
 
   let channel = data.channels.find(item => item.channelId === channelId);
   if (channel === undefined){
     return {error: 'no channel found'}
   }
 
-  let ownerRemoved = data.users.find(item => item.uId === uId);
-  if (ownerRemoved === undefined) {
+  let ownerRemovedData = data.users.find(item => item.uId === uId);
+  if (ownerRemovedData === undefined) {
     return {error: 'invalid uId'}; 
   }
+  let {uId: ownerRemoved} = ownerRemovedData;
   
-  if (!channel.members.includes(ownerRemoved)){
+  if (!channel.allMembers.includes(ownerRemoved)){
     return {error: 'user to be added is not a member of the channel'}
   }
 
@@ -379,7 +382,7 @@ export function channelRemoveOwnerV1(token: String, channelId: number, uId: numb
     return {error: 'user is the only owner of this channel.'}
   }
 
-  if (!channel.ownerMembers.includes(user)){
+  if (!channel.ownerMembers.includes(userId)){
     return {error: 'This user does not have permission to add owners.'}
   }
 
@@ -399,20 +402,20 @@ export function channelLeaveV1(token: String, channelId: number){
   if (user === undefined) {
     return {error: 'invalid token'}; 
   }
-  let {userId} = user;
+  let {uId:userId} = user;
 
   let channel = data.channels.find(item => item.channelId === channelId);
   if (channel === undefined){
     return {error: 'no channel found'}
   }
   
-  if (!channel.members.includes(userId)){
+  if (!channel.allMembers.includes(userId)){
     return {error: 'user to be remove is not a member of the channel'}
   }
 
   let index = channel.ownerMembers.indexOf(userId);
   if (index > -1){
-    channel.members.splice(index,1)
+    channel.allMembers.splice(index,1)
   }
   
   if (channel.ownerMembers.includes(userId)){

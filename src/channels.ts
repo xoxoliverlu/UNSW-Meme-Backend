@@ -16,19 +16,19 @@ export function channelsCreateV2(token: string, name: string, isPublic: boolean)
   const data = getData();
   let user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
-    return {error: 'error'}; 
+    return {error: 'user not found'}; 
   }
   let {uId: authUserId} = user;
   // Check that the length of name is more than 1 or less than 20 characters
   name = name.trim();
   if (name.length < 1) {
     return {
-      error: 'error'
+      error: 'name length needs to be greater than 1'
     }
   }
   if (name.length > 20) {
     return {
-      error: 'error'
+      error: 'name length needs ot be greater than 20'
     }
   }
 
@@ -72,7 +72,7 @@ export function channelsListV2(token: String){
   if (user === undefined) {
     return {error: 'error'}; 
   }
-  let {authUserId} = user;
+  let {uId: authUserId} = user;
   let associatedChannels = [];
 
   for (let channel of data.channels){
