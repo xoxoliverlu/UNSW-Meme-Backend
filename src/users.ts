@@ -1,13 +1,15 @@
 import { getData, setData } from "./dataStore";
-import { Profile } from './interfaces';
+// import { Profile } from './interfaces';
 
 export function userProfileV2(token : string, uId : number) {
   const data = getData();
   // Checks if the token and userId is valid.
   let validToken = false;
+  let uId;
   for (let tokenId of data.tokens) {
     if (token === tokenId.token) {
       validToken = true;
+      uId = tokenId.uId;
     }
   }
 
@@ -25,7 +27,7 @@ export function userProfileV2(token : string, uId : number) {
   }
 
   return {
-    user: Profile = {
+    user: {
       uId: userInfo.uId,
       nameFirst: userInfo.nameFirst,
       nameLast: userInfo.nameLast,
