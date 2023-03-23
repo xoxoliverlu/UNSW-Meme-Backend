@@ -1,10 +1,10 @@
 import { port, url } from "./config.json";
-import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelsList} from "../requests";
+import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelsList, requestClear} from "../requests";
 
 const request = require("sync-request");
 
 beforeEach(() => {
-  request("DELETE", `${url}:${port}/clear/v1`);
+  requestClear();
 });
 
 test("success channels List", () => {
@@ -18,6 +18,17 @@ test("success channels List", () => {
 
   let { channels } = channelListRes;
   expect(channels).toStrictEqual([{channelId: channelId, name: "sampleChannel"}]);
+});
+
+test("success channels List: no channel", () => {
+  requestAuthRegister("oliverwlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu",)
+ let loginRes = requestAuthLogin("oliverwlu@gmail.com", "cl3cl3vul4")
+ let { token } = loginRes;
+
+ let channelListRes = requestChannelsList(token)
+
+ let { channels } = channelListRes;
+ expect(channels).toStrictEqual([]);
 });
 
 test("error token", () => {
