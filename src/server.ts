@@ -7,7 +7,7 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
-import { channelDetailsV2, channelJoinV2 } from './channel';
+import { channelAddOwnerV1, channelDetailsV2, channelJoinV2 } from './channel';
 import { userProfileV2 } from './users';
 
 // Set up web app
@@ -98,3 +98,9 @@ app.post('/channel/join/v2', (req: Request, res: Response, next) => {
   const {token, channelId} = req.body;
   res.json(channelJoinV2(token, channelId));
 });
+
+
+app.post('/channel/addowner/v1',(req: Request, res: Response, next) => {
+  const {token, channelId, uId} = req.body;
+  res.json(channelAddOwnerV1(token,channelId,uId))
+})

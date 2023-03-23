@@ -3,12 +3,13 @@ import {
   requestAuthRegister,
   requestChannelAddOwner,
   requestChannelsCreate,
+  requestClear,
 } from "../requests";
 import { port, url } from "./config.json";
 const request = require("sync-request");
 
 beforeEach(() => {
-  request("DELETE", "/clear/v1");
+  requestClear();
 });
 
 test("success addOwner", () => {
@@ -16,7 +17,7 @@ test("success addOwner", () => {
   requestAuthRegister("oliverwluu@gmail.com", "cl3cl3vul44", "Oliver", "Lu");
 
   let loginRes = requestAuthLogin("oliverwlu@gmail.com", "cl3cl3vul4");
-  let loginRes2 = requestAuthLogin("olivrewluu@gmail.com", "cl3cl3vul44");
+  let loginRes2 = requestAuthLogin("oliverwluu@gmail.com", "cl3cl3vul44");
   let { token: token1, authUserId: authUserId1 } = loginRes;
   let { token: token2, authUserId: authUserId2 } = loginRes2;
   let channelCreateRes = requestChannelsCreate(token1, "sampleChannel", true);
@@ -198,6 +199,6 @@ test("error user doesn't have owner permission ", () => {
     authUserId3
   );
 
-  let { error } = JSON.parse(channelAddOwneRes);
+  let { error } = channelAddOwneRes;
   expect(error).toEqual(expect.any(String));
 });
