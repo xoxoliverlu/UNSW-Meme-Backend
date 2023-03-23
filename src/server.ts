@@ -7,6 +7,7 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
+import { userProfileV2 } from './users';
 
 // Set up web app
 const app = express();

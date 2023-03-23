@@ -1,4 +1,5 @@
 import { getData, setData } from "./dataStore";
+import { Profile } from './interfaces';
 
 export function userProfileV2(token : string, uId : number) {
   const data = getData();
