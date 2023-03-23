@@ -58,6 +58,10 @@ app.get('/channels/list/v2', (req: Request, res: Response, next) => {
   res.json(channelsListV2(token));
 })
 
+app.get('/channels/listall/v2', (req: Request, res: Response, next) => {
+  const token = req.query.token as string
+  res.json(channelsListAllV2(token))
+})
 /*****************
 *
 *  Other Routes
