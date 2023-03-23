@@ -19,23 +19,20 @@ import { userProfileV2 } from "./users";
  */
 export function channelDetailsV2(token: string, channelId: number) {
   const data = getData();
-  // Checks if the token and userId is valid.
+  // Checks if the token is valid.
   const auth = data.tokens.find(item => item.token === token);
-  if (auth === undefined) {
-    return {error: "Invalid token"}; 
-  }
+  if (auth === undefined) return {error: "Invalid token"};
   let authUserId = auth.uId;
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
-  if (channel === undefined) {
-    return {error: "Invalid channelId"}; 
-  }
+  if (channel === undefined) return {error: "Invalid channelId"}; 
+  // checks if the user is part of the channel
   if (!channel.allMembers.includes(authUserId)) {
     return {error: "User is not a member of the channel"};
   }
 
-  const owners = memberObject(channel.ownerMembers);
-  const members = memberObject(channel.allMembers);
+  const owners = memberObject(token, channel.ownerMembers);
+  const members = memberObject(token, channel.allMembers);
   return {
     name: channel.name,
     isPublic: channel.isPublic,
@@ -44,10 +41,9 @@ export function channelDetailsV2(token: string, channelId: number) {
   };
 }
 // Helper function
-function memberObject(array: number[]) {
+function memberObject(token: string, array: number[]) {
   const result = [];
   for (const userId of array) {
-    const token = String(userId);
     const user = userProfileV2(token, userId);
     result.push({
       uId: user.user.uId,
@@ -74,53 +70,29 @@ function memberObject(array: number[]) {
  * @returns {} - returns nothing if there is no errors.
  */
 export function channelJoinV2(token: string, channelId: number) {
+  
   const data = getData();
   // Checks if the token is valid.
-  let validToken = false;
-  let uId;
-  for (let tokenId of data.tokens) {
-    if (token === tokenId.token) {
-      validToken = true;
-      uId = tokenId.uId;
-    }
-  }
-
-  if (!validToken) {
-    return { error: "Invalid Id" };
-  }
-
-  let userDetail;
-  for (const user of data.users) {
-    if (user.uId === uId) {
-      userDetail = user;
-    }
-  }
-
+  const auth = data.tokens.find(item => item.token === token);
+  if (auth === undefined) return {error: "Invalid token"};
+  let authUserId = auth.uId;
+  const userInfo = data.users.find(element => element.uId === authUserId);
   // checks if the channelId is valid
-  let channelDetail;
-  for (let channel of data.channels) {
-    if (channel.channelId === channelId) {
-      channelDetail = channel;
-    }
-  }
-  if (channelDetail === undefined) {
-    return { error: "Channel does not exist" };
+  const channel = data.channels.find(element => element.channelId === channelId);
+  if (channel === undefined) return {error: "Invalid channelId"}; 
+  // checks if the user is already a member of the channel
+  if (channel.allMembers.includes(authUserId)) {
+    return {error: "User is already a member of the channel"};
   }
   // checks if the channel is public
-  if (channelDetail.isPublic === false) {
+  if (channel.isPublic === false) {
     // check authuser permissions
-    if (userDetail.globalPerm === 2) {
+    if (userInfo.globalPerm === 2) {
       return { error: "Channel is private and authUser is not a global owner" };
     }
   }
-
-  // checks if the user is already a member of the channel
-  if (channelDetail.allMembers.includes(uId)) {
-    return { error: "User is already a member" };
-  }
-
   // Add member to channe
-  channelDetail.allMembers.push(uId);
+  channel.allMembers.push(authUserId);
   setData(data);
 
   return {};
