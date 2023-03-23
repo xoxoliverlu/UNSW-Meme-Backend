@@ -1,9 +1,9 @@
-import { requestAuthLogin, requestAuthRegister, requestChannelsCreate, requestChannelsListAll } from "../requests";
+import { requestAuthLogin, requestAuthRegister, requestChannelsCreate, requestChannelsListAll, requestClear } from "../requests";
 import { port, url } from "./config.json";
 const request = require("sync-request");
 
 beforeEach(() => {
-  request("DELETE",`${url}:${port}/clear/v1`)
+  requestClear();
 });
 
 test("success channels List All", () => {

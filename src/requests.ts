@@ -144,6 +144,23 @@ export const requestChannelDetails = (token: string, channelId: number) => {
     return res.statusCode;
 }
 
+export const requestChannelJoin = (token: string, channelId: number) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/channel/join/v2',
+        {
+            json: {
+                token: token,
+                channelId: channelId,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
 export const requestUserProfile = (token: string, uId: number) => {
     const res = request(
         'GET',
@@ -152,6 +169,40 @@ export const requestUserProfile = (token: string, uId: number) => {
             qs: {
                 token: token,
                 uId: uId,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestUsersAll = (token: string) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/users/all/v1',
+        {
+            qs: {
+                token: token,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestUserProfileSetName = (token: string, nameFirst: string, nameLast: string) => {
+    const res = request(
+        'PUT',
+        `${url}:${port}` + '/user/profile/setname/v1',
+        {
+            json: {
+                token: token,
+                nameFirst: nameFirst,
+                nameLast: nameLast,
             }
         }
     );
