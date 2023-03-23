@@ -379,15 +379,12 @@ export function channelLeaveV1(token: String, channelId: number) {
   }
 
   let index = channel.ownerMembers.indexOf(userId);
-  if (index > -1) {
-    channel.allMembers.splice(index, 1);
-  }
+  channel.allMembers.splice(index, 1);
+  
 
   if (channel.ownerMembers.includes(userId)) {
     const index = channel.ownerMembers.indexOf(userId);
-    if (index > -1) {
-      channel.ownerMembers.splice(index, 1);
-    }
+    channel.ownerMembers.splice(index, 1); 
   }
 
   setData(data);

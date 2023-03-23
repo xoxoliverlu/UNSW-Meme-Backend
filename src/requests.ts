@@ -282,3 +282,20 @@ export const requestChannelRemoveOwner = (token: String, channelId: number, uId:
     }
     return res.statusCode;
 }
+
+export const requestChannelLeave = (token: String, channelId: number) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/channel/leave/v1',
+        {
+            json: {
+                token: token,
+                channelId: channelId,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}

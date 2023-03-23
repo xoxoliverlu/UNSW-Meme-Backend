@@ -131,3 +131,8 @@ app.post('/channel/removeowner/v1',(req: Request, res: Response, next) => {
   const {token, channelId, uId} = req.body;
   res.json(channelRemoveOwnerV1(token, channelId, uId));
 })
+
+app.post('/channel/leave/v1',(req: Request, res: Response, next) => {
+  const {token, channelId} = req.body;
+  res.json(channelLeaveV1(token, channelId));
+})
