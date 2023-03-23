@@ -1,4 +1,3 @@
-import { isTemplateExpression } from "typescript";
 import { getData, setData } from "./dataStore";
 import { userProfileV2 } from "./users";
 
