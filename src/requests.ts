@@ -229,6 +229,23 @@ export const requestUserProfileSetEmail = (token: string, email: string) => {
     return res.statusCode;
 }
 
+export const requestUserProfileSetHandle = (token: string, handleStr: string) => {
+    const res = request(
+        'PUT',
+        `${url}:${port}` + '/user/profile/sethandle/v1',
+        {
+            json: {
+                token: token,
+                handleStr: handleStr,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
 export const requestChannelAddOwner = (token: String, channelId: number, uId: number) => {
     const res = request(
         'POST',

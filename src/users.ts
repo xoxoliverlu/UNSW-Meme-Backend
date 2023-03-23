@@ -92,3 +92,35 @@ export function userProfileSetEmailV1(token : string, email : string) {
 
   return {}
 }
+
+export function userProfileSetHandleV1(token : string, handleStr : string) {
+
+  const data = getData();
+  // Checks if the token is valid.
+  const auth = data.tokens.find(item => item.token === token);
+  if (auth === undefined) return {error: "Invalid token"};
+
+  const userInfo = data.users.find(element => element.uId === auth.uId);
+
+  handleStr = handleStr.trim();
+  if (handleStr.length < 3 || handleStr.length > 20) {
+    return { error: "Length must be between 3 and 20 characters" };
+  }
+
+  const isAlphaNumeric = (str : string) => /^[a-z0-9]+$/gi.test(str);
+  if (!isAlphaNumeric(handleStr)) {
+    return { error: "handleStr must only contain alphanumeric values" };
+  }
+
+  // Checks if the handleStr is already in use.
+  for (let user of data.users) {
+    if (user.handleStr === handleStr) {
+      return { error : "handleStr already in use." };
+    }
+  }
+  
+  userInfo.handleStr = handleStr;
+  setData(data);
+
+  return {}
+}
