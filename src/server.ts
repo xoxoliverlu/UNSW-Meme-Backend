@@ -80,7 +80,7 @@ process.on('SIGINT', () => {
 *  User Routes  *
 ****************/
 app.get('/user/profile/v2', (req: Request, res: Response, next) => {
-  const token = req.params.token as string
-  const uId = req.params.uId as number
+  const token = req.query.token as string
+  const uId = parseInt(req.query.uId);
   res.json(userProfileV2(token, uId));
 });

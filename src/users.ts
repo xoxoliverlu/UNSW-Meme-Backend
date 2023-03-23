@@ -8,33 +8,10 @@ export function userProfileV2(token : string, uId : number) {
   if (auth === undefined) {
     return {error: "Invalid token"}; 
   }
- 
-  const userInfo = data.users.find(user => user.uId === uId);
+  const userInfo = data.users.find(element => element.uId === uId);
   if (userInfo === undefined) {
     return {error: "Invalid uId"}; 
   }
-
-  // let validToken = false;
-  // let authUserId;
-  // for (let tokenId of data.tokens) {
-  //   if (token === tokenId.token) {
-  //     validToken = true;
-  //     authUserId = tokenId.uId;
-  //   }
-  // }
-
-  // let validUserId = false;
-  // let userInfo;
-  // for (let user of data.users) {
-  //   if (user.uId === authUserId) {
-  //     validUserId = true;
-  //     userInfo = user;
-  //   }
-  // }
-
-  // if (!validToken || !validUserId) {
-  //   return { error: "Invalid Id" };
-  // }
 
   return {
     user: {
