@@ -98,7 +98,23 @@ export const requestChannelsCreate = (token: string, name: String, isPublic: boo
 export const requestChannelsList = (token: string) => {
     const res = request(
         'GET',
-        `${url}:${port}` + '/channels/List/v2',
+        `${url}:${port}` + '/channels/list/v2',
+        {
+            qs: {
+                token: token,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestChannelsListAll = (token: string) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/channels/listall/v2',
         {
             qs: {
                 token: token,
