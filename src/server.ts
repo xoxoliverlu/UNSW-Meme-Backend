@@ -6,6 +6,7 @@ import cors from 'cors';
 
 import { authRegisterV2, authLoginV2 } from './auth';
 import { clearV1 } from './other';
+import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
 
 // Set up web app
 const app = express();
@@ -43,6 +44,20 @@ app.post('/auth/login/v2', (req: Request, res: Response, next) => {
   const { email, password} = req.body;
   res.json(authLoginV2(email, password));
 });
+
+/****************
+*  Channels Routes  *
+****************/
+app.post('/channels/create/v2', (req: Request, res: Response, next) => {
+  const {token, name, isPublic} = req.body;
+  res.json(channelsCreateV2(token, name, isPublic));
+})
+
+app.get('/channels/list/v2', (req: Request, res: Response, next) => {
+  const token = req.query.token as string
+  res.json(channelsListV2(token));
+})
+
 /*****************
 *
 *  Other Routes

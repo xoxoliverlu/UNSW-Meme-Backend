@@ -1,8 +1,9 @@
+import { channel } from "diagnostics_channel";
 import { port, url } from "./config.json";
 const request = require("sync-request");
 
 beforeEach(() => {
-  request("DELETE",`${url}:${port}/clear/v1`)
+  request("DELETE", `${url}:${port}/clear/v1`);
 });
 
 test("success channels List", () => {
@@ -17,19 +18,18 @@ test("success channels List", () => {
   let loginRes = request("POST", `${url}:${port}/auth/login/v2`, {
     json: { email: "oliverwlu@gmail.com", password: "cl3cl3vul4" },
   });
-  let { token, authUserId } = JSON.parse(loginRes.body);
+  let { token } = JSON.parse(loginRes.body as string);
   let channelCreateRes = request("POST", `${url}:${port}/channels/create/v2`, {
-    token: token,
-    name: "sampleChannel",
-    isPublic: true,
-  });
-  let { channelId } = JSON.parse(channelCreateRes);
-  let channelsListRes = request("POST", `${url}:${port}/channels/list/v2`, {
-    token: token,
+    json: { token: token, name: "sampleChannel", isPublic: true },
   });
 
-  let { channels } = JSON.parse(channelsListRes);
-  expect(channels).toStrictEqual([channelId]);
+  let { channelId } = JSON.parse(channelCreateRes.body as string);
+  let channelListRes = request("GET", `${url}:${port}/channels/list/v2`, {
+    qs: {token: token}
+  })
+
+  let { channels } = JSON.parse(channelListRes.body as string);
+  expect(channels).toStrictEqual([{channelId:1, name: "sampleChannel"}]);
 });
 
 test("error token", () => {
@@ -44,13 +44,12 @@ test("error token", () => {
   let loginRes = request("POST", `${url}:${port}/auth/login/v2`, {
     json: { email: "oliverwlu@gmail.com", password: "cl3cl3vul4" },
   });
-  let { token, authUserId } = JSON.parse(loginRes.body);
+  let { token, authUserId } = JSON.parse(loginRes.body as string);
   token += "errorToken";
 
-  let channelsListRes = request("POST", `${url}:${port}/channels/list/v2`, {
-    token: token,
+  let channelsListRes = request("GET", `${url}:${port}/channels/list/v2`, {
+    qs:{token: token,}
   });
-
-  let { error } = JSON.parse(channelsListRes);
+  let { error } = JSON.parse(channelsListRes.body as string);
   expect(error).toEqual(expect.any(String));
 });
