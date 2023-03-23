@@ -247,3 +247,21 @@ export const requestChannelInvite = (token: String, channelId: number, uId: numb
     }
     return res.statusCode;
 }
+
+export const requestChannelRemoveOwner = (token: String, channelId: number, uId: number) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/channel/removeowner/v1',
+        {
+            json: {
+                token: token,
+                channelId: channelId,
+                uId: uId
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
