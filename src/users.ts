@@ -25,7 +25,7 @@ export function userProfileV2(token : string, uId : number) {
   }
 
   return {
-    user: {
+    user: Profile = {
       uId: userInfo.uId,
       nameFirst: userInfo.nameFirst,
       nameLast: userInfo.nameLast,
