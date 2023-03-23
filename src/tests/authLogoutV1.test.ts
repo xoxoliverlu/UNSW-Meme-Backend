@@ -28,7 +28,7 @@ describe('Valid inputs for auth logoutV1', () => {
 		expect(requestUserProfile(login1.token, register.authUserId)).toEqual({error: expect.any(String)});
 		const userDetail = {
 			user: {
-				uId: register.uId,
+				uId: register.authUserId,
 				email: 'akankshas@gmail.com',
 				nameFirst: 'Akanksha',
 				nameLast: 'Sood',
