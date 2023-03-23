@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 
-import { authRegisterV2, authLoginV2 } from './auth';
+import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
 import { channelDetailsV2, channelJoinV2 } from './channel';
@@ -47,6 +47,11 @@ app.post('/auth/login/v2', (req: Request, res: Response, next) => {
   res.json(authLoginV2(email, password));
 });
 
+app.post('/auth/logout/v1', (req: Request, res: Response, next) => {
+  const { token } = req.body;
+  res.json(authLogoutV1(token));
+});
+
 /****************
 *  Channels Routes  *
 ****************/
@@ -65,9 +70,7 @@ app.get('/channels/listall/v2', (req: Request, res: Response, next) => {
   res.json(channelsListAllV2(token))
 });
 /*****************
-*
 *  Other Routes
-*
 *****************/
 app.delete('/clear/v1', (req: Request, res: Response, next) => {
   clearV1();
