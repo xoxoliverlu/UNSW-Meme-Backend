@@ -1,7 +1,11 @@
-import { requestAuthRegister, requestUserProfile } from '../requests';
+import { requestAuthRegister, requestUserProfile, requestClear } from '../requests';
 
 beforeEach(() => {
-  request("DELETE",`${url}:${port}/clear/v1`)
+  requestClear();
+});
+
+afterAll(() => {
+  requestClear();
 });
 
 describe('Failed tests.', () => {
