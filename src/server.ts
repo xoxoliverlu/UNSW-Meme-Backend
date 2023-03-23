@@ -7,7 +7,7 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
-import { channelDetailsV2 } from './channel';
+import { channelDetailsV2, channelJoinV2 } from './channel';
 import { userProfileV2 } from './users';
 
 // Set up web app
@@ -53,17 +53,17 @@ app.post('/auth/login/v2', (req: Request, res: Response, next) => {
 app.post('/channels/create/v2', (req: Request, res: Response, next) => {
   const {token, name, isPublic} = req.body;
   res.json(channelsCreateV2(token, name, isPublic));
-})
+});
 
 app.get('/channels/list/v2', (req: Request, res: Response, next) => {
   const token = req.query.token as string
   res.json(channelsListV2(token));
-})
+});
 
 app.get('/channels/listall/v2', (req: Request, res: Response, next) => {
   const token = req.query.token as string
   res.json(channelsListAllV2(token))
-})
+});
 /*****************
 *
 *  Other Routes
@@ -92,4 +92,9 @@ app.get('/channel/details/v2', (req: Request, res: Response, next) => {
   const token = req.query.token as string
   const channelId = parseInt(req.query.channelId);
   res.json(channelDetailsV2(token, channelId));
+});
+
+app.post('/channel/join/v2', (req: Request, res: Response, next) => {
+  const {token, channelId} = req.body;
+  res.json(channelJoinV2(token, channelId));
 });
