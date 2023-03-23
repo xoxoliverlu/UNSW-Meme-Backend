@@ -1,4 +1,3 @@
-import { channel } from "diagnostics_channel";
 import { port, url } from "./config.json";
 const request = require("sync-request");
 
