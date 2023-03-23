@@ -1,5 +1,4 @@
 import { getData,setData } from "./dataStore";
-import {authRegisterV1 } from "./auth";
 /**
  * Given an authUserId and a channelId, the function
  * prints out basic information about the channel.
@@ -13,30 +12,23 @@ import {authRegisterV1 } from "./auth";
  *
  * @returns {number} - unique id of the channel.
  */
-export function channelsCreateV1(token: string, authUserId: number, name: string, isPublic: boolean){
+export function channelsCreateV2(token: string, name: string, isPublic: boolean){
   const data = getData();
-  let validUser = false;
-
+  let user = data.tokens.find(item => item.token === token);
+  if (user === undefined) {
+    return {error: 'user not found'}; 
+  }
+  let {uId: authUserId} = user;
   // Check that the length of name is more than 1 or less than 20 characters
-  for (const user of data.users) {
-    if (user.uId === authUserId) {
-      validUser = true;
-    }
-  }
-  if (validUser === false) {
-    return {
-      error: 'error'
-    }
-  }
   name = name.trim();
   if (name.length < 1) {
     return {
-      error: 'error'
+      error: 'name length needs to be greater than 1'
     }
   }
   if (name.length > 20) {
     return {
-      error: 'error'
+      error: 'name length needs ot be greater than 20'
     }
   }
 
@@ -74,20 +66,13 @@ export function channelsCreateV1(token: string, authUserId: number, name: string
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
-export function channelsListV1(token: string, authUserId: number){
+export function channelsListV2(token: String){
   const data = getData();
-  let validId = false;
-
-  for (let user of data.users){
-    if (user.uId === authUserId){
-      validId = true
-    }
+  let user = data.tokens.find(item => item.token === token);
+  if (user === undefined) {
+    return {error: 'user not found'}; 
   }
-
-  if (!validId){
-    return {error: 'error'};
-  }
-
+  let {uId: authUserId} = user;
   let associatedChannels = [];
 
   for (let channel of data.channels){
@@ -113,18 +98,11 @@ export function channelsListV1(token: string, authUserId: number){
  * @returns {number} - unique id of the channel.
  * @returns {string} - unique name of the channel.
  */
-export function channelsListAllV1(token:string, authUserId: number){
+export function channelsListAllV2(token: String){
   const data = getData();
-  let validId = false;
-
-  for (let user of data.users){
-    if (user.uId === authUserId){
-      validId = true
-    }
-  }
-
-  if (!validId){
-    return {error: 'error'};
+  let user = data.tokens.find(item => item.token == token);
+  if (user === undefined) {
+    return {error: 'error'}; 
   }
 
   let result = [];
