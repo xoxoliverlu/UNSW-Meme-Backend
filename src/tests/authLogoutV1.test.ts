@@ -35,7 +35,7 @@ describe('Valid inputs for auth logoutV1', () => {
 				handleStr: 'akankshasood'
 			}
 		}
-		expect(requestUserProfile(login2.token, register.authUserId).toStrictEqual(userDetail));
+		expect(requestUserProfile(login2.token, register.authUserId)).toStrictEqual(userDetail);
 	});
 });
 
