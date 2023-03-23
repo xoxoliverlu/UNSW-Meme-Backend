@@ -42,7 +42,21 @@ describe('Valid inputs for auth logoutV1', () => {
 describe('Invalid inputs for authLogoutV1', () => {
 	test('Invalid token', () => {
 		const register = requestAuthRegister('AkankshaS@gmail.com', 'password0923', 'Akanksha', 'Sood');
+		const login = requestAuthLogin("akankshas@gmail.com", "password0923");
 		const logout = requestAuthLogout('InvalidToken');
 		expect(logout).toStrictEqual({error: expect.any(String)});
 	});
+	test('Logging out of same session twice', () => {
+		const register = requestAuthRegister('AkankshaS@gmail.com', 'password0923', 'Akanksha', 'Sood');
+		const login = requestAuthLogin("akankshas@gmail.com", "password0923");
+		const logout1 = requestAuthLogout(login.token);
+		const logout2 = requestAuthLogout(login.token);
+		const logout3 = requestAuthLogout(register.token);
+		const logout4 = requestAuthLogout(register.token);
+		expect(logout1).toStrictEqual({});
+		expect(logout2).toStrictEqual({error: expect.any(String)});
+		expect(logout3).toStrictEqual({});
+		expect(logout4).toStrictEqual({error: expect.any(String)});
+	});
+
 });
