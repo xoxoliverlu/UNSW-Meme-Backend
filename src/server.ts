@@ -8,7 +8,7 @@ import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
 import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
-import { userProfileV2, usersAllV1, userProfileSetNameV1 } from './users';
+import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1 } from './users';
 
 // Set up web app
 const app = express();
@@ -97,6 +97,11 @@ app.get('/users/all/v1', (req: Request, res: Response, next) => {
 app.put('/user/profile/setname/v1', (req: Request, res: Response, next) => {
   const {token, nameFirst, nameLast} = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v1', (req: Request, res: Response, next) => {
+  const {token, email} = req.body;
+  res.json(userProfileSetEmailV1(token, email));
 });
 /*****************
 * Channel Routes *
