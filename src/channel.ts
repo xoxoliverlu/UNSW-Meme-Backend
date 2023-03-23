@@ -354,10 +354,8 @@ export function channelRemoveOwnerV1(
   }
 
   const index = channel.ownerMembers.indexOf(userId);
-  if (index > -1) {
-    channel.ownerMembers.splice(index, 1);
-  }
-
+  channel.ownerMembers.splice(index, 1);
+  
   setData(data);
   return {};
 }
