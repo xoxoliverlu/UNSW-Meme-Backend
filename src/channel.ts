@@ -60,7 +60,8 @@ export function channelDetailsV1(authUserId : number, channelId : number) {
 function memberObject(array: number[]) {
   const result = [];
   for (const userId of array) {
-    const user = userProfileV2(userId, userId);
+    const token = String(userId);
+    const user = userProfileV2(token, userId);
     result.push({
       uId: user.user.uId,
       nameFirst: user.user.nameFirst,
