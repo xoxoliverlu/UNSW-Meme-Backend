@@ -1,22 +1,25 @@
 import { getData, setData } from "./dataStore";
 
-export function userProfileV1(authUserId : number, uId : number) {
+export function userProfileV2(token : string, uId : number) {
   const data = getData();
-  // Checks if authUserId and userId is valid
-  let validAuthId = false;
+  // Checks if the token and userId is valid.
+  let validToken = false;
+  for (let tokenId of data.tokens) {
+    if (token === tokenId.token) {
+      validToken = true;
+    }
+  }
+
   let validUserId = false;
   let userInfo;
   for (let user of data.users) {
-    if (user.uId === authUserId) {
-      validAuthId = true;
-    }
     if (user.uId === uId) {
       validUserId = true;
       userInfo = user;
     }
   }
 
-  if (!validAuthId || !validUserId) {
+  if (!validToken || !validUserId) {
     return { error: "Invalid Id" };
   }
 

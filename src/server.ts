@@ -75,3 +75,11 @@ app.delete('/clear/v1', (req: Request, res: Response, next) => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
+/****************
+*  User Routes  *
+****************/
+app.get('/user/profile/v2', (req: Request, res: Response, next) => {
+  const token = req.params.token as string
+  const uId = req.params.uId as number
+  res.json(userProfileV2(token, uId));
+});
