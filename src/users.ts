@@ -4,13 +4,12 @@ import { getData, setData } from "./dataStore";
 export function userProfileV2(token : string, uId : number) {
   const data = getData();
   // Checks if the token and userId is valid.
-
-  let auth = data.tokens.find(item => item.token === token);
+  const auth = data.tokens.find(item => item.token === token);
   if (auth === undefined) {
     return {error: "Invalid token"}; 
   }
-
-  let userInfo = data.users.find(user => user.uId === uId);
+ 
+  const userInfo = data.users.find(user => user.uId === uId);
   if (userInfo === undefined) {
     return {error: "Invalid uId"}; 
   }
