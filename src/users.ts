@@ -1,5 +1,5 @@
 import { getData, setData } from "./dataStore";
-// import { Profile } from './interfaces';
+import validator from "validator";
 
 export function userProfileV2(token : string, uId : number) {
   const data = getData();
@@ -66,6 +66,28 @@ export function userProfileSetNameV1(token : string, nameFirst : string, nameLas
 
   userInfo.nameFirst = nameFirst;
   userInfo.nameLast = nameLast;
+  setData(data);
+
+  return {}
+}
+
+export function userProfileSetEmailV1(token : string, email : string) {
+
+  const data = getData();
+  // Checks if the token is valid.
+  const auth = data.tokens.find(item => item.token === token);
+  if (auth === undefined) return {error: "Invalid token"};
+
+  const userInfo = data.users.find(element => element.uId === auth.uId);
+  // Checks if the email is valid using validator.
+  email = email.toLowerCase();
+  if (!validator.isEmail(email)) return { error: "Invalid email" };
+  // checks if the email is already in use.
+  for (let user of data.users) {
+    if (user.email === email) return { error: "Email already in use" };
+  }
+
+  userInfo.email = email;
   setData(data);
 
   return {}
