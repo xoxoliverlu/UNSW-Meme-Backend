@@ -1,3 +1,4 @@
+import { requestAuthLogin, requestAuthRegister } from "../requests";
 import { port, url } from "./config.json";
 const request = require("sync-request");
 
@@ -6,28 +7,11 @@ beforeEach(() => {
 });
 
 test("success addOwner", () => {
-  request("POST", `${url}:${port}/auth/register/v2`, {
-    json: {
-      email: "oliverwlu@gmail.com",
-      password: "cl3cl3vul4",
-      nameFirst: "Oliver",
-      nameLast: "Lu",
-    },
-  });
-  request("POST", `${url}:${port}/auth/register/v2`, {
-    json: {
-      email: "oliverwluu@gmail.com",
-      password: "cl3cl3vul44",
-      nameFirst: "Oliver",
-      nameLast: "Lu",
-    },
-  });
-  let loginRes = request("POST", `${url}:${port}/auth/login/v2`, {
-    json: { email: "oliverwlu@gmail.com", password: "cl3cl3vul4" },
-  });
-  let loginRes2 = request("POST", `${url}:${port}/auth/login/v2`, {
-    json: { email: "oliverwluu@gmail.com", password: "cl3cl3vul44" },
-  });
+  requestAuthRegister("oliverwlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu")
+  requestAuthRegister("oliverwluu@gmail.com","cl3cl3vul44","Oliver","Lu",)
+
+  let loginRes = requestAuthLogin("oliverwlu@gmail.com","cl3cl3vul4");
+  let loginRes2 = requestAuthLogin("olivrewluu@gmail.com","cl3cl3vul44")
   let { token: token1, authUserId: authUserId1 } = JSON.parse(loginRes.body);
   let { token: token2, authUserId: authUserId2 } = JSON.parse(loginRes2.body);
   let channelCreateRes = request("POST", `${url}:${port}/channels/create/v2`, {

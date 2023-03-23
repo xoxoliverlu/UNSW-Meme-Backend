@@ -126,3 +126,21 @@ export const requestChannelsListAll = (token: string) => {
     }
     return res.statusCode;
 }
+
+export const requestChannelAddOwner = (token: String, channelId: number, uId: number) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/channel/addowner/v1',
+        {
+            json: {
+                token: token,
+                channelId: channelId,
+                uId: uId
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
