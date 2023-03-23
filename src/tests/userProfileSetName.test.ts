@@ -18,7 +18,7 @@ describe('Invalid requestUserProfileSetName tests.', () => {
     const user1 = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
     const userSetName1 = requestUserProfileSetName(user1.token, '  ', 'Paul');
     const user2 = requestAuthRegister('sadekF@gmail.com', 'password', 'Fady', 'Sadek');
-    const userSetName2 = requestUserProfileSetName(user2.token, 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv', 'Paul');
+    const userSetName2 = requestUserProfileSetName(user2.token, 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwer', 'Paul');
     expect(userSetName1).toEqual({error: expect.any(String)});
     expect(userSetName2).toEqual({error: expect.any(String)});
   });
@@ -26,7 +26,7 @@ describe('Invalid requestUserProfileSetName tests.', () => {
     const user1 = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
     const userSetName1 = requestUserProfileSetName(user1.token, 'Alan', '  ');
     const user2 = requestAuthRegister('sadekF@gmail.com', 'password', 'Fady', 'Sadek');
-    const userSetName2 = requestUserProfileSetName(user2.token, 'Alan', 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcv');
+    const userSetName2 = requestUserProfileSetName(user2.token, 'Alan', 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwer');
     expect(userSetName1).toEqual({error: expect.any(String)});
     expect(userSetName2).toEqual({error: expect.any(String)});
   });
