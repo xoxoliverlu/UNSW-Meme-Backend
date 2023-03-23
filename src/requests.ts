@@ -127,6 +127,23 @@ export const requestChannelsListAll = (token: string) => {
     return res.statusCode;
 }
 
+export const requestChannelDetails = (token: string, channelId: number) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/channel/details/v2',
+        {
+            qs: {
+                token: token,
+                channelId: channelId,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
 export const requestUserProfile = (token: string, uId: number) => {
     const res = request(
         'GET',
