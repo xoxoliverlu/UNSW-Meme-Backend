@@ -177,3 +177,19 @@ export const requestUserProfile = (token: string, uId: number) => {
     }
     return res.statusCode;
 }
+
+export const requestUsersAll = (token: string) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/users/all/v1',
+        {
+            qs: {
+                token: token,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}

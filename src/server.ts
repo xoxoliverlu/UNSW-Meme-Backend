@@ -8,7 +8,7 @@ import { authRegisterV2, authLoginV2 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
 import { channelDetailsV2, channelJoinV2 } from './channel';
-import { userProfileV2 } from './users';
+import { userProfileV2, usersAllV1 } from './users';
 
 // Set up web app
 const app = express();
@@ -84,6 +84,11 @@ app.get('/user/profile/v2', (req: Request, res: Response, next) => {
   const token = req.query.token as string
   const uId = parseInt(req.query.uId);
   res.json(userProfileV2(token, uId));
+});
+
+app.get('/users/all/v1', (req: Request, res: Response, next) => {
+  const token = req.query.token as string
+  res.json(usersAllV1(token));
 });
 /*****************
 * Channel Routes *
