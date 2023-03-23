@@ -1,5 +1,5 @@
 import { authRegisterV2 } from '../auth';
-import { channelDetailsV1, channelJoinV1 } from '../channel'
+import { channelDetailsV2, channelJoinV2 } from '../channel'
 import { channelsCreateV2 } from '../channels';
 import { clearV1 } from '../other';
 
@@ -15,7 +15,7 @@ describe('Failed Tests.', () => {
     const auth2 = register2.authUserId;
     const newChannel = channelsCreateV2(auth1, 'Channel1', true);
     const channelId = newChannel.channelId + 1;
-    const channelJoin = channelJoinV1(auth2, channelId);
+    const channelJoin = channelJoinV2(register2.token, channelId);
     expect(channelJoin).toEqual({error: expect.any(String)});
   });
   test('User is already a member.', () => {
@@ -23,7 +23,7 @@ describe('Failed Tests.', () => {
     const authId = register.authUserId;
     const newChannel = channelsCreateV2(register.token, 'Channel1', true);
     const channelId = newChannel.channelId;
-    const channelJoin = channelJoinV1(authId, channelId);
+    const channelJoin = channelJoinV2(register.token, channelId);
     expect(channelJoin).toEqual({error: expect.any(String)});
   });
   test('Channel is private and user is not a global member', () => {
@@ -33,7 +33,7 @@ describe('Failed Tests.', () => {
     const auth2 = register2.authUserId;
     const newChannel = channelsCreateV2(auth1, 'Channel1', false);
     const channelId = newChannel.channelId;
-    const channelJoin = channelJoinV1(auth2, channelId);
+    const channelJoin = channelJoinV2(register2.token, channelId);
     expect(channelJoin).toEqual({error: expect.any(String)});
   });
   test('User to join has invalid id.', () => {
@@ -43,20 +43,20 @@ describe('Failed Tests.', () => {
     const auth2 = register2.authUserId;
     const newChannel = channelsCreateV2(auth1, 'Channel1', true);
     const channelId = newChannel.channelId;
-    const channelJoin = channelJoinV1(auth2 + 10, channelId);
+    const channelJoin = channelJoinV2(register2.token + 10, channelId);
     expect(channelJoin).toEqual({error: expect.any(String)});
   });
 });
 
-test('Successful channelJoinV1 test.', () => {
+test('Successful channelJoinV2 test.', () => {
   const register1 = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
   const auth1 = register1.authUserId;
   const register2 = authRegisterV2('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
   const auth2 = register2.authUserId;
   const newChannel = channelsCreateV2(register1.token, 'Channel1', true);
   const channelId = newChannel.channelId;
-  const channelJoin = channelJoinV1(auth2, channelId);
-  const channelDetails = channelDetailsV1(auth1, channelId);
+  const channelJoin = channelJoinV2(register2.token, channelId);
+  const channelDetails = channelDetailsV2(register1.token, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
       {
@@ -89,15 +89,15 @@ test('Successful channelJoinV1 test.', () => {
   expect(channelJoin).toEqual({});
 });
 
-test('Successful channelJoinV1 test where user is a global member', () => {
+test('Successful channelJoinV2 test where user is a global member', () => {
   const register1 = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
   const auth1 = register1.authUserId;
   const register2 = authRegisterV2('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
   const auth2 = register2.authUserId;
   const newChannel = channelsCreateV2(register2.token, 'Channel1', false);
   const channelId = newChannel.channelId;
-  const channelJoin = channelJoinV1(auth1, channelId);
-  const channelDetails = channelDetailsV1(auth1, channelId);
+  const channelJoin = channelJoinV2(register1.token, channelId);
+  const channelDetails = channelDetailsV2(register1.token, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
       {
@@ -129,15 +129,15 @@ test('Successful channelJoinV1 test where user is a global member', () => {
   });
   expect(channelJoin).toEqual({});
 });
-test('Successful channelJoinV1 test where user is a global member', () => {
+test('Successful channelJoinV2 test where user is a global member', () => {
   const register1 = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
   const auth1 = register1.authUserId;
   const register2 = authRegisterV2('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
   const auth2 = register2.authUserId;
   const newChannel = channelsCreateV2(register2.token, 'Channel1', false);
   const channelId = newChannel.channelId;
-  const channelJoin = channelJoinV1(auth1, channelId);
-  const channelDetails = channelDetailsV1(auth1, channelId);
+  const channelJoin = channelJoinV2(register1.token, channelId);
+  const channelDetails = channelDetailsV2(register1.token, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
       {
