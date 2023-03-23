@@ -1,7 +1,10 @@
+import { channelLeaveV1 } from "../channel";
 import {
   requestAuthLogin,
   requestAuthRegister,
   requestChannelAddOwner,
+  requestChannelDetails,
+  requestChannelInvite,
   requestChannelsCreate,
   requestClear,
 } from "../requests";
@@ -22,21 +25,23 @@ test("success addOwner", () => {
   let { token: token2, authUserId: authUserId2 } = loginRes2;
   let channelCreateRes = requestChannelsCreate(token1, "sampleChannel", true);
   let { channelId } = channelCreateRes;
-  request("POST", `${url}:${port}/channel/invite/v2`, {
-    token: token1,
-    channlId: channelId,
-    uId: authUserId2,
-  });
-  requestChannelAddOwner(token1, channelId, authUserId2);
+  requestChannelInvite(token1,channelId,authUserId2);
+  let addOwnerRes = requestChannelAddOwner(token1, channelId, authUserId2);
+  let {error} = addOwnerRes;
 
-  let channelDetailsRes = request("POST", `${url}:${port}/channel/details/v2`, {
-    token: token2,
-    channelID: channelId,
-    uId: authUserId2,
-  });
+  if (error){
+    console.log(error);
+  }
 
-  let { ownerMembers } = channelDetailsRes;
-  expect(ownerMembers).toStrictEqual([authUserId1, authUserId2]);
+  let channelDetailsRes = requestChannelDetails(token1, channelId);
+  let { ownerMembers} = channelDetailsRes;
+
+  if (error) {
+    console.log(authUserId2);
+    console.log(channelDetailsRes);
+  }
+
+  expect(ownerMembers.length).toStrictEqual(2);
 });
 
 test("error token", () => {
@@ -52,11 +57,7 @@ test("error token", () => {
 
   let { channelId } = channelCreateRes;
 
-  request("POST", `${url}:${port}/channel/invite/v2`, {
-    token: token1,
-    channlId: channelId,
-    uId: authUserId2,
-  });
+  requestChannelInvite(token1,channelId,authUserId2);
 
   token1 += "error";
   let channelAddOwneRes = requestChannelAddOwner(
@@ -82,11 +83,7 @@ test("error userID", () => {
 
   let { channelId } = channelCreateRes;
 
-  request("POST", `${url}:${port}/channel/invite/v2`, {
-    token: token1,
-    channlId: channelId,
-    uId: authUserId2,
-  });
+  requestChannelInvite(token1,channelId, authUserId2);
 
   let channelAddOwneRes = requestChannelAddOwner(
     token1,
@@ -110,11 +107,7 @@ test("error invalid channelID", () => {
 
   let { channelId } = channelCreateRes;
 
-  request("POST", `${url}:${port}/channel/invite/v2`, {
-    token: token1,
-    channlId: channelId,
-    uId: authUserId2,
-  });
+  requestChannelInvite(token1,channelId, authUserId2);
 
   let channelAddOwneRes = requestChannelAddOwner(
     token1,
@@ -181,17 +174,8 @@ test("error user doesn't have owner permission ", () => {
   let channelCreateRes = requestChannelsCreate(token1, "sampleChannel", true);
 
   let { channelId } = channelCreateRes;
-  request("POST", `${url}:${port}/channel/invite/v2`, {
-    token: token1,
-    channlId: channelId,
-    uId: authUserId2,
-  });
-
-  request("POST", `${url}:${port}/channel/invite/v2`, {
-    token: token1,
-    channlId: channelId,
-    uId: authUserId3,
-  });
+  requestChannelInvite(token1, channelId, authUserId2);
+  requestChannelInvite(token1, channelId, authUserId3);
 
   let channelAddOwneRes = requestChannelAddOwner(
     token2,

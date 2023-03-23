@@ -298,7 +298,7 @@ export function channelAddOwnerV1(
     return { error: "user to be added is not a member of the channel" };
   }
 
-  if (!channel.ownerMembers.includes(ownerAdded)) {
+  if (channel.ownerMembers.includes(ownerAdded)) {
     return { error: "user is already an owner" };
   }
 
