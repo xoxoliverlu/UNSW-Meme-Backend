@@ -36,5 +36,12 @@ export interface DataStore {
     lastAuthUserId: number;
     lastChannelId: number;
     lastToken: number;
-  }
+}
 
+export interface Profile {
+    uId: number;
+    nameFirst: string;
+    nameLast: string;
+    email: string;
+    handleStr: string;
+}

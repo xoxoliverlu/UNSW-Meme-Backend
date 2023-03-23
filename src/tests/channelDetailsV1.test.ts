@@ -1,51 +1,52 @@
-import { authRegisterV2 } from '../auth';
-import { channelDetailsV1 } from '../channel'
-import { channelsCreateV2 } from '../channels';
-import { clearV1 } from '../other';
+import { requestAuthRegister, requestChannelsCreate, requestClear , requestChannelDetails} from '../requests';
 
 beforeEach(() => {
-  clearV1();
+  requestClear();
+});
+
+afterAll(() => {
+  requestClear();
 });
 
 describe('Invalid input tests.', () => {
   test('Invalid channelId.', () => {
-    const register = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-    const authId = register.authUserId;
-    const newChannel = channelsCreateV2(register.token, 'Channel1', false);
-    const channelId = newChannel.channelId + 1;
-    const channelDetails = channelDetailsV1(authId, channelId);
+    const register = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
+    const authId = register.token;
+    const newChannel = requestChannelsCreate(authId, 'Channel1', false);
+    const channelId = newChannel.channelId;
+    const channelDetails = requestChannelDetails(authId, channelId + 1);
     expect(channelDetails).toEqual({error: expect.any(String)});
   });
-  test('Invalid authUserId.', () => {
-    const register = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-    const authId = register.authUserId;
-    const newChannel = channelsCreateV2(register.token, 'Channel1', false);
+  test('Invalid Token.', () => {
+    const register = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
+    const authId = register.token;
+    const newChannel = requestChannelsCreate(authId, 'Channel1', false);
     const channelId = newChannel.channelId;
-    const channelDetails = channelDetailsV1(authId + 1, channelId);
+    const channelDetails = requestChannelDetails(authId + 1, channelId);
     expect(channelDetails).toEqual({error: expect.any(String)});
   });
   test('Unauthorised authUserId.', () => {
-    const registerValid = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-    const authValid = registerValid.authUserId;
-    const registerInvalid = authRegisterV2('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
-    const authInvalid = registerInvalid.authUserId;
-    const newChannel = channelsCreateV2(registerValid.token, 'Channel1', false);
+    const registerValid = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
+    const authValid = registerValid.token;
+    const registerInvalid = requestAuthRegister('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
+    const authInvalid = registerInvalid.token;
+    const newChannel = requestChannelsCreate(authValid, 'Channel1', false);
     const channelId = newChannel.channelId;
-    const channelDetails = channelDetailsV1(authInvalid, channelId);
+    const channelDetails = requestChannelDetails(authInvalid, channelId);
     expect(channelDetails).toEqual({error: expect.any(String)});
   });
 });
 
-test('Succesful ChannelDetailsV1 test.', () => {
-  const register = authRegisterV2('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-  const authId = register.authUserId;
-  const newChannel = channelsCreateV2(register.token, 'Channel1', false);
+test('Succesful ChannelDetailsV2 test.', () => {
+  const register = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
+  const authId = register.token;
+  const newChannel = requestChannelsCreate(authId, 'Channel1', false);
   const channelId = newChannel.channelId;
-  const channelDetails = channelDetailsV1(authId, channelId);
+  const channelDetails = requestChannelDetails(authId, channelId);
   expect(channelDetails).toEqual({
     allMembers: [
       {
-        uId: authId,
+        uId: register.authUserId,
         email:"fadys@gmail.com",
         handleStr: 'fadysadek',
         nameFirst: "Fady",
@@ -56,7 +57,7 @@ test('Succesful ChannelDetailsV1 test.', () => {
     name: 'Channel1',
     ownerMembers: [
       {
-        uId: authId,
+        uId: register.authUserId,
         email:"fadys@gmail.com",
         handleStr: 'fadysadek',
         nameFirst: "Fady",
