@@ -1,4 +1,3 @@
-import { isTemplateExpression } from "typescript";
 import { getData, setData } from "./dataStore";
 import { userProfileV2 } from "./users";
 
@@ -138,26 +137,71 @@ export function channelJoinV2(token: string, channelId: number) {
  * @returns {}
  * @returns {object} - error if any of the Id's are invalid
  */
-export function channelInviteV1(token: string, channelId: number, uId:number) {
+export function channelInviteV1(
+  authUserId: number,
+  channelId: number,
+  uId: number
+) {
   const data = getData();
-  const authUser = data.tokens.find(item => item.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
-  let authuserId = authUser.uId;
+  let validChannel = false;
+  let userInfo;
+  let channelInfo;
 
-  const channelIndex = data.channels.findIndex((c) => c.channelId === channelId);
-  if (channelIndex < 0) return { error: 'channelId is not valid' };
+  // Check that channelId refers to a valid channel
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      validChannel = true;
+      channelInfo = channel;
+    }
+  }
+  if (validChannel === false) {
+    return {
+      error: "Not a valid channel",
+    };
+  }
 
-  const uIdIndex = data.users.findIndex((u) => u.uId === uId);
-  if (uIdIndex < 0) return { error: 'uId is not valid' };
+  // Check that uId and authUserId refers to a valid user
+  let validUser = false;
+  let validAuthUser = false;
+  for (const user of data.users) {
+    if (user.uId === uId) {
+      validUser = true;
+      userInfo = user;
+    }
+    if (user.uId === authUserId) {
+      validAuthUser = true;
+    }
+  }
+  if (validUser === false || validAuthUser === false) {
+    return {
+      error: "Not a valid userId or authUserId",
+    };
+  }
 
-  const UIdInChannel = data.channels[channelIndex].allMembers.includes(uId);
-  if (UIdInChannel) return { error: 'uId is already in channel' };
+  // checking if uId is a member
+  for (const member of channelInfo.allMembers) {
+    if (member === uId) {
+      return {
+        error: "User is already a member",
+      };
+    }
+  }
 
-  const authInChannel = data.channels[channelIndex].allMembers.includes(authuserId);
-  if (!authInChannel) return { error: 'authUserId is not in the channel' };
+  // Check if authUserId is a member
+  let isMember = false;
+  for (const member of channelInfo.allMembers) {
+    if (member === authUserId) {
+      isMember = true;
+    }
+  }
+  if (isMember === false) {
+    return {
+      error: "AuthUser is not a member",
+    };
+  }
 
-
-  data.channels[channelIndex].allMembers.push(uId);
+  // Add invited user to the channel
+  channelInfo.allMembers.push(uId);
   setData(data);
   return {};
 }
