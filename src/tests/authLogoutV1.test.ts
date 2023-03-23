@@ -1,4 +1,4 @@
-import { requestUserProfile, requestAuthRegister, requestAuthLogin, requestAuthLogout, requestClear } from './requests';
+import { requestUserProfile, requestAuthRegister, requestAuthLogin, requestAuthLogout, requestClear } from '../requests';
 
 beforeEach(() => {
 	requestClear();
@@ -13,7 +13,7 @@ describe('Valid inputs for auth logoutV1', () => {
 		const register = requestAuthRegister('AkankshaS@gmail.com', 'password0923', 'Akanksha', 'Sood');
 		const logout1 = requestAuthLogout(register.token);
 		expect(logout1).toStrictEqual({});
-		expect(requestUserProfile(register.token, register.authUserId), toEqual({error: expect.any(String)}));
+		expect(requestUserProfile(register.token, register.authUserId).toEqual({error: expect.any(String)}));
 	});
 
 	test('Successful logout - multiple sessions', () => {
@@ -24,8 +24,8 @@ describe('Valid inputs for auth logoutV1', () => {
 		const logout2 = requestAuthLogout(register.token);
 		expect(logout1).toStrictEqual({});
 		expect(logout2).toStrictEqual({});
-		expect(requestUserProfile(register.token, register.authUserId), toEqual({error: expect.any(String)}));
-		expect(requestUserProfile(login.token, register.authUserId), toEqual({error: expect.any(String)}));
+		expect(requestUserProfile(register.token, register.authUserId).toEqual({error: expect.any(String)}));
+		expect(requestUserProfile(login1.token, register.authUserId).toEqual({error: expect.any(String)}));
 		const userDetail = {
 			user: {
 				uId: register.uId,
@@ -35,7 +35,7 @@ describe('Valid inputs for auth logoutV1', () => {
 				handleStr: 'akankshasood'
 			}
 		}
-		expect(requestUserProfile(login1.token, register.authUserId).toStrictEqual(userDetail));
+		expect(requestUserProfile(login2.token, register.authUserId).toStrictEqual(userDetail));
 	});
 });
 
