@@ -68,9 +68,9 @@ export function channelsCreateV2(token: string, name: string, isPublic: boolean)
  */
 export function channelsListV2(token: String){
   const data = getData();
-  let user = data.tokens.find(item => item.token == token);
+  let user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
-    return {error: 'error'}; 
+    return {error: 'user not found'}; 
   }
   let {uId: authUserId} = user;
   let associatedChannels = [];

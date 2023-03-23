@@ -1,6 +1,7 @@
 import {channelsListV2, channelsCreateV2} from '../channels';
 import {authRegisterV2} from '../auth';
 import {clearV1} from '../other';
+import { stringify } from 'querystring';
 
 beforeEach(() => {
   clearV1();
@@ -8,7 +9,7 @@ beforeEach(() => {
 
 test('invalid user id', () => {
   const user1 = authRegisterV2('oliver@gmail.com','123456789','Oliver','Lu');
-  expect(channelsListV2(user1.token + 1)).toStrictEqual({error: 'error'});
+  expect(channelsListV2(user1.token + 1)).toStrictEqual({error: expect.any(String)});
 });
 
 test('channelsList one channels ', () => {
