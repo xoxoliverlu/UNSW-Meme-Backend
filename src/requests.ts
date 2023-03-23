@@ -76,3 +76,37 @@ export const requestDmCreate = (token: string, uIds: number[]) => {
     }
     return res5.statusCode;
 }
+
+export const requestChannelsCreate = (token: string, name: String, isPublic: boolean) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/channels/create/v2',
+        {
+            json: {
+                token: token,
+                name: name,
+                isPublic: isPublic
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestChannelsList = (token: string) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/channels/List/v2',
+        {
+            qs: {
+                token: token,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
