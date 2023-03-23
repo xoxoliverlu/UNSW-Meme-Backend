@@ -178,6 +178,40 @@ export const requestUserProfile = (token: string, uId: number) => {
     return res.statusCode;
 }
 
+export const requestUsersAll = (token: string) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/users/all/v1',
+        {
+            qs: {
+                token: token,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestUserProfileSetName = (token: string, nameFirst: string, nameLast: string) => {
+    const res = request(
+        'PUT',
+        `${url}:${port}` + '/user/profile/setname/v1',
+        {
+            json: {
+                token: token,
+                nameFirst: nameFirst,
+                nameLast: nameLast,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
 export const requestChannelAddOwner = (token: String, channelId: number, uId: number) => {
     const res = request(
         'POST',
