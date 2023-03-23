@@ -1,23 +1,16 @@
 import { getData, setData } from "./dataStore";
+// import { Profile } from './interfaces';
 
-export function userProfileV1(authUserId : number, uId : number) {
+export function userProfileV2(token : string, uId : number) {
   const data = getData();
-  // Checks if authUserId and userId is valid
-  let validAuthId = false;
-  let validUserId = false;
-  let userInfo;
-  for (let user of data.users) {
-    if (user.uId === authUserId) {
-      validAuthId = true;
-    }
-    if (user.uId === uId) {
-      validUserId = true;
-      userInfo = user;
-    }
+  // Checks if the token and userId is valid.
+  const auth = data.tokens.find(item => item.token === token);
+  if (auth === undefined) {
+    return {error: "Invalid token"}; 
   }
-
-  if (!validAuthId || !validUserId) {
-    return { error: "Invalid Id" };
+  const userInfo = data.users.find(element => element.uId === uId);
+  if (userInfo === undefined) {
+    return {error: "Invalid uId"}; 
   }
 
   return {

@@ -7,6 +7,7 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
+import { userProfileV2 } from './users';
 
 // Set up web app
 const app = express();
@@ -74,4 +75,12 @@ app.delete('/clear/v1', (req: Request, res: Response, next) => {
 // For coverage, handle Ctrl+C gracefully
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
+});
+/****************
+*  User Routes  *
+****************/
+app.get('/user/profile/v2', (req: Request, res: Response, next) => {
+  const token = req.query.token as string
+  const uId = parseInt(req.query.uId);
+  res.json(userProfileV2(token, uId));
 });

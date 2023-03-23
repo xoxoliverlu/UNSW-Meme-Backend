@@ -1,5 +1,5 @@
 import { getData,setData } from "./dataStore";
-import {userProfileV1} from "./users";
+import {userProfileV2} from "./users";
 
 /**
  * Given an authUserId and a channelId, the function
@@ -60,7 +60,8 @@ export function channelDetailsV1(authUserId : number, channelId : number) {
 function memberObject(array: number[]) {
   const result = [];
   for (const userId of array) {
-    const user = userProfileV1(userId, userId);
+    const token = String(userId);
+    const user = userProfileV2(token, userId);
     result.push({
       uId: user.user.uId,
       nameFirst: user.user.nameFirst,
