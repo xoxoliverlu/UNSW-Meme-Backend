@@ -1,6 +1,6 @@
 import { port, url } from "./config.json";
 import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelsList} from "../requests";
-import { channel } from "diagnostics_channel";
+
 const request = require("sync-request");
 
 beforeEach(() => {
@@ -8,7 +8,7 @@ beforeEach(() => {
 });
 
 test("success channels List", () => {
-  requestAuthRegister("oliverwlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu",)
+   requestAuthRegister("oliverwlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu",)
   let loginRes = requestAuthLogin("oliverwlu@gmail.com", "cl3cl3vul4")
   let { token } = loginRes;
   let channelCreateRes = requestChannelsCreate(token, "sampleChannel", true)
