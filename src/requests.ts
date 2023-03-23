@@ -193,3 +193,21 @@ export const requestUsersAll = (token: string) => {
     }
     return res.statusCode;
 }
+
+export const requestUserProfileSetName = (token: string, nameFirst: string, nameLast: string) => {
+    const res = request(
+        'PUT',
+        `${url}:${port}` + '/user/profile/setname/v1',
+        {
+            json: {
+                token: token,
+                nameFirst: nameFirst,
+                nameLast: nameLast,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
