@@ -5,18 +5,18 @@ export function userProfileV2(token : string, uId : number) {
   const data = getData();
   // Checks if the token and userId is valid.
   let validToken = false;
-  let uId;
+  let authUserId;
   for (let tokenId of data.tokens) {
     if (token === tokenId.token) {
       validToken = true;
-      uId = tokenId.uId;
+      authUserId = tokenId.uId;
     }
   }
 
   let validUserId = false;
   let userInfo;
   for (let user of data.users) {
-    if (user.uId === uId) {
+    if (user.uId === authUserId) {
       validUserId = true;
       userInfo = user;
     }
