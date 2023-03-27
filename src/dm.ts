@@ -76,3 +76,5 @@ const dmListV1 = (token: string) => {
 
   return { dms: dms };
 }
+
+export { dmCreateV1, dmListV1 };
