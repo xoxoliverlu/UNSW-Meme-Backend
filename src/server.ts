@@ -150,6 +150,6 @@ app.post('/dm/create/v1', (req: Request, res: Responde, next) => {
 });
 
 app.get('/dm/list/v1', (req: Request, res: Response, next) => {
-  const token = req.body;
+  const token = req.query.token;
   res.json(dmListV1(token));
 });
