@@ -45,3 +45,11 @@ export interface Profile {
     email: string;
     handleStr: string;
 }
+
+export interface DM {
+    dmId: number;
+    name: string;
+    ownerId: number;
+    uIds: number[];
+    messages: Message[];
+}
