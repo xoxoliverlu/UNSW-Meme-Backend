@@ -1,5 +1,5 @@
 import { getData, setData } from './dataStore';
-import { User, Channel, TokenPair } from './interfaces';
+import { User, Channel, TokenPair, DM } from './interfaces';
 type clearReturn = {};
 
 const clearV1 = (): clearReturn => {
@@ -10,6 +10,8 @@ const clearV1 = (): clearReturn => {
     lastChannelId: 0,
     lastToken: 0,
     tokens: [] as TokenPair[],
+    dms: [] as DM[],
+    lastDmId: 0,
   };
   setData(data);
   return {};

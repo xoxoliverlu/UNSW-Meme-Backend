@@ -198,4 +198,17 @@ const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   }
   return newHandle;
 }
-export { authRegisterV1, authRegisterV2, authLoginV2 };
+
+const authLogoutV1 = (token: string) => {
+  const data = getData();
+  // Check for a valid token
+  const auth = data.tokens.find(item => item.token === token);
+  if (auth === undefined) {
+    return {error: "Invalid token"};
+  }
+  // Delete token
+  data.tokens = data.tokens.filter((pair) => pair.token !== token);
+  setData(data);
+  return {};
+}
+export { authRegisterV1, authRegisterV2, authLoginV2, authLogoutV1 };
