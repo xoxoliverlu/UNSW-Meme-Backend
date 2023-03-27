@@ -1,13 +1,15 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
+import { authRegisterV2} from './auth'
 const dmCreateV1 = (token: string, uIds: number[]) => {
   const data = getData();
 	// Error check: invalid uId in uIds
 	let userInfo;
 	for (const id of uIds) {
 		userInfo = data.users.find((element) => element.uId === id);
+		if (userInfo === undefined) return { error: "Invalid uId" };
 	}
-	if (userInfo === undefined) return { error: "Invalid uId" };
+
 	// Duplicate uId in uIds
 	const unique = Array.from(new Set(uIds));
 	if (uIds.length !== unique.length) {
@@ -15,7 +17,7 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 			error: 'Duplicate uId in uIds'
 		}
 	}
-	// Invalid token
+
 	const auth = data.tokens.find((item) => item.token === token);
   if (auth === undefined) return { error: "Invalid token" };
 
