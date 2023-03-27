@@ -1,4 +1,8 @@
-import { requestAuthRegister, requestDmCreate, requestDmList } from '../requests';
+import { requestAuthRegister, requestDmCreate, requestDmList, requestClear } from '../requests';
+
+beforeEach(() => {
+	requestClear();
+});
 
 describe('Valid inputs fordm/list/v1', () => {
     test('Valid return', () => {
