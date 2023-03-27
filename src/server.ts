@@ -148,3 +148,8 @@ app.post('/dm/create/v1', (req: Request, res: Responde, next) => {
   const {token, uIds} = req.body;
   res.json(dmCreateV2(token, uIds));
 });
+
+app.get('/dm/list/v1', (req: Request, res: Response, next) => {
+  const token = req.body;
+  res.json(dmListV1(token));
+});
