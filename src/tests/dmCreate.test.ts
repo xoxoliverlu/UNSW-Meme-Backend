@@ -1,4 +1,4 @@
-import { requestAuthRegister, requestClear, requestDmCreate, requestrequestDmList } from '../requests';
+import { requestAuthRegister, requestClear, requestDmCreate, requestDmList } from '../requests';
 
 beforeEach(() => {
 	requestClear();
