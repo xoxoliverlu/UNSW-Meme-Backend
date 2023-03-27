@@ -21,7 +21,7 @@ describe('Valid inputs fordm/list/v1', () => {
         dms: [
           {
             dmId: dm.dmId,
-            name: 'alexsmith, jakerenzella, akankshasood',
+            name: 'akankshasood, alexsmith, jakerenzella',
           }
         ]
       });
@@ -32,7 +32,7 @@ describe('Valid inputs fordm/list/v1', () => {
         dms: [
           {
             dmId: dm.dmId,
-            name: 'alexsmith, jakerenzella, akankshasood',
+            name: 'akankshasood, alexsmith, jakerenzella',
           },
           {
             dmId: dm1.dmId,
@@ -47,7 +47,7 @@ describe('Valid inputs fordm/list/v1', () => {
         dms: [
           {
             dmId: dm.dmId,
-            name: 'alexsmith, jakerenzella, akankshasood',
+            name: 'akankshasood, alexsmith, jakerenzella',
           }
         ]
       });
