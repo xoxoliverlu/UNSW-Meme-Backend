@@ -100,9 +100,11 @@ const dmDetailsV1 = (token: string, dmId: number) => {
     return {error: "This user is not a part of the dm"};
   }
 
+  let members = dm.uIds.slice();
+  members.push(dm.ownerId);
   return {
     name: dm.name,
-    members: dm.uIds
+    members: members
   }
 }
 

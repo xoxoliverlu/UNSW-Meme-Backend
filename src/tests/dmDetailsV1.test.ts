@@ -33,7 +33,7 @@ test("success channel details", () => {
   let { name, members } = dmDetailsRes;
   
   expect(name).toEqual(expect.any(String));
-  expect(members).toEqual([authUserId2]);
+  expect(members).toEqual([authUserId2,authUserId1]);
 });
 
 test("error invalid dm id", () => {
