@@ -7,16 +7,16 @@ beforeEach(() => {
 describe ('dm Create valid inputs', () => {
 	test('Correct return - one user', () => {
     const user1 = requestAuthRegister('akanksha.sood@gmail.com', 'samplePass', 'Akanksha', 'Sood');
-		const user2 = requestAuthRegister('HaydenS@gmail.com', 'samplePass', 'Hayden', 'Smith');
+	const user2 = requestAuthRegister('HaydenS@gmail.com', 'samplePass', 'Hayden', 'Smith');
     const uIds = [user1.authUserId];
     const dm = requestDmCreate(user2.token, uIds);
 		expect(dm.dmId).toEqual(expect.any(Number));
 		expect(requestDmList(user1.token).toMatchObject({
 			dms: [
-        {
-          dmId: dm.dmId,
-          name: 'akankshasood, haydensmith',
-        },
+				{
+				dmId: dm.dmId,
+				name: 'akankshasood, haydensmith',
+				},
       ]
 		}));
 	});
