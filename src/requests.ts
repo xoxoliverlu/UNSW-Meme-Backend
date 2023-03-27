@@ -332,3 +332,20 @@ export const requestDmList = (token: String) => {
       }
       return res.statusCode;
 }
+
+export const requestDmDetails = (token: String, dmId: number) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/dm/details/v1',
+        {
+          qs: {
+            token: token,
+            dmId: dmId
+          }
+        }
+      );
+      if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+      }
+      return res.statusCode;
+}
