@@ -316,3 +316,19 @@ export const requestChannelLeave = (token: String, channelId: number) => {
     }
     return res.statusCode;
 }
+
+export const requestDmList = (token: String) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/dm/list/v1',
+        {
+          qs: {
+            token
+          }
+        }
+      );
+      if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+      }
+      return res.statusCode;
+}
