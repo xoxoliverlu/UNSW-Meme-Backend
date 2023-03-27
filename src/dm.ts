@@ -16,7 +16,7 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 	}
 	// Invalid token
 	const auth = data.tokens.find((item) => item.token === token);
-  	if (auth === undefined) return { error: "Invalid token" };
+  if (auth === undefined) return { error: "Invalid token" };
 
 	// Create dmId
 	const newId = data.lastDmId + 1;
@@ -50,7 +50,29 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 	setData(data);
 
 	return {
-		dmId: newId, 
+		dmId: newId,
 	}
 
+}
+
+const dmListV1 = (token: string) => {
+  // check if token passed in is valid
+  // Invalid token
+	const auth = data.tokens.find((item) => item.token === token);
+  if (auth === undefined) return { error: "Invalid token" };
+
+  const data = getData();
+  const dms = [];
+
+  for (const dm of data.dms) {
+    // check if user is owner / member of a dm
+    if (tokenId.uId === dm.ownerId || dm.uIds.includes(auth.uId)) {
+      dms.push({
+        dmId: dm.dmId,
+        name: dm.name,
+      });
+    }
+  }
+
+  return { dms: dms };
 }
