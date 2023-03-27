@@ -1,5 +1,5 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-import { User, Channel, TokenPair, DataStore } from './interfaces';
+import { User, Channel, TokenPair, DataStore, DM } from './interfaces';
 
 let data = {
   users: [] as User[],
@@ -9,7 +9,7 @@ let data = {
   lastToken: 0,
   tokens: [] as TokenPair[],
   dms: [] as DM[],
-  lastDmID: 0,
+  lastDmId: 0,
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
