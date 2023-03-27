@@ -10,14 +10,14 @@ describe ('dm Create valid inputs', () => {
     const uIds = [user1.authUserId];
     const dm = requestDmCreate(user2.token, uIds);
 		expect(dm.dmId).toEqual(expect.any(Number));
-		expect(requestDmList(user1.token).toMatchObject({
+		expect(requestDmList(user1.token)).toMatchObject({
 			dms: [
 				{
 				dmId: dm.dmId,
 				name: 'akankshasood, haydensmith',
 				},
       ]
-		}));
+		});
 	});
 	test('Correct return - multiple user', () => {
 		const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
@@ -27,14 +27,14 @@ describe ('dm Create valid inputs', () => {
 		// User creates dm
     const dm = requestDmCreate(user.token, uIds);
 		expect(dm.dmId).toEqual(expect.any(Number));
-		expect(requestDmList(user1.token).toMatchObject({
+		expect(requestDmList(user1.token)).toMatchObject({
 			dms: [
         {
           dmId: dm.dmId,
           name: 'akankshasood, alexsmith, jakerenzella',
         },
       ]
-		}));
+		});
 	});
 	test('Unique dmIds created and valid format of Dms', () => {
 		const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
@@ -47,18 +47,18 @@ describe ('dm Create valid inputs', () => {
     const uIds2 = [user1.authUserId];
     const dm2 = requestDmCreate(user3.token, uIds2);
 		expect(dm.dmId).not.toEqual(dm2.dmId);
-		expect(requestDmList(user1.token).toMatchObject({
+		expect(requestDmList(user1.token)).toMatchObject({
 			dms: [
         {
           dmId: dm.dmId,
           name: 'akankshasood, alexsmith, jakerenzella',
         },
 				{
-          dmId: dm.dmId,
+          dmId: dm2.dmId,
           name: 'akankshasood, haydensmith',
         },
       ]
-		}));
+		});
 	});
 });
 
