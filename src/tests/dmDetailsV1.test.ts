@@ -5,6 +5,7 @@ import {
   requestAuthRegister,
   requestAuthLogin,
   requestDmDetails,
+  requestDmCreate,
 } from "../requests";
 const request = require("sync-request");
 
@@ -24,11 +25,13 @@ test("success channel details", () => {
   let { token: token1, authUserId: authUserId1 } = loginRes;
   let { token: token2, authUserId: authUserId2 } = loginRes2;
 
-  const { dmId } = dmCreateV1(token1, authUserId2);
+  const { dmId } = requestDmCreate(token1, [authUserId2]);
+
 
   const dmDetailsRes = requestDmDetails(token1, dmId);
 
   let { name, members } = dmDetailsRes;
+  
   expect(name).toEqual(expect.any(String));
   expect(members).toEqual([authUserId2]);
 });
@@ -43,7 +46,7 @@ test("error invalid dm id", () => {
   let { token: token1, authUserId: authUserId1 } = loginRes;
   let { token: token2, authUserId: authUserId2 } = loginRes2;
 
-  const { dmId } = dmCreateV1(token1, authUserId2);
+  const { dmId } = dmCreateV1(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token1, dmId + 1);
   let { error } = dmDetailsRes;
@@ -63,7 +66,7 @@ test("error auth user not member of dm", () => {
   let { token: token2, authUserId: authUserId2 } = loginRes2;
   let { token: token3, authUserId: authUserId3 } = loginRes3;
 
-  const { dmId } = dmCreateV1(token1, authUserId2);
+  const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token3, dmId);
   let { error } = dmDetailsRes;
@@ -80,7 +83,7 @@ test("error invalid token", () => {
   let { token: token1, authUserId: authUserId1 } = loginRes;
   let { token: token2, authUserId: authUserId2 } = loginRes2;
 
-  const { dmId } = dmCreateV1(token1, authUserId2);
+  const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token1 + "error", dmId);
 

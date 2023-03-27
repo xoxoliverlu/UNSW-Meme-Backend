@@ -9,7 +9,7 @@ import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
 import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
-import { dmCreateV1, dmListV1 } from './dm'
+import { dmCreateV1, dmListV1, dmDetailsV1} from './dm'
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -144,7 +144,7 @@ app.post('/channel/leave/v1',(req: Request, res: Response, next) => {
 /****************
 *  DM Routes  *
 ****************/
-app.post('/dm/create/v1', (req: Request, res: Responde, next) => {
+app.post('/dm/create/v1', (req: Request, res: Response, next) => {
   const {token, uIds} = req.body;
   res.json(dmCreateV1(token, uIds));
 });
@@ -152,4 +152,10 @@ app.post('/dm/create/v1', (req: Request, res: Responde, next) => {
 app.get('/dm/list/v1', (req: Request, res: Response, next) => {
   const token = req.query.token;
   res.json(dmListV1(token));
+});
+
+app.get('/dm/details/v1', (req: Request, res: Response, next) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId;
+  res.json(dmDetailsV1(token, dmId));
 });
