@@ -349,3 +349,20 @@ export const requestDmDetails = (token: String, dmId: number) => {
       }
       return res.statusCode;
 }
+
+export const requestDmLeave = (token: string, dmId: number) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/dm/leave/v1',
+        {
+            json: {
+                token: token,
+                dmId: dmId,
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
