@@ -322,13 +322,13 @@ export const requestDmList = (token: String) => {
         'GET',
         `${url}:${port}` + '/dm/list/v1',
         {
-          json: {
-            token: token
+          qs: {
+            token
           }
         }
       );
       if (res.statusCode === 200) {
-        return JSON.parse(res.body as string);
+        return JSON.parse(res.getBody() as string);
       }
       return res.statusCode;
 }
