@@ -82,4 +82,28 @@ const dmListV1 = (token: string) => {
   return { dms: dms };
 }
 
-export { dmCreateV1, dmListV1 };
+const dmDetailsV1 = (token: string, dmId: number) => {
+	const data = getData();
+	let user = data.tokens.find((item) => item.token === token);
+
+	if (user === undefined) {
+	  return { error: "invalid token" };
+	}
+  let {uId} = user;
+  
+  let dm = data.dms.find(item => item.dmId == dmId);
+  if (!dm) {
+    return {error: "invalid dm id"};
+  }
+
+  if (!dm.uIds.includes(uId) && dm.ownerId !== uId){
+    return {error: "This user is not a part of the dm"};
+  }
+
+  return {
+    name: dm.name,
+    members: dm.uIds
+  }
+}
+
+export { dmCreateV1, dmListV1, dmDetailsV1 };
