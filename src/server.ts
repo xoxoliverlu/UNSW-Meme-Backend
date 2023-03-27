@@ -141,3 +141,10 @@ app.post('/channel/leave/v1',(req: Request, res: Response, next) => {
   const {token, channelId} = req.body;
   res.json(channelLeaveV1(token, channelId));
 });
+/****************
+*  DM Routes  *
+****************/
+app.post('/dm/create/v1', (req: Request, res: Responde, next) => {
+  const {token, uIds} = req.body;
+  res.json(dmCreateV2(token, uIds));
+});
