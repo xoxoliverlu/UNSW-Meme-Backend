@@ -36,6 +36,8 @@ export interface DataStore {
     lastAuthUserId: number;
     lastChannelId: number;
     lastToken: number;
+    dms: DM[],
+    lastDmId: number,
 }
 
 export interface Profile {
