@@ -3,10 +3,11 @@ import { Message } from './interfaces';
 const dmCreateV1 = (token: string, uIds: number[]) => {
   const data = getData();
 	// Error check: invalid uId in uIds
+	let userInfo;
 	for (const id of uIds) {
-		const userInfo = data.users.find((element) => element.uId === uId);
-		if (userInfo === undefined) return { error: "Invalid uId" };
+		userInfo = data.users.find((element) => element.uId === id);
 	}
+	if (userInfo === undefined) return { error: "Invalid uId" };
 	// Duplicate uId in uIds
 	const unique = Array.from(new Set(uIds));
 	if (uIds.length !== unique.length) {
@@ -41,7 +42,7 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 	const dm = {
 		dmId: newId,
 		name: name,
-		owner: auth.uId,
+		ownerId: auth.uId,
 		uIds: uIds,
 		messages: [] as Message[]
 	};
@@ -58,15 +59,17 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 const dmListV1 = (token: string) => {
   // check if token passed in is valid
   // Invalid token
+	const data = getData();
+  const dms = [];
+
 	const auth = data.tokens.find((item) => item.token === token);
   if (auth === undefined) return { error: "Invalid token" };
 
-  const data = getData();
-  const dms = [];
+
 
   for (const dm of data.dms) {
     // check if user is owner / member of a dm
-    if (tokenId.uId === dm.ownerId || dm.uIds.includes(auth.uId)) {
+    if (auth.uId === dm.ownerId || dm.uIds.includes(auth.uId)) {
       dms.push({
         dmId: dm.dmId,
         name: dm.name,
