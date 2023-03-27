@@ -1,4 +1,4 @@
-import { requestAuthRegister, requestClear, requestDmCreate, requestDmList } from '../requests';
+import { requestAuthRegister, requestClear, requestDmCreate, requestrequestDmList } from '../requests';
 
 beforeEach(() => {
 	requestClear();
@@ -11,7 +11,7 @@ describe ('dm Create valid inputs', () => {
     const uIds = [user1.authUserId];
     const dm = requestDmCreate(user2.token, uIds);
 		expect(dm.dmId).toEqual(expect.any(Number));
-		expect(dmList(user1.token).toMatchObject({
+		expect(requestDmList(user1.token).toMatchObject({
 			dms: [
         {
           dmId: dm.dmId,
@@ -28,7 +28,7 @@ describe ('dm Create valid inputs', () => {
 		// User creates dm
     const dm = requestDmCreate(user.token, uIds);
 		expect(dm.dmId).toEqual(expect.any(Number));
-		expect(dmList(user1.token).toMatchObject({
+		expect(requestDmList(user1.token).toMatchObject({
 			dms: [
         {
           dmId: dm.dmId,
@@ -48,7 +48,7 @@ describe ('dm Create valid inputs', () => {
     const uIds2 = [user1.authUserId];
     const dm2 = requestDmCreate(user3.token, uIds2);
 		expect(dm.dmId).not.toEqual(dm2.dmId);
-		expect(dmList(user1.token).toMatchObject({
+		expect(requestDmList(user1.token).toMatchObject({
 			dms: [
         {
           dmId: dm.dmId,
