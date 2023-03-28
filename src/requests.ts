@@ -462,7 +462,7 @@ export const requestMessageRemove = (token: string, messageId: number) => {
         'POST',
         `${url}:${port}` + '/message/remove/v1',
         {
-            json: {
+            qs: {
                 token: token,
                 messageId: messageId
             }
