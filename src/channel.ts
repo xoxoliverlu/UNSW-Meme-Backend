@@ -22,16 +22,16 @@ export function channelDetailsV2(token: string, channelId: number) {
   // Checks if the token and userId is valid.
   const auth = data.tokens.find(item => item.token === token);
   if (auth === undefined) {
-    return {error: "Invalid token"}; 
+    return { error: "Invalid token" };
   }
   let authUserId = auth.uId;
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
   if (channel === undefined) {
-    return {error: "Invalid channelId"}; 
+    return { error: "Invalid channelId" };
   }
   if (!channel.allMembers.includes(authUserId)) {
-    return {error: "User is not a member of the channel"};
+    return { error: "User is not a member of the channel" };
   }
 
   const owners = memberObject(channel.ownerMembers);
@@ -137,7 +137,7 @@ export function channelJoinV2(token: string, channelId: number) {
  * @returns {}
  * @returns {object} - error if any of the Id's are invalid
  */
-export function channelInviteV1(token: string, channelId: number, uId:number) {
+export function channelInviteV1(token: string, channelId: number, uId: number) {
   const data = getData();
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
@@ -178,15 +178,14 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   const data = getData();
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
- let authUserId = authUser.uId;
+  let authUserId = authUser.uId;
 
-  const channelIndex = data.channels.findIndex((c) => c.channelId === channelId);
-  if (channelIndex < 0) return { error: 'channelId is not valid' };
+  const channel = data.channels.find((c) => c.channelId === channelId);
+  if (!channel) return { error: 'channelId is not valid' };
 
-  const inChannel = data.channels[channelIndex].allMembers.some((m) => m.uId === authUserId);
-  if (!inChannel) return { error: 'user is not a member in the channel' };
+  if (!channel.allMembers.includes(authUserId)) return { error: 'user is not a member in the channel' };
 
-  const numberOfMessages = data.channels[channelIndex].messages.length;
+  const numberOfMessages = channel.messages.length;
 
   if (start > numberOfMessages) {
     return {
@@ -200,15 +199,15 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   } else if (numberOfMessages === 0 || numberOfMessages <= start + 50) {
     end = -1;
   }
-  const reversed = data.channels[channelIndex].messages.slice().reverse();
+  const reversed = channel.messages.slice().reverse();
   const messages =
-  reversed.slice(start, start + 50)
-    .map((m) => ({
-      messageId: m.messageId,
-      uId: m.uId,
-      message: m.message,
-      timeSent: m.timeSent
-    }));
+    reversed.slice(start, start + 50)
+      .map((m) => ({
+        messageId: m.messageId,
+        uId: m.uId,
+        message: m.message,
+        timeSent: m.timeSent
+      }));
   setData(data);
   return { messages, end, start };
 }
@@ -299,7 +298,7 @@ export function channelRemoveOwnerV1(
 
   const index = channel.ownerMembers.indexOf(userId);
   channel.ownerMembers.splice(index, 1);
-  
+
   setData(data);
   return {};
 }
@@ -324,11 +323,11 @@ export function channelLeaveV1(token: String, channelId: number) {
 
   let index = channel.ownerMembers.indexOf(userId);
   channel.allMembers.splice(index, 1);
-  
+
 
   if (channel.ownerMembers.includes(userId)) {
     const index = channel.ownerMembers.indexOf(userId);
-    channel.ownerMembers.splice(index, 1); 
+    channel.ownerMembers.splice(index, 1);
   }
 
   setData(data);

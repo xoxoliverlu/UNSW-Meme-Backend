@@ -7,7 +7,7 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
-import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
+import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1} from './message';
 
@@ -169,6 +169,13 @@ app.delete('/message/remove/v1',(req: Request, res: Response, next) => {
 app.get('/dm/messages/v1',(req: Request, res: Response, next) => {
   const {token, dmId, start} = req.body;
   res.json(dmMessagesV1(token, dmId, start));
+});
+
+app.get('/channel/messages/v2',(req: Request, res: Response, next) => {
+  const token = req.query.token as string;
+  const channelId = parseInt(req.query.channelId);
+  const start = parseInt(req.query.start);
+  res.json(channelMessagesV1(token, channelId, start));
 });
 
 
