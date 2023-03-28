@@ -316,3 +316,110 @@ export const requestChannelLeave = (token: String, channelId: number) => {
     }
     return res.statusCode;
 }
+
+export const requestChannelMessages = (token: string, channelId: number, start: number) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/channel/messages/v2',
+        {
+            json: {
+                token: token,
+                channelId: channelId,
+                start: start
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestMessageSend = (token: string, dmId: number, message: string) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/message/send/v1',
+        {
+            json: {
+                token: token,
+                dmId: dmId,
+                message: message
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestDmMessages = (token: string, dmId: number, start: number) => {
+    const res = request(
+        'GET',
+        `${url}:${port}` + '/dm/messages/v1',
+        {
+            json: {
+                token: token,
+                dmId: dmId,
+                start: start
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestMessageSendDm = (token: string, dmId: number, message: string) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/message/send/v1',
+        {
+            json: {
+                token: token,
+                dmId: dmId,
+                message: message
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestMessageRemove = (token: string, messageId: number) => {
+    const res = request(
+        'POST',
+        `${url}:${port}` + '/message/remove/v1',
+        {
+            json: {
+                token: token,
+                messageId: messageId
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
+
+export const requestMessageEdit = (token: string, messageId: number, message: string) => {
+    const res = request(
+        'PUT',
+        `${url}:${port}` + '/message/edit/v1',
+        {
+            json: {
+                token: token,
+                messageId: messageId,
+                message: message
+            }
+        }
+    );
+    if (res.statusCode === 200) {
+        return JSON.parse(res.getBody() as string);
+    }
+    return res.statusCode;
+}
