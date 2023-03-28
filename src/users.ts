@@ -1,5 +1,6 @@
 import { getData, setData } from "./dataStore";
 import validator from "validator";
+import { Profile } from "./interfaces";
 
 /**
  * Given a valid token and a uId, displays basic information about the user.
@@ -26,13 +27,13 @@ export function userProfileV2(token: string, uId: number) {
   if (userInfo === undefined) return { error: "Invalid uId" };
 
   return {
-    user: {
+    user:  {
       uId: userInfo.uId,
       nameFirst: userInfo.nameFirst,
       nameLast: userInfo.nameLast,
       email: userInfo.email,
       handleStr: userInfo.handleStr,
-    },
+    } as Profile,
   };
 }
 
@@ -52,17 +53,10 @@ export function usersAllV1(token: string) {
   const auth = data.tokens.find((item) => item.token === token);
   if (auth === undefined) return { error: "Invalid token" };
   // Create an array of user objects.
-  const resultUsers = [];
-  for (let user of data.users) {
-    resultUsers.push({
-      uId: user.uId,
-      email: user.email,
-      nameFirst: user.nameFirst,
-      nameLast: user.nameLast,
-      handleStr: user.handleStr,
-    });
-  }
-
+  const resultUsers = data.users.map((user) => {
+    return {uId: user.uId, email: user.email, nameFirst: user.nameFirst, nameLast: user.nameLast, handleStr: user.handleStr}
+  });
+  
   return { users: { resultUsers } };
 }
 
