@@ -390,7 +390,7 @@ export const requestChannelMessages = (token: string, channelId: number, start: 
         'GET',
         `${url}:${port}` + '/channel/messages/v2',
         {
-            json: {
+            qs: {
                 token: token,
                 channelId: channelId,
                 start: start

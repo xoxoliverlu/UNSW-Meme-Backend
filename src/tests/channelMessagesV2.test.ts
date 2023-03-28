@@ -14,7 +14,7 @@ describe('/channel/messages/v2', () => {
     test('channelId does not refer to a valid channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const data = requestChannelMessages(register.token, -1, 0);
-      expect(data).toStrictEqual({ error: 'channelId does not refer to an existing channel' });
+      expect(data).toStrictEqual({ error: 'channelId is not valid' });
     });
 
     test('start is greater than the total number of messages in the channel', () => {

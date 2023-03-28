@@ -2,30 +2,29 @@ import { getData, setData } from './dataStore';
 
 export function messageSendV1(token: string, channelId: number, message: string) {
   const data = getData();
-  const indexUser = data.users.findIndex((u) => u.token === token);
-  if (indexUser < 0) return { error: 'Token invalid' };
-  const authUserId = data.users[indexUser].authUserId;
+  const user = data.tokens.find((u) => u.token === token);
+  if (!user) return { error: 'Token invalid' };
+  const {uId} = user;
 
-  const indexChannel = data.channels.findIndex((c) => c.channelId === channelId);
-  if (indexChannel < 0) return { error: 'Invalid channelId' };
+  const channel = data.channels.find((c) => c.channelId === channelId);
+  if (!channel) return { error: 'Invalid channelId' };
 
   if (message.length < 1) return { error: 'Message cannot be empty' };
 
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
+  
+  if (channel.allMembers.includes(uId)) return { error: 'User is not part of the channel' };
 
-  const inChannel = data.channels[indexChannel].allMembers.some((m) => m.uId === authUserId);
-  if (!inChannel) return { error: 'User is not part of the channel' };
-
-  let messageId: number;
-  data.channels.forEach((channel) => { messageId = channel.messages.length; });
+  let messageId = data.lastMessageId + 1;
+  data.lastMessageId++;
 
   const newMessage = {
     messageId: messageId,
-    uId: data.users[indexUser].authUserId,
+    uId: uId,
     message: message,
     timeSent: Math.floor(Date.now() / 1000)
   };
-  data.channels[indexChannel].messages.push(newMessage);
+  channel.messages.push(newMessage);
 
   setData(data);
 

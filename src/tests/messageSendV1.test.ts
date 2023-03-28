@@ -4,6 +4,7 @@ describe('Testing messagesendv1', () => {
     test('messagesendv1 success', () => {
       const register = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
       const channel = requestChannelsCreate(register.token, 'channelNew', true);
+      console.log(channel.channelId);
       const message = requestMessageSend(register.token, channel.channelId, 'cat');
       expect(message).toStrictEqual({ messageId: message.messageId });
     });
