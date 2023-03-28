@@ -45,7 +45,6 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 		dmId: newId,
 		name: name,
 		ownerId: auth.uId,
-		uIds: uIds,
 		messages: [] as Message[]
 	};
 
@@ -82,4 +81,42 @@ const dmListV1 = (token: string) => {
   return { dms: dms };
 }
 
-export { dmCreateV1, dmListV1 };
+const dmRemoveV1 = (token: string, dmId: number) => {
+	// Error check
+	// Valid token
+
+  // check if token passed in is valid
+  const auth = data.tokens.find((item) => item.token === token);
+  if (auth === undefined) return { error: "Invalid token" };
+
+  // check if dmId passed in is valid
+	const validDmId = data.dms.find((item) => item.dmId === dmId);
+	if (validDmId === undefined) return {error: "Invalid dmId"};
+
+  // check if user is a member of dm
+	let isMember = false;
+	let isOwner = false;
+	for (const dm of data.dms) {
+    // check if user is owner / member of a dm
+    if (auth.uId === dm.ownerId) {
+			isOwner = true;
+		}
+		if (dm.uIds.includes(auth.uId)) {
+      isMember = true;
+    }
+  }
+	if (isMember === false || isOwner === false) {
+		return {error: 'User is not a member or ownere of the channel'}
+	}
+
+	// Remove Dm
+  const data = getData();
+  const toRemoveDm = data.dms.filter((dm) => dm.dmId === dmId)[0];
+
+  // remove dm from dataStore
+  data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
+  setData(data);
+
+  return {};
+}
+export { dmCreateV1, dmListV1, dmRemoveV1 };
