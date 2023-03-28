@@ -1,5 +1,6 @@
 import { getData, setData } from "./dataStore";
 import validator from "validator";
+import { Profile } from "./interface";
 
 /**
  * Given a valid token and a uId, displays basic information about the user.
@@ -26,13 +27,13 @@ export function userProfileV2(token: string, uId: number) {
   if (userInfo === undefined) return { error: "Invalid uId" };
 
   return {
-    user: {
+    user:  {
       uId: userInfo.uId,
       nameFirst: userInfo.nameFirst,
       nameLast: userInfo.nameLast,
       email: userInfo.email,
       handleStr: userInfo.handleStr,
-    },
+    } as Profile,
   };
 }
 
@@ -63,7 +64,7 @@ export function usersAllV1(token: string) {
     });
   }
 
-  return { users: { resultUsers } };
+  return { users: { resultUsers } as Profile[] };
 }
 
 /**
