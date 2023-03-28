@@ -10,8 +10,12 @@ import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels'
 import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1} from './message';
+<<<<<<< HEAD
 import { dmCreateV1, dmListV1, dmRemoveV1 } from './dm';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1} from './dm';
+=======
+
+>>>>>>> 0d4482dab7b4c84161a2fa49462bb891e6c1558e
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
