@@ -163,12 +163,15 @@ app.put('/message/edit/v1',(req: Request, res: Response, next) => {
 });
 
 app.delete('/message/remove/v1',(req: Request, res: Response, next) => {
-  const {token, messageId} = req.body;
+  const token = req.token as string;
+  const messageId = parseInt(req.query.messageId);
   res.json(messageRemoveV1(token, messageId));
 });
 
 app.get('/dm/messages/v1',(req: Request, res: Response, next) => {
-  const {token, dmId, start} = req.body;
+  const token = req.token as string;
+  const dmId = parseInt(req.query.dmId);
+  const start = parseInt(req.query.start);
   res.json(dmMessagesV1(token, dmId, start));
 });
 
