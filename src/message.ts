@@ -2,6 +2,7 @@ import { getData, setData } from './dataStore';
 
 export function messageSendV1(token: string, channelId: number, message: string) {
   const data = getData();
+  console.log("Token passed in is: " + token);
   const user = data.tokens.find((u) => u.token === token);
   if (!user) return { error: 'Token invalid' };
   const {uId} = user;
@@ -13,7 +14,7 @@ export function messageSendV1(token: string, channelId: number, message: string)
 
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
   
-  if (channel.allMembers.includes(uId)) return { error: 'User is not part of the channel' };
+  if (!channel.allMembers.includes(uId)) return { error: 'User is not part of the channel' };
 
   let messageId = data.lastMessageId + 1;
   data.lastMessageId++;
