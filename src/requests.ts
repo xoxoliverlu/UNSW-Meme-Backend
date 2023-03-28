@@ -333,6 +333,23 @@ export const requestDmList = (token: String) => {
       return res.statusCode;
 }
 
+export const requestDmRemove = (token: string, dmId: number) => {
+	const res = request(
+		'DELETE',
+		`${url}:${port}` + '/dm/remove/v1',
+		{
+		qs: {
+				token,
+				dmId,
+		}
+		}
+	);
+	if (res.statusCode === 200) {
+		return JSON.parse(res.body as string);
+	}
+	return res.statusCode;
+}
+
 export const requestDmDetails = (token: String, dmId: number) => {
     const res = request(
         'GET',

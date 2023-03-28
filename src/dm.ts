@@ -1,6 +1,5 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
-import { authRegisterV2} from './auth'
 const dmCreateV1 = (token: string, uIds: number[]) => {
   const data = getData();
 	// Error check: invalid uId in uIds
@@ -82,6 +81,32 @@ const dmListV1 = (token: string) => {
   return { dms: dms };
 }
 
+const dmRemoveV1 = (token: string, dmId: number) => {
+	// Error check
+	// Valid token
+	const data = getData();
+  // check if token passed in is valid
+  const auth = data.tokens.find((item) => item.token === token);
+  if (auth === undefined) return { error: "Invalid token" };
+
+  // check if dmId passed in is valid
+	const validDmId = data.dms.find((item) => item.dmId === dmId);
+	if (validDmId === undefined) return {error: "Invalid dmId"};
+	const isOwner = data.dms.find((item) => item.ownerId === auth.uId);
+	if ( isOwner === undefined) {
+		return {error: 'User is no longer in the channel or not the owner'}
+	}
+
+	// Remove Dm
+  const toRemoveDm = data.dms.filter((dm) => dm.dmId === dmId);
+
+  // remove dm from dataStore
+  data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
+  setData(data);
+
+  return {};
+}
+
 const dmDetailsV1 = (token: string, dmId: number) => {
 	const data = getData();
 	let user = data.tokens.find((item) => item.token === token);
@@ -90,7 +115,7 @@ const dmDetailsV1 = (token: string, dmId: number) => {
 	  return { error: "invalid token" };
 	}
   let {uId} = user;
-  
+
   let dm = data.dms.find(item => item.dmId == dmId);
   if (!dm) {
     return {error: "invalid dm id"};
@@ -126,9 +151,9 @@ const dmLeaveV1 = (token: string, dmId: number) => {
   // Removes the user from the members array.
   const index = dm.uIds.indexOf(user.uId);
   if (index > -1) { dm.uIds.splice(index, 1);}
-  
+
   setData(data);
   return {};
 };
 
-export { dmCreateV1, dmListV1, dmDetailsV1, dmLeaveV1 };
+export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV1, dmLeaveV1 };
