@@ -106,4 +106,54 @@ const dmRemoveV1 = (token: string, dmId: number) => {
 
   return {};
 }
-export { dmCreateV1, dmListV1, dmRemoveV1 };
+
+const dmDetailsV1 = (token: string, dmId: number) => {
+	const data = getData();
+	let user = data.tokens.find((item) => item.token === token);
+
+	if (user === undefined) {
+	  return { error: "invalid token" };
+	}
+  let {uId} = user;
+
+  let dm = data.dms.find(item => item.dmId == dmId);
+  if (!dm) {
+    return {error: "invalid dm id"};
+  }
+
+  if (!dm.uIds.includes(uId) && dm.ownerId !== uId){
+    return {error: "This user is not a part of the dm"};
+  }
+
+  let members = dm.uIds.slice();
+  members.push(dm.ownerId);
+  return {
+    name: dm.name,
+    members: members
+  }
+}
+
+const dmLeaveV1 = (token: string, dmId: number) => {
+  const data = getData();
+  // Checks if the token is valid.
+  const auth = data.tokens.find((item) => item.token === token);
+  if (auth === undefined) return { error: "Invalid token" };
+  // Checks if the dmId is valid.
+  const dm = data.dms.find((element) => element.dmId === dmId);
+  if (dm === undefined) return { error: "Invalid dmId" };
+  // Checks if the user is a member of the dm.
+  const user = data.users.find((element) => element.uId === auth.uId);
+  if (!dm.uIds.includes(user.uId)) return { error: "User is already not a member"};
+  // Checks if user is the owner.
+  if (auth.uId === dm.ownerId) {
+    dm.ownerId = -1;
+  }
+  // Removes the user from the members array.
+  const index = dm.uIds.indexOf(user.uId);
+  if (index > -1) { dm.uIds.splice(index, 1);}
+
+  setData(data);
+  return {};
+};
+
+export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV1, dmLeaveV1 };
