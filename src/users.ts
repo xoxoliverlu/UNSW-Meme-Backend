@@ -54,7 +54,13 @@ export function usersAllV1(token: string) {
   if (auth === undefined) return { error: "Invalid token" };
   // Create an array of user objects.
   const resultUsers = data.users.map((user) => {
-    return {uId: user.uId, email: user.email, nameFirst: user.nameFirst, nameLast: user.nameLast, handleStr: user.handleStr}
+    return {
+      uId: user.uId, 
+      email: user.email, 
+      nameFirst: user.nameFirst, 
+      nameLast: user.nameLast, 
+      handleStr: user.handleStr
+    }
   });
   
   return { users: { resultUsers } };
