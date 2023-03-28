@@ -53,18 +53,11 @@ export function usersAllV1(token: string) {
   const auth = data.tokens.find((item) => item.token === token);
   if (auth === undefined) return { error: "Invalid token" };
   // Create an array of user objects.
-  const resultUsers = [];
-  for (let user of data.users) {
-    resultUsers.push({
-      uId: user.uId,
-      email: user.email,
-      nameFirst: user.nameFirst,
-      nameLast: user.nameLast,
-      handleStr: user.handleStr,
-    });
-  }
-
-  return { users: { resultUsers } as Profile[] };
+  const resultUsers = data.users.map((user) => {
+    return {uId: user.uId, email: user.email, nameFirst: user.nameFirst, nameLast: user.nameLast, handleStr: user.handleStr}
+  });
+  
+  return { users: { resultUsers } };
 }
 
 /**
