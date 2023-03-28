@@ -84,7 +84,7 @@ const dmListV1 = (token: string) => {
 const dmRemoveV1 = (token: string, dmId: number) => {
 	// Error check
 	// Valid token
-
+	const data = getData();
   // check if token passed in is valid
   const auth = data.tokens.find((item) => item.token === token);
   if (auth === undefined) return { error: "Invalid token" };
@@ -106,12 +106,11 @@ const dmRemoveV1 = (token: string, dmId: number) => {
     }
   }
 	if (isMember === false || isOwner === false) {
-		return {error: 'User is not a member or ownere of the channel'}
+		return {error: 'User is not a member or owner of the channel'}
 	}
 
 	// Remove Dm
-  const data = getData();
-  const toRemoveDm = data.dms.filter((dm) => dm.dmId === dmId)[0];
+  const toRemoveDm = data.dms.filter((dm) => dm.dmId === dmId);
 
   // remove dm from dataStore
   data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
