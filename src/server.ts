@@ -9,6 +9,7 @@ import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
 import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
+import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1} from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1 } from './dm';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1} from './dm';
 // Set up web app
@@ -170,3 +171,34 @@ app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
   const {token, dmId} = req.body;
   res.json(dmLeaveV1(token, dmId));
 });
+
+/****************
+*  Messages Routes  *
+****************/
+app.post('/message/send/v1',(req: Request, res: Response, next) => {
+  const {token, channelId, message} = req.body;
+  res.json(messageSendV1(token, channelId, message));
+});
+
+app.post('/message/senddm/v1',(req: Request, res: Response, next) => {
+  const {token, dmId, message} = req.body;
+  res.json(messageSendDmV1(token, dmId, message));
+});
+
+app.put('/message/edit/v1',(req: Request, res: Response, next) => {
+  const {token, messageId, message} = req.body;
+  res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete('/message/remove/v1',(req: Request, res: Response, next) => {
+  const {token, messageId} = req.body;
+  res.json(messageRemoveV1(token, messageId));
+});
+
+app.get('/dm/messages/v1',(req: Request, res: Response, next) => {
+  const {token, dmId, start} = req.body;
+  res.json(dmMessagesV1(token, dmId, start));
+});
+
+
+
