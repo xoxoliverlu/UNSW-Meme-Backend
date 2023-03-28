@@ -1,6 +1,6 @@
 import { getData, setData } from "./dataStore";
 import validator from "validator";
-import { Profile } from "./interface.ts";
+import { Profile } from "./interfaces";
 
 /**
  * Given a valid token and a uId, displays basic information about the user.
