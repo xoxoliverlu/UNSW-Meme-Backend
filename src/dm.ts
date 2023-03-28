@@ -1,6 +1,5 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
-import { authRegisterV2} from './auth'
 const dmCreateV1 = (token: string, uIds: number[]) => {
   const data = getData();
 	// Error check: invalid uId in uIds
@@ -45,6 +44,7 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
 		dmId: newId,
 		name: name,
 		ownerId: auth.uId,
+		uIds: uIds,
 		messages: [] as Message[]
 	};
 
@@ -92,21 +92,9 @@ const dmRemoveV1 = (token: string, dmId: number) => {
   // check if dmId passed in is valid
 	const validDmId = data.dms.find((item) => item.dmId === dmId);
 	if (validDmId === undefined) return {error: "Invalid dmId"};
-
-  // check if user is a member of dm
-	let isMember = false;
-	let isOwner = false;
-	for (const dm of data.dms) {
-    // check if user is owner / member of a dm
-    if (auth.uId === dm.ownerId) {
-			isOwner = true;
-		}
-		if (dm.uIds.includes(auth.uId)) {
-      isMember = true;
-    }
-  }
-	if (isMember === false || isOwner === false) {
-		return {error: 'User is not a member or owner of the channel'}
+	const isOwner = data.dms.find((item) => item.ownerId === auth.uId);
+	if ( isOwner === undefined) {
+		return {error: 'User is no longer in the channel or not the owner'}
 	}
 
 	// Remove Dm
