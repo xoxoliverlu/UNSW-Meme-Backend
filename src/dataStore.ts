@@ -7,6 +7,7 @@ let data = {
   lastAuthUserId: 0,
   lastChannelId: 0,
   lastToken: 0,
+  lastMessageId: 0,
   tokens: [] as TokenPair[],
   dms: [] as DM[],
   lastDmId: 0,

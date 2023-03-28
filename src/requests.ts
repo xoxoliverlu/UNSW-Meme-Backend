@@ -426,7 +426,7 @@ export const requestDmMessages = (token: string, dmId: number, start: number) =>
         'GET',
         `${url}:${port}` + '/dm/messages/v1',
         {
-            json: {
+            qs: {
                 token: token,
                 dmId: dmId,
                 start: start
@@ -459,7 +459,7 @@ export const requestMessageSendDm = (token: string, dmId: number, message: strin
 
 export const requestMessageRemove = (token: string, messageId: number) => {
     const res = request(
-        'POST',
+        'DELETE',
         `${url}:${port}` + '/message/remove/v1',
         {
             qs: {

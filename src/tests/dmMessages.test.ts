@@ -4,9 +4,6 @@ beforeEach(() => {
   requestClear();
 });
 
-afterAll(() => {
-  requestClear();
-});
 
 
 describe('/dm/messages/v1', () => {
@@ -30,7 +27,7 @@ describe('/dm/messages/v1', () => {
         const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
         const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
         const dm = requestDmCreate(register.token, [register2.authUserId]);
-        const data = requestDmMessages(register.token, dm.dmId, 1);
+        const data = requestDmMessages(register.token, dm.dmId, 2);
         expect(data).toStrictEqual({ error: 'start parameter is greater than number of messages in DM' });
       });
       test('token is invalid', () => {

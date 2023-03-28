@@ -1,3 +1,4 @@
+import { channel } from 'diagnostics_channel';
 import { getData, setData } from './dataStore';
 
 export function messageSendV1(token: string, channelId: number, message: string) {
@@ -159,81 +160,39 @@ export function messageEditV1 (token: string, messageId: number, message: string
 }
 export function messageRemoveV1(token: string, messageId: number) {
   const data = getData();
-  const indexUser = data.users.findIndex((u) => u.token === token);
-  const userToken = data.users.find((u) => u.token === token);
-  if (!userToken) {
+  const user = data.tokens.find((u) => u.token === token);
+  if (!user) {
     return { error: 'token is invalid' };
   }
 
-  const userId = data.users[indexUser].authUserId;
-
-  // If message is in channel
-  let userSentMsg = false;
-  let validmessageIdchannel = false;
-  let channelNumber = 0;
-  for (const channel of data.channels) {
-    for (const message of channel.messages) {
-      if (message.messageId === messageId) {
-        validmessageIdchannel = true;
-        if (message.uId === userId) {
-          userSentMsg = true;
-        }
-      }
+  const {uId} = user;
+  let channelMsg = null;
+  let dmMsg = null;
+  
+  data.channels.filter(channel => channel.allMembers.includes(uId)).forEach((channel) => {
+    channelMsg = channel.messages.findIndex(message => message.messageId = messageId);
+    let channelPermission = channel.ownerMembers.includes(uId)
+    if (!channelPermission){
+      return {error: "This user does not have permission to delete this message."}
     }
-    if (validmessageIdchannel === false) {
-      channelNumber++;
+    if (channelMsg && channelPermission){
+      channel.messages.splice(channelMsg, 1)
+    } 
+  })
+  data.dms.filter(dm => dm.uIds.includes(uId) || dm.ownerId == uId).forEach((dm) => {
+    dmMsg = dm.messages.findIndex(message => message.messageId = messageId);
+    let dmPermission = dm.ownerId == uId;
+    if (!dmPermission){
+      return {error: "This user does not have permission to delete this message."}
     }
+    if (dmMsg && dmPermission){
+      dm.messages.splice(dmMsg, 1)
+    } 
+  })
+  if (!dmMsg && !channelMsg){
+    return {error: "messageId does not refer to a valid message within a channel/DM that the authorised user has joined"}
   }
 
-  // If message is in dm
-  let validmessageIddm = false;
-  let dmNumber = 0;
-  for (const dm of data.dms) {
-    for (const message of dm.messages) {
-      if (message.messageId === messageId) {
-        validmessageIddm = true;
-        if (message.uId === userId) {
-          userSentMsg = true;
-        }
-      }
-    }
-    if (validmessageIddm === false) {
-      dmNumber++;
-    }
-  }
-
-  if (validmessageIdchannel === false && validmessageIddm === false) {
-    return { error: 'Invalid messageId' };
-  }
-
-  // error checking for the message if in a channel
-  if (validmessageIdchannel) {
-    const findIfChannelMember = data.channels[channelNumber].allMembers.find((u) => u.uId === userId);
-    if (findIfChannelMember === undefined) {
-      return { error: 'user not member of channel' };
-    }
-    const findIfChannelOwner = data.channels[channelNumber].ownerMembers.find((u) => u.uId === userId);
-    if (userSentMsg === false && findIfChannelOwner === undefined) {
-      return { error: 'user did not send that message' };
-    }
-
-    const indexMessage = data.channels[channelNumber].messages.findIndex((u) => u.messageId === messageId);
-    data.channels[channelNumber].messages.splice(indexMessage, 1);
-  }
-
-  // error checking for the message if in a dm
-  if (validmessageIddm) {
-    const findIfDmMember = data.dms[dmNumber].allMembers.find((u) => u === userId);
-    if (findIfDmMember === undefined) {
-      return { error: 'user not member of dm' };
-    }
-    const findIfDmOwner = data.dms[dmNumber].ownerMembers.find((u) => u === userId);
-    if (userSentMsg === false && findIfDmOwner === undefined) {
-      return { error: 'user did not send that message' };
-    }
-    const indexMessage = data.dms[dmNumber].messages.findIndex((u) => u.messageId === messageId);
-    data.dms[dmNumber].messages.splice(indexMessage, 1);
-  }
   setData(data);
   return {};
 
