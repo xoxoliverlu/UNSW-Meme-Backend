@@ -39,5 +39,12 @@ test("Successful requestUserProfileSetHandle Test.", () => {
   const user = requestAuthRegister("fadyS@gmail.com", "password", "Fady", "Sadek");
   const userSetHandle = requestUserProfileSetHandle(user.token, "FadyS");
   const userProfile = requestUserProfile(user.token, user.authUserId);
+  expect(userSetHandle).toEqual({});
   expect(userProfile.user.handleStr).toEqual("FadyS");
+});
+
+test("Setting to the same handleStr.", () => {
+  const user = requestAuthRegister("fadyS@gmail.com", "password", "Fady", "Sadek");
+  const userSetHandle = requestUserProfileSetHandle(user.token, "fadysadek");
+  expect(userSetHandle).toEqual({});
 });

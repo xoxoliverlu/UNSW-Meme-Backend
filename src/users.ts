@@ -136,6 +136,7 @@ export function userProfileSetEmailV1(token: string, email: string) {
   const userInfo = data.users.find((element) => element.uId === auth.uId);
   // Checks if the email is valid using validator.
   email = email.toLowerCase();
+  if (email === userInfo.email) return {};
   if (!validator.isEmail(email)) return { error: "Invalid email" };
   // checks if the email is already in use.
   for (let user of data.users) {
@@ -174,6 +175,7 @@ export function userProfileSetHandleV1(token: string, handleStr: string) {
     return { error: "Length must be between 3 and 20 characters" };
   }
 
+  if (handleStr === userInfo.handleStr) return {};
   const isAlphaNumeric = (str: string) => /^[a-z0-9]+$/gi.test(str);
   if (!isAlphaNumeric(handleStr)) {
     return { error: "handleStr must only contain alphanumeric values" };
