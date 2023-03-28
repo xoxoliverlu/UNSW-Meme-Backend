@@ -1,10 +1,10 @@
 import { channelRemoveOwnerV1 } from "../channel";
-import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelInvite, requestChannelAddOwner, requestChannelRemoveOwner, requestChannelDetails } from "../requests";
+import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelInvite, requestChannelAddOwner, requestChannelRemoveOwner, requestChannelDetails, requestClear } from "../requests";
 import { port, url } from "./config.json";
 const request = require("sync-request");
 
 beforeEach(() => {
-  request("DELETE", `${url}:${port}/clear/v1`);
+  requestClear();
 });
 
 test("success removeOwner", () => {
