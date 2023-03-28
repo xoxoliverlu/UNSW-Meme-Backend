@@ -105,11 +105,9 @@ export function channelsListAllV2(token: String){
     return {error: 'error'}; 
   }
 
-  let result = [];
-
-  for (let channel of data.channels){
-    result.push({channelId: channel.channelId, name: channel.name})
-  }
+  let result = data.channels.map(channel => {
+    return {channelId:channel.channelId, name: channel.name}
+  });
 
   return {
     channels: result,
