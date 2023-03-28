@@ -1,10 +1,13 @@
 import {requestChannelsCreate, requestAuthRegister, requestMessageSend, requestClear } from '../requests';
 
+beforeEach(() => {
+  requestClear();
+});
+
 describe('Testing messagesendv1', () => {
     test('messagesendv1 success', () => {
       const register = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
       const channel = requestChannelsCreate(register.token, 'channelNew', true);
-      console.log(channel.channelId);
       const message = requestMessageSend(register.token, channel.channelId, 'cat');
       expect(message).toStrictEqual({ messageId: message.messageId });
     });
@@ -17,8 +20,8 @@ describe('Testing messagesendv1', () => {
     });
   
     test('channelId does not belong to a valid channel', () => {
-      const register1 = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
-      const message = requestMessageSend(register1.token, 5, 'dog');
+      const register = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
+      const message = requestMessageSend(register.token, 5, 'dog');
       expect(message).toStrictEqual({ error: 'Invalid channelId' });
     });
   

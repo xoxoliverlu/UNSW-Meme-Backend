@@ -177,6 +177,7 @@ app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
 ****************/
 app.post('/message/send/v1',(req: Request, res: Response, next) => {
   const {token, channelId, message} = req.body;
+  console.log("channelId passed in is :" + channelId);
   res.json(messageSendV1(token, channelId, message));
 });
 

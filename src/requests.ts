@@ -403,14 +403,14 @@ export const requestChannelMessages = (token: string, channelId: number, start: 
     return res.statusCode;
 }
 
-export const requestMessageSend = (token: string, dmId: number, message: string) => {
+export const requestMessageSend = (token: string, channelId: number, message: string) => {
     const res = request(
         'POST',
         `${url}:${port}` + '/message/send/v1',
         {
             json: {
                 token: token,
-                dmId: dmId,
+                channelId: channelId,
                 message: message
             }
         }
