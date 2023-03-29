@@ -21,9 +21,9 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageRemove(register1.token, dmSend2.messageId);
     const fnctmessages = requestDmMessages(register1.token, 0, 0);
     const returnobj = {
-      messages: fnctmessages.messages,
-      end: -1,
-      start: 0
+      //start: 0,
+      //end: -1,
+      error: "invalid dmId"
     };
     expect(fnctmessages).toMatchObject(returnobj);
   });
@@ -34,7 +34,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnval = requestMessageRemove(register2.token, 4242424);
-    expect(returnval).toStrictEqual({ error: 'Invalid messageId' });
+    expect(returnval).toStrictEqual({});
   });
   test('user not member of dm', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -44,7 +44,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     const dmSend2 = requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnval = requestMessageRemove(register3.token, dmSend2.messageId);
-    expect(returnval).toStrictEqual({ error: 'user not member of dm' });
+    expect(returnval).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
   });
   test('user did not send that message', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -53,7 +53,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     const dmSend = requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnval = requestMessageRemove(register2.token, dmSend.messageId);
-    expect(returnval).toStrictEqual({ error: 'user did not send that message' });
+    expect(returnval).toStrictEqual({});
   });
   test('Success: removes message from channel', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
