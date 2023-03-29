@@ -16,7 +16,7 @@ describe('Testing messageSendDm', () => {
     const register3 = requestAuthRegister('emily.chang@gmail.com', 'emily123', 'Emily', 'Chang');
     const dm = requestDmCreate(registerOwner.token, [register1.authUserId, register2.authUserId, register3.authUserId]);
     const dmSend = requestMessageSendDm(registerOwner.token, dm.dmId, 'Nine years ago, a nine tailed fox suddenly appeared!');
-    expect(dmSend.messageId).toBeDefined();
+    expect(dmSend && dmSend.messageId).toBeDefined();
     expect(typeof dmSend.messageId).toBe('number');
   });
   test('error: dmId does not refer to a valid DM', () => {
