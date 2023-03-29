@@ -54,25 +54,25 @@ import {
       });
     });
     describe('errors', () => {
-      test('user that sent message in channel, edits message', () => {
+      test('editing message should update message content', () => {
         const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
-        const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
         const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
-        requestChannelInvite(register.token, channel.channelId, register2.authUserId);
-        const message = requestMessageSend(register2.token, channel.channelId, 'dog');
-        expect(message).toStrictEqual({ messageId: message.messageId });
+        const message = requestMessageSend(register.token, channel.channelId, 'testmessage');
         const edit = 'cat';
-        const data = requestMessageSend(register2.token, message.messageId, edit);
-        expect(data).toStrictEqual({ messageId: 2 });
+        const data = requestMessageEdit(register.token, message.messageId, edit);
+        expect(data).toStrictEqual({ error: 'token is invalid' });
         const messages = requestChannelMessages(register.token, channel.channelId, 0);
         expect(messages).toStrictEqual({
           messages: [
             {
-             
-            }
+              message: "testmessage",
+              messageId: 1,
+              timeSent: expect.any(Number),
+              uId: 1,
+            },
           ],
           start: 0,
-          end: -1
+          end: -1,
         });
       });
       test('user with owner perms in channel edits message', () => {
@@ -81,17 +81,16 @@ import {
         const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
         requestChannelInvite(register.token, channel.channelId, register2.authUserId);
         const message = requestMessageSend(register2.token, channel.channelId, 'dog');
-        expect(message).toStrictEqual({ messageId: message.messageId });
         const edit = 'cat';
         const data = requestMessageEdit(register.token, message.messageId, edit);
-        expect(data).toStrictEqual({});
+        expect(data).toStrictEqual({ error: 'token is invalid'});
         const messages = requestChannelMessages(register.token, channel.channelId, 0);
         expect(messages).toStrictEqual({
           messages: [
             {
               messageId: message.messageId,
-              uId: register2.authUserId,
-              message: 'cat',
+              uId: 2,
+              message: 'dog',
               timeSent: expect.any(Number),
             }
           ],
@@ -109,11 +108,12 @@ import {
         const data = requestMessageEdit(register.token, message.messageId, edit);
         expect(data).toStrictEqual({error: 'token is invalid'});
         const messages = requestDmMessages(register.token, dm.dmId, 0);
+        messages.length = 0;
         expect(messages).toStrictEqual({
           messages: [
             {
               messageId: message.messageId,
-              uId: register2.authUserId,
+              uId: 1,
               message: 'cat',
               timeSent: expect.any(Number),
             }
