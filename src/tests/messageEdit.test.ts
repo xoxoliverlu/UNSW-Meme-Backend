@@ -110,15 +110,13 @@ import {
         // Edit the message using register's token
         const edit = 'cat';
         const data = requestMessageEdit(register.token, message.messageId, edit);
-        console.log(data);
         // Verify that the message was successfully edited
         expect(data).toStrictEqual({ error: "token is invalid"});
       
         // Get the messages in the DM and verify that the edited message is present
         const messages = requestDmMessages(register.token, dm.dmId, 0);
-        console.log(messages.messages[0].message);
         expect(messages.messages.length).toBe(1);
-        expect(messages.messages[0].message).toBe(edit);
+        expect(messages.messages[0].message).toBe('dog');
       });
       test('user that sent message in DM, edits message', () => {
         const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -133,10 +131,10 @@ import {
         expect(messages).toStrictEqual({
           messages: [
             {
-              message: messages.message,
-              messageId: messages.messageId,
-              timeSent: messages.timeSent,
-              uId: messages.uId
+              message: "dog",
+              messageId: 1,
+              timeSent: expect.any(Number),
+              uId: 2,
             }
            
           ],
@@ -154,9 +152,9 @@ import {
         const data = requestMessageEdit(register2.token, message.messageId, edit);
         expect(data).toStrictEqual({ error: "token is invalid" });
         const messages = requestDmMessages(register.token, dm.dmId, 0);
-        expect(messages.messages.length).toStrictEqual(2);
-        expect(data.start).toStrictEqual(0);
-        expect(data.end).toStrictEqual(-1);
+        expect(messages.messages.length).toStrictEqual(1);
+        expect(messages.start).toStrictEqual(0);
+        expect(messages.end).toStrictEqual(-1);
       });
     });
   });
