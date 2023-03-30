@@ -155,6 +155,18 @@ const dmLeaveV1 = (token: string, dmId: number) => {
   setData(data);
   return {};
 };
+/**
+ * Given a DM with ID dmId that the authorised user is a member of,
+ * return up to 50 messages between index "start" and "start + 50".
+ * Message with *index 0 is the most recent message in the DM.
+ * This function returns a new index "end" which is the value of "start + 50", or,
+ * if this function has *returned the least recent messages in the DM,
+ * returns -1 in "end" to indicate there are no more messages to load after this return.
+ * @param { token } string - Id of the person calling the function
+ * @param {dmId} number - Id of the dm
+ * @param {start} number - the start index of the messages to be listed
+ * @returns { }
+ */
 
 const dmMessagesV1 = (token: string, dmId: number, start: number) => {
     const data = getData();
