@@ -1,4 +1,3 @@
-import { channelLeaveV1 } from '../channel';
 import {
   requestAuthLogin,
   requestAuthRegister,
@@ -8,8 +7,7 @@ import {
   requestChannelsCreate,
   requestClear,
 } from '../requests';
-import { port, url } from './config.json';
-const request = require('sync-request');
+require('sync-request');
 
 beforeEach(() => {
   requestClear();
@@ -21,8 +19,8 @@ test('success addOwner', () => {
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
-  const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
+  const { token: token1 } = loginRes;
+  const { authUserId: authUserId2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
   const { channelId } = channelCreateRes;
   requestChannelInvite(token1, channelId, authUserId2);
@@ -168,9 +166,9 @@ test("error user doesn't have owner permission ", () => {
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
   const loginRes3 = requestAuthLogin('olivrewluuu@gmail.com', 'cl3cl3vul444');
 
-  const { token: token1, authUserId: authUserId1 } = loginRes;
+  const { token: token1 } = loginRes;
   const { token: token2, authUserId: authUserId2 } = loginRes2;
-  const { token: token3, authUserId: authUserId3 } = loginRes3;
+  const { authUserId: authUserId3 } = loginRes3;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;

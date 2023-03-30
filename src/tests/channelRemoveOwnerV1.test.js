@@ -1,7 +1,6 @@
 import { channelRemoveOwnerV1 } from '../channel';
 import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelInvite, requestChannelAddOwner, requestChannelRemoveOwner, requestChannelDetails, requestClear } from '../requests';
-import { port, url } from './config.json';
-const request = require('sync-request');
+require('sync-request');
 
 beforeEach(() => {
   requestClear();
@@ -27,7 +26,7 @@ test('success removeOwner', () => {
 
   let { ownerMembers } = channelDeatilsRes;
   expect(ownerMembers.length).toStrictEqual(2);
-  const { removeErr } = requestChannelRemoveOwner(token2, channelId, authUserId1);
+  requestChannelRemoveOwner(token2, channelId, authUserId1);
 
   channelDeatilsRes = requestChannelDetails(token1, channelId, authUserId2);
   ownerMembers = channelDeatilsRes.ownerMembers;
@@ -148,7 +147,7 @@ test("error user doesn't have owner permission ", () => {
   const loginRes3 = requestAuthLogin('olivrewluuu@gmail.com', 'cl3cl3vul444');
 
   const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
+  const { authUserId: authUserId2 } = loginRes2;
   const { token: token3, authUserId: authUserId3 } = loginRes3;
   const { channelId } = requestChannelsCreate(token1, 'sampleChannel', true);
 
@@ -166,7 +165,7 @@ test('error uId is the only owner ', () => {
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
 
   const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
+  const { authUserId: authUserId2 } = loginRes2;
 
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 

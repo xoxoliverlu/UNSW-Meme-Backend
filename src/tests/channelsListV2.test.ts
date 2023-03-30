@@ -1,7 +1,6 @@
-import { port, url } from './config.json';
 import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelsList, requestClear } from '../requests';
 
-const request = require('sync-request');
+require('sync-request');
 
 beforeEach(() => {
   requestClear();
@@ -34,7 +33,7 @@ test('success channels List: no channel', () => {
 test('error token', () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  let { token, authUserId } = loginRes;
+  let { token } = loginRes;
   token += 'errorToken';
 
   const channelsListRes = requestChannelsList(token);

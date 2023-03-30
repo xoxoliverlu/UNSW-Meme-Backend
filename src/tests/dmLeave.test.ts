@@ -40,7 +40,7 @@ test('Removing member from dm', () => {
   const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
   const uIds = [user2.authUserId, user3.authUserId];
   const dm = requestDmCreate(user1.token, uIds);
-  const dmLeave = requestDmLeave(user3.token, dm.dmId);
+  requestDmLeave(user3.token, dm.dmId);
   const dmDetails = requestDmDetails(user1.token, dm.dmId);
   expect(dmDetails.members).not.toContain(user3.authUserId);
 });

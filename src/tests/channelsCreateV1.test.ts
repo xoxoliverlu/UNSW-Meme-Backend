@@ -21,7 +21,7 @@ describe('Valid channelId produced', () => {
   test('Valid channel name - exactly one character - public channel', () => {
     clearV1();
     const user1 = authRegisterV2('Akanksha.sood@gmail.com', '12345678', 'Akanksha', 'Sood');
-    const channelId1 = channelsCreateV2(user1.token, 'C', true);
+    channelsCreateV2(user1.token, 'C', true);
     const channelCreationValid = channelsCreateV2(user1.token, 'jaydensChannel', false);
     expect(channelCreationValid).toHaveProperty('channelId');
   });

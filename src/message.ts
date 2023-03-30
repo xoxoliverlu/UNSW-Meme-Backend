@@ -1,4 +1,3 @@
-import { channel } from 'diagnostics_channel';
 import { getData, setData } from './dataStore';
 /**
  * Send a message from the authorised user to the channel specified by channelId.
@@ -107,10 +106,10 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
 
-  let messageChannel: Message;
-  let messageDm: Message;
-  let channelIndex: Channel;
-  let dmIndex: Dm;
+  let messageChannel;
+  let messageDm;
+  let channelIndex;
+  let dmIndex;
 
   // looking for the channel that contains the message the message with the messageId
   for (const channel of data.channels) {
@@ -198,8 +197,8 @@ export function messageRemoveV1(token: string, messageId: number) {
   }
 
   const { uId } = user;
-  let channelMsg = null;
-  let dmMsg = null;
+  let channelMsg;
+  let dmMsg;
   // filters the channels that the user is a member of
   // checks if message with the messageId exists
   // if it exists - checks if the user if the user is the author of the msg
@@ -208,9 +207,11 @@ export function messageRemoveV1(token: string, messageId: number) {
   // or member with delete permissions)
   // user has permission = deletes message
   data.channels.filter(channel => channel.allMembers.includes(uId)).forEach((channel) => {
-    channelMsg = channel.messages.findIndex(message => message.messageId = messageId);
-    if (channel.messages[channelMsg].uId !== uId) {
-      return { error: 'This user did not send this message.' };
+    channelMsg = channel.messages.findIndex((message) => message.messageId === messageId);
+    if (channelMsg !== -1) {
+      if (channel.messages[channelMsg].uId !== uId) {
+        return { error: 'This user did not send this message.' };
+      }
     }
 
     const channelPermission = channel.ownerMembers.includes(uId);
@@ -228,9 +229,9 @@ export function messageRemoveV1(token: string, messageId: number) {
   // if not - returns error
   // also checks if the user is the owner of the DM - as owner can only delete
   // messages - message deletes if user is the owner.
-  data.dms.filter(dm => dm.uIds.includes(uId) || dm.ownerId == uId).forEach((dm) => {
-    dmMsg = dm.messages.findIndex(message => message.messageId = messageId);
-    const dmPermission = dm.ownerId == uId;
+  data.dms.filter(dm => dm.uIds.includes(uId) || dm.ownerId === uId).forEach((dm) => {
+    dmMsg = dm.messages.findIndex(message => message.messageId === messageId);
+    const dmPermission = dm.ownerId === uId;
     if (dmMsg !== -1) {
       if (dm.messages[dmMsg].uId !== uId) {
         return { error: 'This user did not send this message.' };
@@ -245,7 +246,7 @@ export function messageRemoveV1(token: string, messageId: number) {
       dm.messages.splice(dmMsg, 1);
     }
   });
-  if (!dmMsg && !channelMsg) {
+  if (!dmMsg || !channelMsg) {
     return { error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' };
   }
 

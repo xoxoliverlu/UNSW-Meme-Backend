@@ -40,7 +40,7 @@ describe('Invalid inputs for /auth/register/v2', () => {
   });
 
   test('Already in use email', () => {
-    const register1 = requestAuthRegister('alice.smith@gmail.com', 'password', 'Alice', 'Smith');
+    requestAuthRegister('alice.smith@gmail.com', 'password', 'Alice', 'Smith');
     const register2 = requestAuthRegister('alice.smith@gmail.com', 'password', 'Alice', 'Smith');
     const register3 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Bob', 'Langford');
     const register4 = requestAuthRegister('Alice.Smith@gmail.com', '123456', 'Alice', 'Smith');

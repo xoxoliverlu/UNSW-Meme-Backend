@@ -52,8 +52,8 @@ describe('/dm/messages/v1', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
-      const message1 = requestMessageSendDm(register.token, dm.dmId, 'chocolate');
-      const message2 = requestMessageSendDm(register.token, dm.dmId, 'icecream');
+      requestMessageSendDm(register.token, dm.dmId, 'chocolate');
+      requestMessageSendDm(register.token, dm.dmId, 'icecream');
       const data = requestDmMessages(register.token, dm.dmId, 0);
       expect(data.messages.length).toStrictEqual(2);
       expect(data.start).toStrictEqual(0);

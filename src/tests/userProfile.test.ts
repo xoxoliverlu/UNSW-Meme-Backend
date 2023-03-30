@@ -18,8 +18,7 @@ describe('Failed tests.', () => {
     expect(userProfile).toStrictEqual({ error: expect.any(String) });
   });
   test('Invalid token.', () => {
-    const registerAuth = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-    const authToken = registerAuth.token;
+    requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
     const registerUser = requestAuthRegister('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
     const userProfile = requestUserProfile('badtoken', userId);

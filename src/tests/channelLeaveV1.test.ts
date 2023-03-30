@@ -1,4 +1,3 @@
-import { channel } from 'diagnostics_channel';
 import {
   requestAuthLogin,
   requestAuthRegister,
@@ -8,8 +7,7 @@ import {
   requestChannelsCreate,
   requestClear,
 } from '../requests';
-import { port, url } from './config.json';
-const request = require('sync-request');
+require('sync-request');
 
 beforeEach(() => {
   requestClear();
@@ -71,9 +69,8 @@ test('error invalid token', () => {
   requestAuthRegister('olivrewlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   requestAuthRegister('olivrewluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
   const loginRes1 = requestAuthLogin('olivrewlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+  requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
   const { token: token1 } = loginRes1;
-  const { token: token2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
   const { channelId } = channelCreateRes;
 

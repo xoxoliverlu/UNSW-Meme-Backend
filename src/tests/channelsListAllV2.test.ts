@@ -1,6 +1,5 @@
 import { requestAuthLogin, requestAuthRegister, requestChannelsCreate, requestChannelsListAll, requestClear } from '../requests';
-import { port, url } from './config.json';
-const request = require('sync-request');
+require('sync-request');
 
 beforeEach(() => {
   requestClear();

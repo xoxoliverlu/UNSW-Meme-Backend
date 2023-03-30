@@ -34,7 +34,7 @@ describe('Invalid requestUserProfileSetName tests.', () => {
 
 test('Successful userProfileSetNameV1 Test.', () => {
   const user = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-  const userSetName = requestUserProfileSetName(user.token, 'Alan', 'Paul');
+  requestUserProfileSetName(user.token, 'Alan', 'Paul');
   const userProfile = requestUserProfile(user.token, user.authUserId);
   expect(userProfile.user.nameFirst).toEqual('Alan');
   expect(userProfile.user.nameLast).toEqual('Paul');

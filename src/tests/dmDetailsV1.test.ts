@@ -1,15 +1,12 @@
 import { dmCreateV1 } from '../dm';
 import {
-  requestChannelAddOwner,
   requestClear,
   requestAuthRegister,
   requestAuthLogin,
   requestDmDetails,
   requestDmCreate,
 } from '../requests';
-const request = require('sync-request');
-
-const OK = 200;
+require('sync-request');
 
 beforeEach(() => {
   requestClear();
@@ -23,7 +20,7 @@ test('success channel details', () => {
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
 
   const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
+  const { authUserId: authUserId2 } = loginRes2;
 
   const { dmId } = requestDmCreate(token1, [authUserId2]);
   const dmDetailsRes = requestDmDetails(token1, dmId);
@@ -40,8 +37,8 @@ test('error invalid dm id', () => {
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
 
-  const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
+  const { token: token1 } = loginRes;
+  const { authUserId: authUserId2 } = loginRes2;
 
   const { dmId } = dmCreateV1(token1, [authUserId2]);
 
@@ -59,9 +56,9 @@ test('error auth user not member of dm', () => {
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
   const loginRes3 = requestAuthLogin('oliverwluuu@gmail.com', 'cl3cl3vul444');
 
-  const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
-  const { token: token3, authUserId: authUserId3 } = loginRes3;
+  const { token: token1 } = loginRes;
+  const { authUserId: authUserId2 } = loginRes2;
+  const { token: token3 } = loginRes3;
 
   const { dmId } = requestDmCreate(token1, [authUserId2]);
 
@@ -77,14 +74,13 @@ test('error invalid token', () => {
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
 
-  const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { token: token2, authUserId: authUserId2 } = loginRes2;
+  const { token: token1 } = loginRes;
+  const { authUserId: authUserId2 } = loginRes2;
 
   const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token1 + 'error', dmId);
 
-  const { name, members } = dmDetailsRes;
   const { error } = dmDetailsRes;
   expect(error).toEqual(expect.any(String));
 });

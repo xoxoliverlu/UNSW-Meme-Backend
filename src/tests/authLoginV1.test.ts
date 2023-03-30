@@ -41,12 +41,12 @@ describe('Auth Login Valid inputs', () => {
 
 describe('Invalid inputs', () => {
   test('Email does not belong to a user', () => {
-    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
     const login1 = requestAuthLogin('bob.langford@gmail.com', '123456');
     expect(login1).toEqual({ error: expect.any(String) });
   });
   test('Incorrect password', () => {
-    const register1 = requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
+    requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
     const login1 = requestAuthLogin('alice.smith@gmail.com', 'password');
     expect(login1).toEqual({ error: expect.any(String) });
   });

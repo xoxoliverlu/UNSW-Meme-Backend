@@ -336,13 +336,13 @@ export const requestDmList = (token: string) => {
 export const requestDmRemove = (token: string, dmId: number) => {
   const res = request(
     'DELETE',
-		`${url}:${port}` + '/dm/remove/v1',
-		{
-		  qs: {
-		    token,
-		    dmId,
-		  }
-		}
+    `${url}:${port}` + '/dm/remove/v1',
+    {
+      qs: {
+        token,
+        dmId,
+      }
+    }
   );
   if (res.statusCode === 200) {
     return JSON.parse(res.body as string);

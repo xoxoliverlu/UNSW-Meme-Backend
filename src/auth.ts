@@ -14,7 +14,7 @@ type handleReturn = string;
 
 const authLoginV2 = (email: string, password: string): authUserId => {
   const login = authLoginV1(email, password);
-  if (login.hasOwnProperty('authUserId')) {
+  if ('authUserId' in login) {
     const token = generateToken(login.authUserId);
     return {
       token: token,
@@ -53,7 +53,7 @@ const authLoginV1 = (email: string, password: string): authUserId => {
 
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const register = authRegisterV1(email, password, nameFirst, nameLast);
-  if (register.hasOwnProperty('authUserId')) {
+  if ('authUserId' in register) {
     const token = generateToken(register.authUserId);
     return {
       token: token,

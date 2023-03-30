@@ -29,7 +29,7 @@ describe('Invalid userProfileSetHandleV1 tests.', () => {
   });
   test('handleStr already in use.', () => {
     const user1 = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
-    const user2 = requestAuthRegister('SimonM@gmail.com', 'pass123', 'Simon', 'Minter');
+    requestAuthRegister('SimonM@gmail.com', 'pass123', 'Simon', 'Minter');
     const userSetHandle = requestUserProfileSetHandle(user1.token, 'simonminter');
     expect(userSetHandle).toEqual({ error: expect.any(String) });
   });

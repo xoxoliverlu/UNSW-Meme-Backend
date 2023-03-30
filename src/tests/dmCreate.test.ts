@@ -80,7 +80,7 @@ describe('Invalid inputs for dmCreate', () => {
     expect(dm).toMatchObject({ error: expect.any(String) });
   });
   test('Invalid token', () => {
-    const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
+    requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
     const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
     const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const uIds = [user2.authUserId, user3.authUserId];
