@@ -22,13 +22,13 @@ test('success removeOwner', () => {
 
   requestChannelAddOwner(token1, channelId, authUserId2);
 
-  let channelDeatilsRes = requestChannelDetails(token2, channelId, authUserId2);
+  let channelDeatilsRes = requestChannelDetails(token2, channelId);
 
   let { ownerMembers } = channelDeatilsRes;
   expect(ownerMembers.length).toStrictEqual(2);
   requestChannelRemoveOwner(token2, channelId, authUserId1);
 
-  channelDeatilsRes = requestChannelDetails(token1, channelId, authUserId2);
+  channelDeatilsRes = requestChannelDetails(token1, channelId);
   ownerMembers = channelDeatilsRes.ownerMembers;
   expect(ownerMembers.length).toStrictEqual(1);
 });
