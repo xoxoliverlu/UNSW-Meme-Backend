@@ -7,10 +7,11 @@ import cors from 'cors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
-import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1 } from './channel';
+import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
-import { dmCreateV1, dmListV1, dmRemoveV1 } from './dm';
-import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1} from './dm';
+import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1} from './message';
+import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1} from './dm';
+
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -114,7 +115,7 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response, next) => {
 *****************/
 app.get('/channel/details/v2', (req: Request, res: Response, next) => {
   const token = req.query.token as string
-  const channelId = parseInt(req.query.channelId);
+  const channelId = parseInt(req.query.channelId as string);
   res.json(channelDetailsV2(token, channelId));
 });
 
@@ -170,3 +171,45 @@ app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
   const {token, dmId} = req.body;
   res.json(dmLeaveV1(token, dmId));
 });
+
+/****************
+*  Messages Routes  *
+****************/
+app.post('/message/send/v1',(req: Request, res: Response, next) => {
+  const {token, channelId, message} = req.body;
+  console.log("channelId passed in is :" + channelId);
+  res.json(messageSendV1(token, channelId, message));
+});
+
+app.post('/message/senddm/v1',(req: Request, res: Response, next) => {
+  const {token, dmId, message} = req.body;
+  res.json(messageSendDmV1(token, dmId, message));
+});
+
+app.put('/message/edit/v1',(req: Request, res: Response, next) => {
+  const {token, messageId, message} = req.body;
+  res.json(messageEditV1(token, messageId, message));
+});
+
+app.delete('/message/remove/v1',(req: Request, res: Response, next) => {
+  const token = req.query.token as string;
+  const messageId = parseInt(req.query.messageId as string);
+  res.json(messageRemoveV1(token, messageId));
+});
+
+app.get('/dm/messages/v1',(req: Request, res: Response, next) => {
+  const token = req.query.token as string;
+  const dmId = parseInt(req.query.dmId as string);
+  const start = parseInt(req.query.start as string);
+  res.json(dmMessagesV1(token, dmId, start));
+});
+
+app.get('/channel/messages/v2',(req: Request, res: Response, next) => {
+  const token = req.query.token as string;
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
+  res.json(channelMessagesV1(token, channelId, start));
+});
+
+
+

@@ -8,6 +8,7 @@ const clearV1 = (): clearReturn => {
     channels: [] as Channel[],
     lastAuthUserId: 0,
     lastChannelId: 0,
+    lastMessageId: 0,
     lastToken: 0,
     tokens: [] as TokenPair[],
     dms: [] as DM[],
