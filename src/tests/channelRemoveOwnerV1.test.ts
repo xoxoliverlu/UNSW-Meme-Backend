@@ -1,13 +1,5 @@
-import { channelLeaveV1 } from '../channel';
-import {
-  requestAuthLogin,
-  requestAuthRegister,
-  requestChannelAddOwner,
-  requestChannelDetails,
-  requestChannelInvite,
-  requestChannelsCreate,
-  requestClear,
-} from '../requests';
+import { channelRemoveOwnerV1 } from '../channel';
+import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelInvite, requestChannelAddOwner, requestChannelRemoveOwner, requestChannelDetails, requestClear } from '../requests';
 import { port, url } from './config.json';
 const request = require('sync-request');
 
@@ -15,33 +7,31 @@ beforeEach(() => {
   requestClear();
 });
 
-test('success addOwner', () => {
+test('success removeOwner', () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
+
   const { token: token1, authUserId: authUserId1 } = loginRes;
   const { token: token2, authUserId: authUserId2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
   const { channelId } = channelCreateRes;
+
   requestChannelInvite(token1, channelId, authUserId2);
-  const addOwnerRes = requestChannelAddOwner(token1, channelId, authUserId2);
-  const { error } = addOwnerRes;
 
-  if (error) {
-    console.log(error);
-  }
+  requestChannelAddOwner(token1, channelId, authUserId2);
 
-  const channelDetailsRes = requestChannelDetails(token1, channelId);
-  const { ownerMembers } = channelDetailsRes;
+  let channelDeatilsRes = requestChannelDetails(token2, channelId);
 
-  if (error) {
-    console.log(authUserId2);
-    console.log(channelDetailsRes);
-  }
-
+  let { ownerMembers } = channelDeatilsRes;
   expect(ownerMembers.length).toStrictEqual(2);
+  const { removeErr } = requestChannelRemoveOwner(token2, channelId, authUserId1);
+
+  channelDeatilsRes = requestChannelDetails(token1, channelId);
+  ownerMembers = channelDeatilsRes.ownerMembers;
+  expect(ownerMembers.length).toStrictEqual(1);
 });
 
 test('error token', () => {
@@ -50,23 +40,18 @@ test('error token', () => {
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  let { token: token1 } = loginRes;
-  const { authUserId: authUserId2 } = loginRes2;
-
+  const { token: token1, authUserId: authUserId1 } = loginRes;
+  let { authUserId: authUserId2, token: token2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;
 
-  requestChannelInvite(token1, channelId, authUserId2);
+  requestChannelAddOwner(token1, channelId, authUserId2);
 
-  token1 += 'error';
-  const channelAddOwneRes = requestChannelAddOwner(
-    token1,
-    channelId,
-    authUserId2
-  );
+  token2 += 'error';
+  const removeRes = requestChannelRemoveOwner(token2, channelId, authUserId1);
 
-  const { error } = channelAddOwneRes;
+  const { error } = removeRes;
   expect(error).toEqual(expect.any(String));
 });
 
@@ -76,21 +61,21 @@ test('error userID', () => {
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  const { token: token1 } = loginRes;
-  const { authUserId: authUserId2 } = loginRes2;
-
+  const { authUserId: authUserId1, token: token1 } = loginRes;
+  const { authUserId: authUserId2, token: token2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;
 
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const channelAddOwneRes = requestChannelAddOwner(
-    token1,
+  requestChannelAddOwner(token1, channelId, authUserId2);
+  const removeRes = requestChannelRemoveOwner(
+    token2,
     channelId,
-    authUserId2 + 200
+    authUserId1 + authUserId2
   );
-  const { error } = channelAddOwneRes;
+  const { error } = removeRes;
   expect(error).toEqual(expect.any(String));
 });
 
@@ -100,21 +85,21 @@ test('error invalid channelID', () => {
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  const { token: token1 } = loginRes;
-  const { authUserId: authUserId2 } = loginRes2;
-
+  const { token: token1, authUserId: authUserId1 } = loginRes;
+  const { authUserId: authUserId2, token: token2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;
 
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const channelAddOwneRes = requestChannelAddOwner(
-    token1,
+  requestChannelAddOwner(token1, channelId, authUserId2);
+  const removeRes = requestChannelRemoveOwner(
+    token2,
     channelId + 1,
-    authUserId2
+    authUserId1
   );
-  const { error } = channelAddOwneRes;
+  const { error } = removeRes;
   expect(error).toEqual(expect.any(String));
 });
 
@@ -126,36 +111,31 @@ test('error user not a part of channel ', () => {
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
   const { token: token1 } = loginRes;
   const { authUserId: authUserId2 } = loginRes2;
-
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;
 
-  const channelAddOwneRes = requestChannelAddOwner(
-    token1,
-    channelId,
-    authUserId2
-  );
-  const { error } = channelAddOwneRes;
+  const removeRes = requestChannelRemoveOwner(token1, channelId, authUserId2);
+
+  const { error } = removeRes;
   expect(error).toEqual(expect.any(String));
 });
 
-test('error uId is already an owner ', () => {
+test('error uId is not an owner ', () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-
+  requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  const { token: token1, authuserId: authUserId1 } = loginRes;
+  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
 
+  const { token: token1 } = loginRes;
+  const { authUserId: authUserId2 } = loginRes2;
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;
+  requestChannelInvite(token1, channelId, authUserId2);
 
-  const channelAddOwneRes = requestChannelAddOwner(
-    token1,
-    channelId,
-    authUserId1
-  );
-  const { error } = channelAddOwneRes;
+  const removeRes = requestChannelRemoveOwner(token1, channelId, authUserId2);
+  const { error } = removeRes;
   expect(error).toEqual(expect.any(String));
 });
 
@@ -163,7 +143,6 @@ test("error user doesn't have owner permission ", () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
   requestAuthRegister('oliverwluuu@gmail.com', 'cl3cl3vul444', 'Oliver', 'Lu');
-
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
   const loginRes3 = requestAuthLogin('olivrewluuu@gmail.com', 'cl3cl3vul444');
@@ -171,18 +150,30 @@ test("error user doesn't have owner permission ", () => {
   const { token: token1, authUserId: authUserId1 } = loginRes;
   const { token: token2, authUserId: authUserId2 } = loginRes2;
   const { token: token3, authUserId: authUserId3 } = loginRes3;
+  const { channelId } = requestChannelsCreate(token1, 'sampleChannel', true);
+
+  requestChannelInvite(token1, channelId, authUserId2);
+  requestChannelInvite(token1, channelId, authUserId3);
+
+  requestChannelAddOwner(token1, channelId, authUserId2);
+  const removeRes = requestChannelRemoveOwner(token3, channelId, authUserId1);
+  const { error } = removeRes;
+  expect(error).toEqual(expect.any(String));
+});
+
+test('error uId is the only owner ', () => {
+  const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
+  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+
+  const { token: token1, authUserId: authUserId1 } = loginRes;
+  const { token: token2, authUserId: authUserId2 } = loginRes2;
+
   const channelCreateRes = requestChannelsCreate(token1, 'sampleChannel', true);
 
   const { channelId } = channelCreateRes;
   requestChannelInvite(token1, channelId, authUserId2);
-  requestChannelInvite(token1, channelId, authUserId3);
 
-  const channelAddOwneRes = requestChannelAddOwner(
-    token2,
-    channelId,
-    authUserId3
-  );
-
-  const { error } = channelAddOwneRes;
+  const removeRes = channelRemoveOwnerV1(token1, channelId, authUserId1);
+  const { error } = removeRes;
   expect(error).toEqual(expect.any(String));
 });
