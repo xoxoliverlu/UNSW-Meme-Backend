@@ -1,6 +1,6 @@
-import { getData, setData } from './dataStore';
-import validator from 'validator';
-import { Profile } from './interfaces';
+import { getData, setData } from "./dataStore";
+import validator from "validator";
+import { Profile } from "./interfaces";
 
 /**
  * Given a valid token and a uId, displays basic information about the user.
@@ -21,13 +21,13 @@ export function userProfileV2(token: string, uId: number) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (auth === undefined) return { error: "Invalid token" };
   // Checks if the uId is valid.
   const userInfo = data.users.find((element) => element.uId === uId);
-  if (userInfo === undefined) return { error: 'Invalid uId' };
+  if (userInfo === undefined) return { error: "Invalid uId" };
 
   return {
-    user: {
+    user:  {
       uId: userInfo.uId,
       nameFirst: userInfo.nameFirst,
       nameLast: userInfo.nameLast,
@@ -51,18 +51,18 @@ export function usersAllV1(token: string) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (auth === undefined) return { error: "Invalid token" };
   // Create an array of user objects.
   const resultUsers = data.users.map((user) => {
     return {
-      uId: user.uId,
-      email: user.email,
-      nameFirst: user.nameFirst,
-      nameLast: user.nameLast,
+      uId: user.uId, 
+      email: user.email, 
+      nameFirst: user.nameFirst, 
+      nameLast: user.nameLast, 
       handleStr: user.handleStr
-    };
+    }
   });
-
+  
   return { users: { resultUsers } };
 }
 
@@ -89,7 +89,7 @@ export function userProfileSetNameV1(
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (auth === undefined) return { error: "Invalid token" };
 
   const userInfo = data.users.find((element) => element.uId === auth.uId);
   // Checks the length of nameFirst and nameLast.
@@ -98,12 +98,12 @@ export function userProfileSetNameV1(
 
   if (nameFirst.length < 1 || nameLast.length < 1) {
     return {
-      error: 'First name or last name is too short',
+      error: "First name or last name is too short",
     };
   }
   if (nameFirst.length > 50 || nameLast.length > 50) {
     return {
-      error: 'First name or last name is too long',
+      error: "First name or last name is too long",
     };
   }
 
@@ -131,16 +131,16 @@ export function userProfileSetEmailV1(token: string, email: string) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (auth === undefined) return { error: "Invalid token" };
 
   const userInfo = data.users.find((element) => element.uId === auth.uId);
   // Checks if the email is valid using validator.
   email = email.toLowerCase();
   if (email === userInfo.email) return {};
-  if (!validator.isEmail(email)) return { error: 'Invalid email' };
+  if (!validator.isEmail(email)) return { error: "Invalid email" };
   // checks if the email is already in use.
-  for (const user of data.users) {
-    if (user.email === email) return { error: 'Email already in use' };
+  for (let user of data.users) {
+    if (user.email === email) return { error: "Email already in use" };
   }
 
   userInfo.email = email;
@@ -166,25 +166,25 @@ export function userProfileSetHandleV1(token: string, handleStr: string) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (auth === undefined) return { error: "Invalid token" };
 
   const userInfo = data.users.find((element) => element.uId === auth.uId);
 
   handleStr = handleStr.trim();
   if (handleStr.length < 3 || handleStr.length > 20) {
-    return { error: 'Length must be between 3 and 20 characters' };
+    return { error: "Length must be between 3 and 20 characters" };
   }
 
   if (handleStr === userInfo.handleStr) return {};
   const isAlphaNumeric = (str: string) => /^[a-z0-9]+$/gi.test(str);
   if (!isAlphaNumeric(handleStr)) {
-    return { error: 'handleStr must only contain alphanumeric values' };
+    return { error: "handleStr must only contain alphanumeric values" };
   }
 
   // Checks if the handleStr is already in use.
-  for (const user of data.users) {
+  for (let user of data.users) {
     if (user.handleStr === handleStr) {
-      return { error: 'handleStr already in use.' };
+      return { error: "handleStr already in use." };
     }
   }
 

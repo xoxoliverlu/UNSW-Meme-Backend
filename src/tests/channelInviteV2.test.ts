@@ -1,8 +1,8 @@
-import { channelInviteV1 } from '../channel';
-import { channelsCreateV2 } from '../channels';
-import { authRegisterV2 } from '../auth';
-import { channelDetailsV2 } from '../channel';
-import { clearV1 } from '../other';
+import { channelInviteV1 } from '../channel'
+import { channelsCreateV2 } from "../channels"
+import { authRegisterV2 } from "../auth"
+import { channelDetailsV2 } from '../channel'
+import { clearV1 } from "../other"
 
 beforeEach(clearV1);
 afterAll(clearV1);
@@ -25,7 +25,7 @@ describe('Testing channelInvite for it-2', () => {
     channelInviteV1(user2.token, channel.channelId, user1.authUserId);
     const details = channelDetailsV2(user2.token, channel.channelId);
     const owners = details.ownerMembers.map(mem => mem.uId);
-    const allmems = details.allMembers.map(mem => mem.uId);
+    const allmems = details.allMembers.map(mem  => mem.uId);
     expect(owners).toEqual([user2.authUserId]);
     expect(allmems).toEqual([user2.authUserId, user1.authUserId]);
   });
@@ -60,3 +60,4 @@ describe('Testing channelInvite for it-2', () => {
     expect(invite1).toStrictEqual({ error: 'uId is already in channel' });
   });
 });
+

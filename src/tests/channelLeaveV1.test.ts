@@ -1,4 +1,4 @@
-import { channel } from 'diagnostics_channel';
+import { channel } from "diagnostics_channel";
 import {
   requestAuthLogin,
   requestAuthRegister,
@@ -7,78 +7,78 @@ import {
   requestChannelLeave,
   requestChannelsCreate,
   requestClear,
-} from '../requests';
-import { port, url } from './config.json';
-const request = require('sync-request');
+} from "../requests";
+import { port, url } from "./config.json";
+const request = require("sync-request");
 
 beforeEach(() => {
   requestClear();
 });
 
-test('success channel leave', () => {
-  requestAuthRegister('olivrewlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-  requestAuthRegister('olivrewluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
+test("success channel leave", () => {
+  requestAuthRegister("olivrewlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu");
+  requestAuthRegister("olivrewluu@gmail.com", "cl3cl3vul44", "Oliver", "Lu");
 
-  const loginRes1 = requestAuthLogin('olivrewlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+  let loginRes1 = requestAuthLogin("olivrewlu@gmail.com", "cl3cl3vul4");
+  let loginRes2 = requestAuthLogin("olivrewluu@gmail.com", "cl3cl3vul44");
 
-  const { token: token1 } = loginRes1;
-  const { authUserId: authUserId2, token: token2 } = loginRes2;
-  const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
+  let { token: token1 } = loginRes1;
+  let { authUserId: authUserId2, token: token2 } = loginRes2;
+  let channelCreateRes = requestChannelsCreate(token1, "testing", true);
 
-  const { channelId } = channelCreateRes;
+  let { channelId } = channelCreateRes;
   requestChannelInvite(token1, channelId, authUserId2);
   requestChannelLeave(token1, channelId);
-  const channelDetailRes = requestChannelDetails(token2, channelId);
-  const { allMembers } = channelDetailRes;
+  let channelDetailRes = requestChannelDetails(token2, channelId);
+  let { allMembers } = channelDetailRes;
   expect(allMembers.length).toEqual(1);
 });
 
-test('error invalid channelId', () => {
-  requestAuthRegister('olivrewlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-  requestAuthRegister('olivrewluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
-  const loginRes1 = requestAuthLogin('olivrewlu@gmail.com', 'cl3cl3vul4');
-  requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  const { token: token1 } = loginRes1;
+test("error invalid channelId", () => {
+  requestAuthRegister("olivrewlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu");
+  requestAuthRegister("olivrewluu@gmail.com", "cl3cl3vul44", "Oliver", "Lu");
+  let loginRes1 = requestAuthLogin("olivrewlu@gmail.com", "cl3cl3vul4");
+  requestAuthLogin("olivrewluu@gmail.com", "cl3cl3vul44");
+  let { token: token1 } = loginRes1;
 
-  const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
-  const { channelId } = channelCreateRes;
+  let channelCreateRes = requestChannelsCreate(token1, "testing", true);
+  let { channelId } = channelCreateRes;
 
-  const channelLeaveRes = requestChannelLeave(token1, channelId + 1);
+  let channelLeaveRes = requestChannelLeave(token1, channelId + 1);
 
-  const { error } = channelLeaveRes;
+  let { error } = channelLeaveRes;
   expect(error).toEqual(expect.any(String));
 });
 
-test('error authUser not a part of channel', () => {
-  requestAuthRegister('olivrewlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-  requestAuthRegister('olivrewluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
+test("error authUser not a part of channel", () => {
+  requestAuthRegister("olivrewlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu");
+  requestAuthRegister("olivrewluu@gmail.com", "cl3cl3vul44", "Oliver", "Lu");
 
-  const loginRes1 = requestAuthLogin('olivrewlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  const { token: token1 } = loginRes1;
-  const { token: token2 } = loginRes2;
-  const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
-  const { channelId } = channelCreateRes;
+  let loginRes1 = requestAuthLogin("olivrewlu@gmail.com", "cl3cl3vul4");
+  let loginRes2 = requestAuthLogin("olivrewluu@gmail.com", "cl3cl3vul44");
+  let { token: token1 } = loginRes1;
+  let { token: token2 } = loginRes2;
+  let channelCreateRes = requestChannelsCreate(token1, "testing", true);
+  let { channelId } = channelCreateRes;
 
-  const channelRemoveRes = requestChannelLeave(token2, channelId);
+  let channelRemoveRes = requestChannelLeave(token2, channelId);
 
-  const { error } = channelRemoveRes;
+  let { error } = channelRemoveRes;
   expect(error).toEqual(expect.any(String));
 });
 
-test('error invalid token', () => {
-  requestAuthRegister('olivrewlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-  requestAuthRegister('olivrewluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
-  const loginRes1 = requestAuthLogin('olivrewlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  const { token: token1 } = loginRes1;
-  const { token: token2 } = loginRes2;
-  const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
-  const { channelId } = channelCreateRes;
+test("error invalid token", () => {
+  requestAuthRegister("olivrewlu@gmail.com", "cl3cl3vul4", "Oliver", "Lu");
+  requestAuthRegister("olivrewluu@gmail.com", "cl3cl3vul44", "Oliver", "Lu");
+  let loginRes1 = requestAuthLogin("olivrewlu@gmail.com", "cl3cl3vul4");
+  let loginRes2 = requestAuthLogin("olivrewluu@gmail.com", "cl3cl3vul44");
+  let { token: token1 } = loginRes1;
+  let { token: token2 } = loginRes2;
+  let channelCreateRes = requestChannelsCreate(token1, "testing", true);
+  let { channelId } = channelCreateRes;
 
-  const channelLeaveRes = requestChannelLeave(token1 + 'error', channelId);
+  let channelLeaveRes = requestChannelLeave(token1 + "error", channelId);
 
-  const { error } = channelLeaveRes;
+  let { error } = channelLeaveRes;
   expect(error).toEqual(expect.any(String));
 });

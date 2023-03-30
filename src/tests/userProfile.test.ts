@@ -15,7 +15,7 @@ describe('Failed tests.', () => {
     const registerUser = requestAuthRegister('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
     const userProfile = requestUserProfile(authToken, userId + 10);
-    expect(userProfile).toStrictEqual({ error: expect.any(String) });
+    expect(userProfile).toStrictEqual({error: expect.any(String)});
   });
   test('Invalid token.', () => {
     const registerAuth = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -23,7 +23,7 @@ describe('Failed tests.', () => {
     const registerUser = requestAuthRegister('AkankshaS@gmail.com', 'password', 'Akanksha', 'Sood');
     const userId = registerUser.authUserId;
     const userProfile = requestUserProfile('badtoken', userId);
-    expect(userProfile).toStrictEqual({ error: expect.any(String) });
+    expect(userProfile).toStrictEqual({error: expect.any(String)});
   });
 });
 

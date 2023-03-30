@@ -1,4 +1,4 @@
-import { requestClear, requestAuthRegister, requestDmRemove, requestDmCreate, requestDmList } from '../requests';
+import {requestClear, requestAuthRegister, requestDmRemove, requestDmCreate, requestDmList } from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -9,16 +9,17 @@ describe('Invalid inputs for dmRemove', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const dm = requestDmCreate(user.token, []);
 
-    const invalid = requestDmRemove('Invalid token', dm.dmId);
-    expect(invalid).toStrictEqual({ error: expect.any(String) });
+    let invalid = requestDmRemove('Invalid token', dm.dmId);
+    expect(invalid).toStrictEqual({error: expect.any(String)});
   });
 
-  test('Invalid dmId', () => {
+	test('Invalid dmId', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const dm = requestDmCreate(user.token, []);
 
-    const invalid = requestDmRemove(user.token, undefined);
-    expect(invalid).toStrictEqual({ error: expect.any(String) });
+		let invalid = requestDmRemove(user.token, undefined);
+    expect(invalid).toStrictEqual({error: expect.any(String)});
+
   });
 
   test('User is not owner of DM', () => {
@@ -27,18 +28,19 @@ describe('Invalid inputs for dmRemove', () => {
     const user2 = requestAuthRegister('alex@gmail.com', 'samplePass', 'Alex', 'Smith');
     const dm = requestDmCreate(user.token, [user1.authUserId]);
 
-    const invalid = requestDmRemove(user1.token, dm.dmId);
-    expect(invalid).toStrictEqual({ error: expect.any(String) });
+		let invalid = requestDmRemove(user1.token, dm.dmId);
+    expect(invalid).toStrictEqual({error: expect.any(String)});
+
   });
 
-  test('User not a member of DM', () => {
+	test('User not a member of DM', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const user1 = requestAuthRegister('akanksha.sood816@gmail.com', 'samplePass', 'akanksha', 'sood');
     const user2 = requestAuthRegister('alex@gmail.com', 'samplePass', 'Alex', 'Smith');
     const dm = requestDmCreate(user.token, [user1.authUserId]);
 
-    const invalid = requestDmRemove(user2.token, dm.dmId);
-    expect(invalid).toStrictEqual({ error: expect.any(String) });
+    let invalid = requestDmRemove(user2.token, dm.dmId);
+    expect(invalid).toStrictEqual({error: expect.any(String)}); 
   });
 });
 describe('Valid inputs for dmRemove', () => {
@@ -61,3 +63,4 @@ describe('Valid inputs for dmRemove', () => {
     });
   });
 });
+

@@ -1,4 +1,4 @@
-import { requestAuthRegister, requestChannelsCreate, requestClear, requestChannelDetails } from '../requests';
+import { requestAuthRegister, requestChannelsCreate, requestClear , requestChannelDetails} from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -15,7 +15,7 @@ describe('Invalid input tests.', () => {
     const newChannel = requestChannelsCreate(authId, 'Channel1', false);
     const channelId = newChannel.channelId;
     const channelDetails = requestChannelDetails(authId, channelId + 1);
-    expect(channelDetails).toEqual({ error: expect.any(String) });
+    expect(channelDetails).toEqual({error: expect.any(String)});
   });
   test('Invalid Token.', () => {
     const register = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -23,7 +23,7 @@ describe('Invalid input tests.', () => {
     const newChannel = requestChannelsCreate(authId, 'Channel1', false);
     const channelId = newChannel.channelId;
     const channelDetails = requestChannelDetails(authId + 1, channelId);
-    expect(channelDetails).toEqual({ error: expect.any(String) });
+    expect(channelDetails).toEqual({error: expect.any(String)});
   });
   test('Unauthorised authUserId.', () => {
     const registerValid = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -33,7 +33,7 @@ describe('Invalid input tests.', () => {
     const newChannel = requestChannelsCreate(authValid, 'Channel1', false);
     const channelId = newChannel.channelId;
     const channelDetails = requestChannelDetails(authInvalid, channelId);
-    expect(channelDetails).toEqual({ error: expect.any(String) });
+    expect(channelDetails).toEqual({error: expect.any(String)});
   });
 });
 
@@ -47,10 +47,10 @@ test('Succesful ChannelDetailsV2 test.', () => {
     allMembers: [
       {
         uId: register.authUserId,
-        email: 'fadys@gmail.com',
+        email:"fadys@gmail.com",
         handleStr: 'fadysadek',
-        nameFirst: 'Fady',
-        nameLast: 'Sadek',
+        nameFirst: "Fady",
+        nameLast: "Sadek",
       },
     ],
     isPublic: false,
@@ -58,10 +58,10 @@ test('Succesful ChannelDetailsV2 test.', () => {
     ownerMembers: [
       {
         uId: register.authUserId,
-        email: 'fadys@gmail.com',
+        email:"fadys@gmail.com",
         handleStr: 'fadysadek',
-        nameFirst: 'Fady',
-        nameLast: 'Sadek',
+        nameFirst: "Fady",
+        nameLast: "Sadek",
       },
     ],
   });

@@ -1,8 +1,6 @@
-import {
-  requestAuthRegister, requestDmCreate, requestMessageSendDm, requestChannelsCreate,
-  requestDmMessages, requestMessageRemove, requestChannelJoin, requestMessageSend,
-  requestChannelMessages, requestClear
-} from '../requests';
+import { requestAuthRegister, requestDmCreate, requestMessageSendDm, requestChannelsCreate, 
+  requestDmMessages, requestMessageRemove, requestChannelJoin, requestMessageSend, 
+  requestChannelMessages, requestClear } from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -23,9 +21,9 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageRemove(register1.token, dmSend2.messageId);
     const fnctmessages = requestDmMessages(register1.token, 0, 0);
     const returnobj = {
-      // start: 0,
-      // end: -1,
-      error: 'invalid dmId'
+      //start: 0,
+      //end: -1,
+      error: "invalid dmId"
     };
     expect(fnctmessages).toMatchObject(returnobj);
   });
@@ -36,7 +34,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnval = requestMessageRemove(register2.token, 4242424);
-    expect(returnval).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnval).toStrictEqual({error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined'});
   });
   test('user not member of dm', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -55,7 +53,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     const dmSend = requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnval = requestMessageRemove(register2.token, dmSend.messageId);
-    expect(returnval).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnval).toStrictEqual({error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined'});
   });
   test('Success: removes message from channel', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -81,7 +79,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSend(register1.token, channel1.channelId, 'message1');
     requestMessageSend(register1.token, channel1.channelId, 'message2');
     const returnval = requestMessageRemove(register1.token, 4242424);
-    expect(returnval).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnval).toStrictEqual({ error: "messageId does not refer to a valid message within a channel/DM that the authorised user has joined" });
   });
   test('user not member of channel', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -103,3 +101,4 @@ describe('Testing messageRemoveV1 for it-2', () => {
     expect(returnval).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
   });
 });
+

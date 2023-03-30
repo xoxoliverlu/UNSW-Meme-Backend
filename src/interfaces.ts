@@ -29,14 +29,6 @@ export interface User {
     globalPerm: number;
 }
 
-export interface DM {
-    dmId: number;
-    name: string;
-    ownerId: number;
-    uIds: number[];
-    messages: Message[];
-}
-
 export interface DataStore {
     users: User[];
     channels: Channel[];
@@ -55,4 +47,12 @@ export interface Profile {
     nameLast: string;
     email: string;
     handleStr: string;
+}
+
+export interface DM {
+    dmId: number;
+    name: string;
+    ownerId: number;
+    uIds: number[];
+    messages: Message[];
 }

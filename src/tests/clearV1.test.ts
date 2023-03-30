@@ -18,5 +18,5 @@ describe('Test for a clear dataObject', () => {
     const user2Id = requestAuthLogin('bob.langford@gmail.com', '123456');
     expect(user1Id.authUserId).toEqual(undefined);
     expect(user2Id.authUserId).toEqual(undefined);
-  });
+  })
 });

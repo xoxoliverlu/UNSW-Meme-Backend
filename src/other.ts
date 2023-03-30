@@ -16,6 +16,6 @@ const clearV1 = (): clearReturn => {
   };
   setData(data);
   return {};
-};
+}
 
-export { clearV1 };
+export {clearV1};
