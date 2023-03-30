@@ -1,5 +1,5 @@
-import { getData, setData } from "./dataStore";
-import { userProfileV2 } from "./users";
+import { getData, setData } from './dataStore';
+import { userProfileV2 } from './users';
 
 /**
  * Given an uId and a channelId, the function
@@ -22,14 +22,14 @@ export function channelDetailsV2(token: string, channelId: number) {
   // Checks if the token and userId is valid.
   const auth = data.tokens.find(item => item.token === token);
   if (auth === undefined) {
-    return { error: "Invalid token" };
+    return { error: 'Invalid token' };
   }
-  let authUserId = auth.uId;
+  const authUserId = auth.uId;
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
-  if (channel === undefined) return {error: "Invalid channelId"}; 
+  if (channel === undefined) return { error: 'Invalid channelId' };
 
-  if (!channel.allMembers.includes(authUserId)) return {error: "User is not a member of the channel"};
+  if (!channel.allMembers.includes(authUserId)) return { error: 'User is not a member of the channel' };
 
   const owners = memberObject(token, channel.ownerMembers);
   const members = memberObject(token, channel.allMembers);
@@ -41,7 +41,6 @@ export function channelDetailsV2(token: string, channelId: number) {
     allMembers: members,
   };
 }
-
 
 // Helper function
 function memberObject(token: string, users: number[]) {
@@ -76,21 +75,21 @@ export function channelJoinV2(token: string, channelId: number) {
   const data = getData();
   // Checks if the token and userId is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: "Invalid token" };
-  let authUserId = auth.uId;
+  if (auth === undefined) return { error: 'Invalid token' };
+  const authUserId = auth.uId;
   const userDetail = data.users.find((element) => element.uId === authUserId);
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
-  if (channel === undefined) return {error: "Invalid channelId"};
+  if (channel === undefined) return { error: 'Invalid channelId' };
   // checks if the channel is public
   if (channel.isPublic === false) {
     // check authuser permissions
     if (userDetail.globalPerm === 2) {
-      return { error: "Channel is private and authUser is not a global owner" };
+      return { error: 'Channel is private and authUser is not a global owner' };
     }
   }
   // checks if the user is already a member of the channel
-  if (channel.allMembers.includes(authUserId)) return { error: "User is already a member" };
+  if (channel.allMembers.includes(authUserId)) return { error: 'User is already a member' };
   // Add member to channel
   channel.allMembers.push(authUserId);
   setData(data);
@@ -113,7 +112,7 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
   const data = getData();
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
-  let authuserId = authUser.uId;
+  const authuserId = authUser.uId;
 
   const channelIndex = data.channels.findIndex((c) => c.channelId === channelId);
   if (channelIndex < 0) return { error: 'channelId is not valid' };
@@ -126,7 +125,6 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
 
   const authInChannel = data.channels[channelIndex].allMembers.includes(authuserId);
   if (!authInChannel) return { error: 'authUserId is not in the channel' };
-
 
   data.channels[channelIndex].allMembers.push(uId);
   setData(data);
@@ -150,7 +148,7 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   const data = getData();
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
-  let authUserId = authUser.uId;
+  const authUserId = authUser.uId;
 
   const channel = data.channels.find((c) => c.channelId === channelId);
   if (!channel) return { error: 'channelId is not valid' };
@@ -184,41 +182,40 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   return { messages, end, start };
 }
 
-
 export function channelAddOwnerV1(
-  token: String,
+  token: string,
   channelId: number,
   uId: number
 ) {
   const data = getData();
-  let user = data.tokens.find((item) => item.token == token);
+  const user = data.tokens.find((item) => item.token === token);
 
   if (user === undefined) {
-    return { error: "invalid token" };
+    return { error: 'invalid token' };
   }
 
-  let channel = data.channels.find((item) => item.channelId === channelId);
+  const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
-    return { error: "no channel found" };
+    return { error: 'no channel found' };
   }
 
-  let ownerAddedData = data.users.find((item) => item.uId === uId);
+  const ownerAddedData = data.users.find((item) => item.uId === uId);
   if (ownerAddedData === undefined) {
-    return { error: "invalid uId" };
+    return { error: 'invalid uId' };
   }
 
-  let { uId: ownerAdded } = ownerAddedData;
+  const { uId: ownerAdded } = ownerAddedData;
 
   if (!channel.allMembers.includes(ownerAdded)) {
-    return { error: "user to be added is not a member of the channel" };
+    return { error: 'user to be added is not a member of the channel' };
   }
 
   if (channel.ownerMembers.includes(ownerAdded)) {
-    return { error: "user is already an owner" };
+    return { error: 'user is already an owner' };
   }
 
   if (!channel.ownerMembers.includes(user.uId)) {
-    return { error: "This user does not have permission to add owners." };
+    return { error: 'This user does not have permission to add owners.' };
   }
 
   channel.ownerMembers.push(uId);
@@ -226,46 +223,46 @@ export function channelAddOwnerV1(
 }
 
 export function channelRemoveOwnerV1(
-  token: String,
+  token: string,
   channelId: number,
   uId: number
 ) {
   const data = getData();
-  let user = data.tokens.find((item) => item.token === token);
+  const user = data.tokens.find((item) => item.token === token);
 
   if (user === undefined) {
-    return { error: "invalid token" };
+    return { error: 'invalid token' };
   }
-  let { uId: userId } = user;
+  const { uId: userId } = user;
 
-  let channel = data.channels.find((item) => item.channelId === channelId);
+  const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
-    return { error: "no channel found" };
+    return { error: 'no channel found' };
   }
 
-  let ownerRemovedData = data.users.find((item) => item.uId === uId);
+  const ownerRemovedData = data.users.find((item) => item.uId === uId);
   if (ownerRemovedData === undefined) {
-    return { error: "invalid uId" };
+    return { error: 'invalid uId' };
   }
-  let { uId: ownerRemoved } = ownerRemovedData;
+  const { uId: ownerRemoved } = ownerRemovedData;
 
   if (!channel.allMembers.includes(ownerRemoved)) {
-    return { error: "user to be added is not a member of the channel" };
+    return { error: 'user to be added is not a member of the channel' };
   }
 
   if (!channel.ownerMembers.includes(ownerRemoved)) {
-    return { error: "user is not an owner of this channel." };
+    return { error: 'user is not an owner of this channel.' };
   }
 
   if (
     channel.ownerMembers.includes(ownerRemoved) &&
     channel.ownerMembers.length === 1
   ) {
-    return { error: "user is the only owner of this channel." };
+    return { error: 'user is the only owner of this channel.' };
   }
 
   if (!channel.ownerMembers.includes(userId)) {
-    return { error: "This user does not have permission to add owners." };
+    return { error: 'This user does not have permission to add owners.' };
   }
 
   const index = channel.ownerMembers.indexOf(userId);
@@ -275,27 +272,26 @@ export function channelRemoveOwnerV1(
   return {};
 }
 
-export function channelLeaveV1(token: String, channelId: number) {
+export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
-  let user = data.tokens.find((item) => item.token === token);
+  const user = data.tokens.find((item) => item.token === token);
 
   if (user === undefined) {
-    return { error: "invalid token" };
+    return { error: 'invalid token' };
   }
-  let { uId: userId } = user;
+  const { uId: userId } = user;
 
-  let channel = data.channels.find((item) => item.channelId === channelId);
+  const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
-    return { error: "no channel found" };
+    return { error: 'no channel found' };
   }
 
   if (!channel.allMembers.includes(userId)) {
-    return { error: "user to be remove is not a member of the channel" };
+    return { error: 'user to be remove is not a member of the channel' };
   }
 
-  let index = channel.ownerMembers.indexOf(userId);
+  const index = channel.ownerMembers.indexOf(userId);
   channel.allMembers.splice(index, 1);
-
 
   if (channel.ownerMembers.includes(userId)) {
     const index = channel.ownerMembers.indexOf(userId);

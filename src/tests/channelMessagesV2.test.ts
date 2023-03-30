@@ -1,4 +1,4 @@
-import { requestAuthRegister, requestChannelsCreate, requestClear , requestChannelMessages, requestMessageSend } from '../requests';
+import { requestAuthRegister, requestChannelsCreate, requestClear, requestChannelMessages, requestMessageSend } from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -7,7 +7,6 @@ beforeEach(() => {
 afterAll(() => {
   requestClear();
 });
-
 
 describe('/channel/messages/v2', () => {
   describe('errors', () => {

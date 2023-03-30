@@ -1,5 +1,5 @@
 import { authRegisterV2 } from '../auth';
-import { channelsCreateV2} from '../channels';
+import { channelsCreateV2 } from '../channels';
 import { clearV1 } from '../other';
 
 beforeEach(() => {
@@ -8,12 +8,12 @@ beforeEach(() => {
 
 describe('Valid channelId produced', () => {
   test('Channel creation success for a public channel', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token, 'jaydensChannel', true);
     expect(channelCreationValid).toHaveProperty('channelId');
   });
   test('Channel creation success for a private channel', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token, 'jaydensChannel', false);
     expect(channelCreationValid).toHaveProperty('channelId');
   });
@@ -35,28 +35,28 @@ describe('Valid channelId produced', () => {
 
 describe('Invalid inputs', () => {
   test('Invalid token', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token + 1, 'jaydensGang', true);
-    expect(channelCreationValid).toMatchObject({error: expect.any(String)});
+    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
   });
   test('Channel name too short - public channel', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token, '', true);
-    expect(channelCreationValid).toMatchObject({error: expect.any(String)});
+    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
   });
   test('Channel name too short - private channel', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token, '', false);
-    expect(channelCreationValid).toMatchObject({error: expect.any(String)});
-  })
+    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
+  });
   test('Channel name too long - public channel', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token, 'hellomynameisDIMPIGARNEPUDI28', true);
-    expect(channelCreationValid).toMatchObject({error: expect.any(String)});
+    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
   });
   test('Channel name too long - private channel', () => {
-    const user1 = authRegisterV2('laylay123@gmail.com','laylay123', 'Jayden', 'Jacobs');
+    const user1 = authRegisterV2('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
     const channelCreationValid = channelsCreateV2(user1.token, 'hellomynameisDIMPIGARNEPUDI28', false);
-    expect(channelCreationValid).toMatchObject({error: expect.any(String)});
+    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
   });
 });
