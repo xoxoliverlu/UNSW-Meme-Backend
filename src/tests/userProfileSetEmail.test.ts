@@ -31,5 +31,12 @@ test("Successful requestUserProfileSetEmail Test.", () => {
   const user = requestAuthRegister("fadyS@gmail.com", "password", "Fady", "Sadek");
   const userSetEmail = requestUserProfileSetEmail(user.token, "fady.s04@gmail.com");
   const userProfile = requestUserProfile(user.token, user.authUserId);
+  expect(userSetEmail).toEqual({});
   expect(userProfile.user.email).toEqual("fady.s04@gmail.com");
+});
+
+test("Setting to the same email", () => {
+  const user = requestAuthRegister("fadyS@gmail.com", "password", "Fady", "Sadek");
+  const userSetEmail = requestUserProfileSetEmail(user.token, "fadyS@gmail.com");
+  expect(userSetEmail).toEqual({});
 });
