@@ -1,6 +1,6 @@
-import { getData, setData } from './dataStore';
+import { setData } from './dataStore';
 import { User, Channel, TokenPair, DM } from './interfaces';
-type clearReturn = {};
+type clearReturn = Record<string, never>;
 
 const clearV1 = (): clearReturn => {
   const data = {
@@ -16,6 +16,6 @@ const clearV1 = (): clearReturn => {
   };
   setData(data);
   return {};
-}
+};
 
-export {clearV1};
+export { clearV1 };

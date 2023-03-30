@@ -1,4 +1,4 @@
-import { requestAuthRegister, requestUsersAll, requestClear} from '../requests';
+import { requestAuthRegister, requestUsersAll, requestClear } from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -11,7 +11,7 @@ afterAll(() => {
 test('Invalid token.', () => {
   const user1 = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
   const usersAll = requestUsersAll(user1.token + 1);
-  expect(usersAll).toEqual({error: expect.any(String)});
+  expect(usersAll).toEqual({ error: expect.any(String) });
 });
 
 test('Successful UsersAllV1 Test.', () => {

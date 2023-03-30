@@ -1,358 +1,358 @@
-const request = require("sync-request");
-import { port, url} from "./config.json";
+const request = require('sync-request');
+import { port, url } from './config.json';
 
 export const requestAuthLogin = (email: string, password: string) => {
-    const res = request(
-        'POST',
+  const res = request(
+    'POST',
         `${url}:${port}` + '/auth/login/v2',
         {
-            json: {
-                email,
-                password
-            }
+          json: {
+            email,
+            password
+          }
         }
-    );
+  );
     // expect status code to be OK
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestAuthRegister = (email: string, password: string, nameFirst: string, nameLast: string) => {
-    const res1 = request(
-        'POST',
+  const res1 = request(
+    'POST',
         `${url}:${port}` + '/auth/register/v2',
         {
-            json: {
-                email,
-                password,
-                nameFirst,
-                nameLast
-            }
+          json: {
+            email,
+            password,
+            nameFirst,
+            nameLast
+          }
         }
-    );
-    if (res1.statusCode === 200) {
-        return JSON.parse(res1.getBody() as string);
-    }
-    return res1.statusCode;
-}
+  );
+  if (res1.statusCode === 200) {
+    return JSON.parse(res1.getBody() as string);
+  }
+  return res1.statusCode;
+};
 
 export const requestAuthLogout = (token: string) => {
-    const res3 = request(
-        'POST',
+  const res3 = request(
+    'POST',
         `${url}:${port}` + '/auth/logout/v1',
         {
-            json:{
-                token
-            }
+          json: {
+            token
+          }
         }
-    );
-    return JSON.parse(res3.getBody() as string);
-}
+  );
+  return JSON.parse(res3.getBody() as string);
+};
 
 export const requestClear = () => {
-    const res4 = request(
-        'DELETE',
+  const res4 = request(
+    'DELETE',
         `${url}:${port}` + '/clear/v1',
         {}
-    );
-    return JSON.parse(res4.getBody() as string);
-}
+  );
+  return JSON.parse(res4.getBody() as string);
+};
 
 export const requestDmCreate = (token: string, uIds: number[]) => {
-    const res5 = request(
-        'POST',
+  const res5 = request(
+    'POST',
         `${url}:${port}` + '/dm/create/v1',
         {
-            json: {
-                token,
-                uIds
-            }
+          json: {
+            token,
+            uIds
+          }
         }
-    );
-    if (res5.statusCode === 200) {
-        return JSON.parse(res5.getBody() as string);
-    }
-    return res5.statusCode;
-}
+  );
+  if (res5.statusCode === 200) {
+    return JSON.parse(res5.getBody() as string);
+  }
+  return res5.statusCode;
+};
 
-export const requestChannelsCreate = (token: string, name: String, isPublic: boolean) => {
-    const res = request(
-        'POST',
+export const requestChannelsCreate = (token: string, name: string, isPublic: boolean) => {
+  const res = request(
+    'POST',
         `${url}:${port}` + '/channels/create/v2',
         {
-            json: {
-                token: token,
-                name: name,
-                isPublic: isPublic
-            }
+          json: {
+            token: token,
+            name: name,
+            isPublic: isPublic
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestChannelsList = (token: string) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/channels/list/v2',
         {
-            qs: {
-                token: token,
-            }
+          qs: {
+            token: token,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestChannelsListAll = (token: string) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/channels/listall/v2',
         {
-            qs: {
-                token: token,
-            }
+          qs: {
+            token: token,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestChannelDetails = (token: string, channelId: number) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/channel/details/v2',
         {
-            qs: {
-                token: token,
-                channelId: channelId,
-            }
+          qs: {
+            token: token,
+            channelId: channelId,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestChannelJoin = (token: string, channelId: number) => {
-    const res = request(
-        'POST',
+  const res = request(
+    'POST',
         `${url}:${port}` + '/channel/join/v2',
         {
-            json: {
-                token: token,
-                channelId: channelId,
-            }
+          json: {
+            token: token,
+            channelId: channelId,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestUserProfile = (token: string, uId: number) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/user/profile/v2',
         {
-            qs: {
-                token: token,
-                uId: uId,
-            }
+          qs: {
+            token: token,
+            uId: uId,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestUsersAll = (token: string) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/users/all/v1',
         {
-            qs: {
-                token: token,
-            }
+          qs: {
+            token: token,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestUserProfileSetName = (token: string, nameFirst: string, nameLast: string) => {
-    const res = request(
-        'PUT',
+  const res = request(
+    'PUT',
         `${url}:${port}` + '/user/profile/setname/v1',
         {
-            json: {
-                token: token,
-                nameFirst: nameFirst,
-                nameLast: nameLast,
-            }
+          json: {
+            token: token,
+            nameFirst: nameFirst,
+            nameLast: nameLast,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestUserProfileSetEmail = (token: string, email: string) => {
-    const res = request(
-        'PUT',
+  const res = request(
+    'PUT',
         `${url}:${port}` + '/user/profile/setemail/v1',
         {
-            json: {
-                token: token,
-                email: email,
-            }
+          json: {
+            token: token,
+            email: email,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestUserProfileSetHandle = (token: string, handleStr: string) => {
-    const res = request(
-        'PUT',
+  const res = request(
+    'PUT',
         `${url}:${port}` + '/user/profile/sethandle/v1',
         {
-            json: {
-                token: token,
-                handleStr: handleStr,
-            }
+          json: {
+            token: token,
+            handleStr: handleStr,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
-export const requestChannelAddOwner = (token: String, channelId: number, uId: number) => {
-    const res = request(
-        'POST',
+export const requestChannelAddOwner = (token: string, channelId: number, uId: number) => {
+  const res = request(
+    'POST',
         `${url}:${port}` + '/channel/addowner/v1',
         {
-            json: {
-                token: token,
-                channelId: channelId,
-                uId: uId
-            }
+          json: {
+            token: token,
+            channelId: channelId,
+            uId: uId
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
-export const requestChannelInvite = (token: String, channelId: number, uId: number) => {
-    const res = request(
-        'POST',
+export const requestChannelInvite = (token: string, channelId: number, uId: number) => {
+  const res = request(
+    'POST',
         `${url}:${port}` + '/channel/invite/v2',
         {
-            json: {
-                token: token,
-                channelId: channelId,
-                uId: uId
-            }
+          json: {
+            token: token,
+            channelId: channelId,
+            uId: uId
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
-export const requestChannelRemoveOwner = (token: String, channelId: number, uId: number) => {
-    const res = request(
-        'POST',
+export const requestChannelRemoveOwner = (token: string, channelId: number, uId: number) => {
+  const res = request(
+    'POST',
         `${url}:${port}` + '/channel/removeowner/v1',
         {
-            json: {
-                token: token,
-                channelId: channelId,
-                uId: uId
-            }
+          json: {
+            token: token,
+            channelId: channelId,
+            uId: uId
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
-export const requestChannelLeave = (token: String, channelId: number) => {
-    const res = request(
-        'POST',
+export const requestChannelLeave = (token: string, channelId: number) => {
+  const res = request(
+    'POST',
         `${url}:${port}` + '/channel/leave/v1',
         {
-            json: {
-                token: token,
-                channelId: channelId,
-            }
+          json: {
+            token: token,
+            channelId: channelId,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
-export const requestDmList = (token: String) => {
-    const res = request(
-        'GET',
+export const requestDmList = (token: string) => {
+  const res = request(
+    'GET',
         `${url}:${port}` + '/dm/list/v1',
         {
           qs: {
             token
           }
         }
-      );
-      if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-      }
-      return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestDmRemove = (token: string, dmId: number) => {
-	const res = request(
-		'DELETE',
-		`${url}:${port}` + '/dm/remove/v1',
-		{
-		qs: {
-				token,
-				dmId,
-		}
-		}
-	);
-	if (res.statusCode === 200) {
-		return JSON.parse(res.body as string);
-	}
-	return res.statusCode;
-}
+  const res = request(
+    'DELETE',
+    `${url}:${port}` + '/dm/remove/v1',
+    {
+      qs: {
+        token,
+        dmId,
+      }
+    }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.body as string);
+  }
+  return res.statusCode;
+};
 
-export const requestDmDetails = (token: String, dmId: number) => {
-    const res = request(
-        'GET',
+export const requestDmDetails = (token: string, dmId: number) => {
+  const res = request(
+    'GET',
         `${url}:${port}` + '/dm/details/v1',
         {
           qs: {
@@ -360,134 +360,133 @@ export const requestDmDetails = (token: String, dmId: number) => {
             dmId: dmId
           }
         }
-      );
-      if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-      }
-      return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestDmLeave = (token: string, dmId: number) => {
-    const res = request(
-        'POST',
+  const res = request(
+    'POST',
         `${url}:${port}` + '/dm/leave/v1',
         {
-            json: {
-                token: token,
-                dmId: dmId,
-            }
+          json: {
+            token: token,
+            dmId: dmId,
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
-
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestChannelMessages = (token: string, channelId: number, start: number) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/channel/messages/v2',
         {
-            qs: {
-                token: token,
-                channelId: channelId,
-                start: start
-            }
+          qs: {
+            token: token,
+            channelId: channelId,
+            start: start
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestMessageSend = (token: string, channelId: number, message: string) => {
-    const res = request(
-        'POST',
+  const res = request(
+    'POST',
         `${url}:${port}` + '/message/send/v1',
         {
-            json: {
-                token: token,
-                channelId: channelId,
-                message: message
-            }
+          json: {
+            token: token,
+            channelId: channelId,
+            message: message
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestDmMessages = (token: string, dmId: number, start: number) => {
-    const res = request(
-        'GET',
+  const res = request(
+    'GET',
         `${url}:${port}` + '/dm/messages/v1',
         {
-            qs: {
-                token: token,
-                dmId: dmId,
-                start: start
-            }
+          qs: {
+            token: token,
+            dmId: dmId,
+            start: start
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestMessageSendDm = (token: string, dmId: number, message: string) => {
-    const res = request(
-        'POST',
+  const res = request(
+    'POST',
         `${url}:${port}` + '/message/senddm/v1',
         {
-            json: {
-                token: token,
-                dmId: dmId,
-                message: message
-            }
+          json: {
+            token: token,
+            dmId: dmId,
+            message: message
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestMessageRemove = (token: string, messageId: number) => {
-    const res = request(
-        'DELETE',
+  const res = request(
+    'DELETE',
         `${url}:${port}` + '/message/remove/v1',
         {
-            qs: {
-                token: token,
-                messageId: messageId
-            }
+          qs: {
+            token: token,
+            messageId: messageId
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
 
 export const requestMessageEdit = (token: string, messageId: number, message: string) => {
-    const res = request(
-        'PUT',
+  const res = request(
+    'PUT',
         `${url}:${port}` + '/message/edit/v1',
         {
-            json: {
-                token: token,
-                messageId: messageId,
-                message: message
-            }
+          json: {
+            token: token,
+            messageId: messageId,
+            message: message
+          }
         }
-    );
-    if (res.statusCode === 200) {
-        return JSON.parse(res.getBody() as string);
-    }
-    return res.statusCode;
-}
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
