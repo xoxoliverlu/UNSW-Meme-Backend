@@ -57,11 +57,9 @@ describe('/dm/messages/v1', () => {
         const message1 = requestMessageSendDm(register.token, dm.dmId, 'chocolate');
         const message2 = requestMessageSendDm(register.token, dm.dmId, 'icecream');
         const data = requestDmMessages(register.token, dm.dmId, 0);
-        expect(data).toStrictEqual({
-        messages: [],
-        start: 0,
-        end: -1,
-        });
+        expect(data.messages.length).toStrictEqual(2);
+        expect(data.start).toStrictEqual(0);
+        expect(data.end).toStrictEqual(-1);
       });
       test('0 to 52 messages', () => {
         const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');

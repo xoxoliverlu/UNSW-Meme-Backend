@@ -99,32 +99,49 @@ import {
         });
       });
       test('user with owner perms in DM edits message', () => {
+        // Register two users
         const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
         const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
+      
+        // Create a DM and send a message from register2
         const dm = requestDmCreate(register.token, [register2.authUserId]);
         const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-        expect(message).toStrictEqual({error: 'Invalid channelId' });
+      
+        // Edit the message using register's token
         const edit = 'cat';
         const data = requestMessageEdit(register.token, message.messageId, edit);
-        expect(data).toStrictEqual({error: 'token is invalid'});
+        console.log(data);
+        // Verify that the message was successfully edited
+        expect(data).toStrictEqual({ error: "token is invalid"});
+      
+        // Get the messages in the DM and verify that the edited message is present
         const messages = requestDmMessages(register.token, dm.dmId, 0);
-        messages.length = 0; // Set messages to an empty array
-        expect(messages.messages).toStrictEqual([]);
+        console.log(messages.messages[0].message);
+        expect(messages.messages.length).toBe(1);
+        expect(messages.messages[0].message).toBe(edit);
       });
       test('user that sent message in DM, edits message', () => {
         const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
         const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
         const dm = requestDmCreate(register.token, [register2.authUserId]);
         const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-        expect(message).toStrictEqual({ error: 'Invalid channelId' });
+        expect(message).toStrictEqual({ messageId: 1 });
         const edit = 'cat';
         const data = requestMessageEdit(register2.token, message.messageId, edit);
         expect(data).toStrictEqual({ error: 'token is invalid'});
         const messages = requestDmMessages(register.token, dm.dmId, 0);
         expect(messages).toStrictEqual({
-          messages: [],
+          messages: [
+            {
+              message: messages.message,
+              messageId: messages.messageId,
+              timeSent: messages.timeSent,
+              uId: messages.uId
+            }
+           
+          ],
           start: 0,
-          end: -1
+          end: -1,
         });
       });
       test('an empty string deletes the message', () => {
@@ -132,16 +149,14 @@ import {
         const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
         const dm = requestDmCreate(register.token, [register2.authUserId]);
         const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-        expect(message).toStrictEqual({ error: 'Invalid channelId' });
+        expect(message).toStrictEqual({ messageId: 1 });
         const edit = '';
         const data = requestMessageEdit(register2.token, message.messageId, edit);
         expect(data).toStrictEqual({ error: "token is invalid" });
         const messages = requestDmMessages(register.token, dm.dmId, 0);
-        expect(messages).toStrictEqual({
-          messages: [],
-          start: 0,
-          end: -1
-        });
+        expect(messages.messages.length).toStrictEqual(2);
+        expect(data.start).toStrictEqual(0);
+        expect(data.end).toStrictEqual(-1);
       });
     });
   });

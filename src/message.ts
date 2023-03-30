@@ -37,58 +37,65 @@ export function messageSendV1(token: string, channelId: number, message: string)
 export function messageSendDmV1(token: string, dmId: number, message: string) {
   const data = getData();
   const dm = data.dms.find(i => i.dmId === dmId);
-  const user = data.users.find(i => i.token === token);
-  const indexDm = data.dms.findIndex(u => u.dmId === dmId);
-  const indexUser = data.users.findIndex(u => u.token === token);
+  const user = data.tokens.find(i => i.token === token);
+  //const indexDm = data.dms.findIndex(u => u.dmId === dmId);
+  //const indexUser = data.users.findIndex(u => u.token === token);
 
+  console.log("Token passed in is: " + token);
   // Error checking
   if (!user) {
     return { error: 'Token invalid' };
   }
+  const uId = user.uId;
   if (!dm) {
     return { error: 'dmId does not refer to a valid DM' };
   }
   if (message.length > 1000) {
-    return { error: 'length of mesage is greater than 1000 characters' };
+    return { error: 'length of message is greater than 1000 characters' };
   } else if (message.length < 1) {
     return { error: 'length of message is less than 1 character' };
   }
 
-  let found = false;
-  for (const elem of data.dms[indexDm].allMembers) {
-    if (elem === data.users[indexUser].authUserId) {
-      found = true;
-    }
+  if (!dm.uIds.includes(uId) && dm.ownerId !== uId ) {
+    return {error : 'this user is not part of the dm'};
   }
-  if (found === false) {
-    return { error: 'User is not part of the DM' };
-  }
+  // let found = false;
+  // for (const elem of data.dms[indexDm].allMembers) {
+  //   if (elem === data.users[indexUser].authUserId) {
+  //     found = true;
+  //   }
+  // }
+  // if (found === false) {
+  //   return { error: 'User is not part of the DM' };
+  // }
 
   // Gemerate a random messageId
-  let randomNum = '';
-  const characters = '0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 10; i++) {
-    randomNum += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
+  // let randomNum = '';
+  // const characters = '0123456789';
+  // const charactersLength = characters.length;
+  // for (let i = 0; i < 10; i++) {
+  //   randomNum += characters.charAt(Math.floor(Math.random() * charactersLength));
+  // }
 
-  let messageId = parseInt(randomNum);
+  // let messageId = parseInt(randomNum);
+  let messageId = data.lastMessageId + 1;
+  data.lastMessageId++;
 
-  for (const channel of data.channels) {
-    for (const message of channel.messages) {
-      if (message.messageId === messageId) {
-        messageId += 1;
-      }
-    }
-  }
+  // for (const channel of data.channels) {
+  //   for (const message of channel.messages) {
+  //     if (message.messageId === messageId) {
+  //       messageId += 1;
+  //     }
+  //   }
+  // }
 
   const newMessage = {
     messageId: messageId,
-    uId: data.users[indexUser].authUserId,
+    uId: uId,
     message: message,
     timeSent: Math.floor(Date.now() / 1000)
   };
-  data.dms[indexDm].messages.push(newMessage);
+  dm.messages.push(newMessage);
   setData(data);
 
   return { messageId };
@@ -149,7 +156,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
   }
 
   if (messageChannel) {
-    if (message === '') {
+    if (Object.is(message, '')) {
       channelIndex.messages = channelIndex.messages.filter(message => message.messageId !== messageId);
     }
     messageChannel.message = message;
@@ -171,6 +178,10 @@ export function messageRemoveV1(token: string, messageId: number) {
   
   data.channels.filter(channel => channel.allMembers.includes(uId)).forEach((channel) => {
     channelMsg = channel.messages.findIndex(message => message.messageId = messageId);
+    if (channel.messages[channelMsg].uId !== uId) {
+      return {error: "This user did not send this message."}
+    }
+
     let channelPermission = channel.ownerMembers.includes(uId)
     if (!channelPermission){
       return {error: "This user does not have permission to delete this message."}
@@ -182,6 +193,10 @@ export function messageRemoveV1(token: string, messageId: number) {
   data.dms.filter(dm => dm.uIds.includes(uId) || dm.ownerId == uId).forEach((dm) => {
     dmMsg = dm.messages.findIndex(message => message.messageId = messageId);
     let dmPermission = dm.ownerId == uId;
+    if (dm.messages[dmMsg].uId !== uId) {
+      return {error: "This user did not send this message."}
+    }
+
     if (!dmPermission){
       return {error: "This user does not have permission to delete this message."}
     }
