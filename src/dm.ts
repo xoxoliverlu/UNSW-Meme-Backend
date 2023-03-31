@@ -1,5 +1,11 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
+/**
+ * Creates a Dm channel
+ * @param token - user identifier
+ * @param uIds - array of users dm is directed to
+ * @returns dmId
+ */
 const dmCreateV1 = (token: string, uIds: number[]) => {
   const data = getData();
   // Error check: invalid uId in uIds
@@ -55,7 +61,12 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
     dmId: newId,
   };
 };
-
+/**
+ * For a valid token, returns information about all
+ * the dms the user is in
+ * @param {token} - the user making the call
+ * @returns {dms} - array of objects with dms the user is in
+*/
 const dmListV1 = (token: string) => {
   // check if token passed in is valid
   // Invalid token
@@ -77,7 +88,13 @@ const dmListV1 = (token: string) => {
 
   return { dms: dms };
 };
-
+/**
+ * For a valid token and valid dmId, removes user from
+ * given dm
+ * @param {token} - the user making the call
+ * @param {dmId} - dmId to be removed from
+ * @returns {}
+*/
 const dmRemoveV1 = (token: string, dmId: number) => {
   // Error check
   // Valid token
