@@ -1,16 +1,4 @@
 import { getData, setData } from './dataStore';
-import { Channel } from './interfaces';
-
-// Return types
-type channelReturn  = {
-  channelId?: number;
-  name?: string;
-  error?: string;
-}
-type channelsListReturn  = {
-  channels?: channelReturn[];
-  error?: string;
-}
 
 /**
  * Creates a new channel object and appends it to the channels section of the dataStore
@@ -60,7 +48,7 @@ const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
   return {
     channelId: Id
   };
-}
+};
 
 /**
  * Given a token, the function returns channels the user is a part of
@@ -72,7 +60,7 @@ const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
  */
 const channelsListV2 = (token: string) => {
   const data = getData();
- // Check for valid token
+  // Check for valid token
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
     return { error: 'user not found' };
@@ -88,7 +76,7 @@ const channelsListV2 = (token: string) => {
   }
 
   return { channels: associatedChannels };
-}
+};
 
 /**
  * Given a token, the function
@@ -114,6 +102,6 @@ const channelsListAllV2 = (token: string) => {
   return {
     channels: result,
   };
-}
+};
 
-export { channelsListAllV2, channelsListV2, channelsCreateV2};
+export { channelsListAllV2, channelsListV2, channelsCreateV2 };

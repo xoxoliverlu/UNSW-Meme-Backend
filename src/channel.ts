@@ -119,15 +119,15 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
   if (authUser === undefined) return { error: 'token is invalid' };
   const authuserId = authUser.uId;
 
-    // Valid channelId
+  // Valid channelId
   const channelIndex = data.channels.findIndex((c) => c.channelId === channelId);
   if (channelIndex < 0) return { error: 'channelId is not valid' };
 
-    // uId valid check
+  // uId valid check
   const uIdIndex = data.users.findIndex((u) => u.uId === uId);
   if (uIdIndex < 0) return { error: 'uId is not valid' };
 
-    // Check if user is already in the channel
+  // Check if user is already in the channel
   const UIdInChannel = data.channels[channelIndex].allMembers.includes(uId);
   if (UIdInChannel) return { error: 'uId is already in channel' };
 
@@ -163,7 +163,6 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   // Check for valid channelId
   const channel = data.channels.find((c) => c.channelId === channelId);
   if (!channel) return { error: 'channelId is not valid' };
-
 
   if (!channel.allMembers.includes(authUserId)) return { error: 'user is not a member in the channel' };
 
@@ -276,7 +275,6 @@ export function channelRemoveOwnerV1(
   if (channel === undefined) {
     return { error: 'no channel found' };
   }
-
 
   // Error checking
   const ownerRemovedData = data.users.find((item) => item.uId === uId);
