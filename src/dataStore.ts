@@ -50,7 +50,15 @@ function fileSaveData() {
 
 // Updates the data based on the contents of dataStore.json
 export function fileLoadData() {
-  data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+  // Check that the file exists locally
+  if(!fs.existsSync('data.json')) {
+    fileSaveData();
+  }
+  // The file *does* exist
+  else {
+    // Read the file
+    data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+  }
 }
 
 export { getData, setData };
