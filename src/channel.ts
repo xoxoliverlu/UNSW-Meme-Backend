@@ -28,9 +28,9 @@ export function channelDetailsV2(token: string, channelId: number) {
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
   if (channel === undefined) return { error: 'Invalid channelId' };
-
+  // Checks if the user is a member of the channel.
   if (!channel.allMembers.includes(authUserId)) return { error: 'User is not a member of the channel' };
-
+  // Creates arrays using the helper function.
   const owners = memberObject(token, channel.ownerMembers);
   const members = memberObject(token, channel.allMembers);
 
@@ -42,7 +42,11 @@ export function channelDetailsV2(token: string, channelId: number) {
   };
 }
 
-// Helper function
+/* Helper function
+* This function creates an array of objects of all the users
+* that are in the members/owners array. It takes each uId and
+* returns basic information about the user.
+*/
 function memberObject(token: string, users: number[]) {
   const result = [];
   for (const userId of users) {
@@ -67,7 +71,7 @@ function memberObject(token: string, users: number[]) {
  *
  * @returns {object} - error if channelId or uId is invalid,
  *                     error if the user is already a member of the channel.
- *                     error if the channel is private.
+ *                     error if the channel is private and the user is not a global owner.
  *
  * @returns {} - returns nothing if there is no errors.
  */

@@ -126,6 +126,19 @@ const dmDetailsV1 = (token: string, dmId: number) => {
   };
 };
 
+/**
+ * Given a valid token and dmId, removes the user from the dm.
+ *
+ * @param {string} token - token of current user.
+ * @param {number} dmId - unique Id of the dm.
+ * ...
+ *
+ * @returns {object}  - error if token is invalid,
+ *                    - error if dmId is invalid,
+ *                    - error if the dmId is valid but the user is not a member.
+ *
+ * @returns {} - no return if no errors.
+ */
 const dmLeaveV1 = (token: string, dmId: number) => {
   const data = getData();
   // Checks if the token is valid.
