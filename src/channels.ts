@@ -1,18 +1,28 @@
 import { getData, setData } from './dataStore';
+import { Channel } from './interfaces';
+
+// Return types
+type channelReturn  = {
+  channelId?: number;
+  name?: string;
+  error?: string;
+}
+type channelsListReturn  = {
+  channels?: channelReturn[];
+  error?: string;
+}
+
 /**
- * Given an authUserId and a channelId, the function
- * prints out basic information about the channel.
+ * Creates a new channel object and appends it to the channels section of the dataStore
+ * Returns error if inactive token passed in || 1 > name length || name length > 20
+ * @param {string} token - valid token for a user
+ * @param {string} name - name of channel
+ * @param {boolean} isPublic - boolean for channel public
  *
- * @param {number} authUserId - Unique identifier for a valid user.
- * @param {number} channelId - Unique name for a valid channel.
- * ...
- *
- * @returns {object} - error if authUserId is invalid.
- *
- *
- * @returns {number} - unique id of the channel.
+ * @returns {object} - containing channelId
+ * @returns {object} - error if name or token is invalid
  */
-export function channelsCreateV2(token: string, name: string, isPublic: boolean) {
+const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
   const data = getData();
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
@@ -53,20 +63,16 @@ export function channelsCreateV2(token: string, name: string, isPublic: boolean)
 }
 
 /**
- * Given an authUserId and a channelId, the function
- * prints out basic information about the channel.
+ * Given a token, the function returns channels the user is a part of
  *
- * @param {number} authUserId - Unique identifier for a valid user.
- * ...
+ * @param {string} token - Unique token for user.
  *
- * @returns {object} - error if authUserId is invalid.
- *
- *
- * @returns {number} - unique id of the channel.
- * @returns {string} - unique name of the channel.
+ * @returns {object} - error if token is invalid.
+ * @returns {object} - list of all channels user is a part of.
  */
-export function channelsListV2(token: string) {
+const channelsListV2 = (token: string) => {
   const data = getData();
+ // Check for valid token
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
     return { error: 'user not found' };
@@ -74,6 +80,7 @@ export function channelsListV2(token: string) {
   const { uId: authUserId } = user;
   const associatedChannels = [];
 
+  // Add channels the authUser is part of
   for (const channel of data.channels) {
     if (channel.allMembers.includes(authUserId)) {
       associatedChannels.push({ channelId: channel.channelId, name: channel.name });
@@ -84,20 +91,17 @@ export function channelsListV2(token: string) {
 }
 
 /**
- * Given an authUserId and a channelId, the function
- * prints out basic information about the channel.
+ * Given a token, the function
+ * returns all channels.
  *
- * @param {number} authUserId - Unique identifier for a valid user.
- * ...
+ * @param {string} token - Unique token for user.
  *
- * @returns {object} - error if authUserId is invalid.
- *
- *
- * @returns {number} - unique id of the channel.
- * @returns {string} - unique name of the channel.
+ * @returns {object} - error if token is invalid.
+ * @returns {object} - list of all channels.
  */
-export function channelsListAllV2(token: string) {
+const channelsListAllV2 = (token: string) => {
   const data = getData();
+  // Invalid token
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
     return { error: 'error' };
@@ -111,3 +115,5 @@ export function channelsListAllV2(token: string) {
     channels: result,
   };
 }
+
+export { channelsListAllV2, channelsListV2, channelsCreateV2};
