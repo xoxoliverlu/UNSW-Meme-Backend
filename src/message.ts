@@ -1,4 +1,5 @@
-import { getData, setData } from './dataStore';
+import { getData, setData } from './dataStore'; 
+import { Message , Channel, DM} from './interfaces'; 
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -8,8 +9,7 @@ import { getData, setData } from './dataStore';
  */
 
 export function messageSendV1(token: string, channelId: number, message: string) {
-  const data = getData();
-  console.log('Token passed in is: ' + token);
+  const data = getData(); 
   const user = data.tokens.find((u) => u.token === token);
   if (!user) return { error: 'Token invalid' };
   const { uId } = user;
@@ -27,8 +27,8 @@ export function messageSendV1(token: string, channelId: number, message: string)
   const messageId = data.lastMessageId + 1;
   data.lastMessageId++;
   // new Message output
-  const newMessage = {
-    messageId: messageId,
+  const newMessage: Message = {
+    messageId: messageId as number,
     uId: uId,
     message: message,
     timeSent: Math.floor(Date.now() / 1000)
@@ -52,8 +52,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   const data = getData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
-
-  console.log('Token passed in is: ' + token);
+ 
   // Error checking
   if (!user) {
     return { error: 'Token invalid' };
@@ -100,54 +99,55 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
 
 export function messageEditV1 (token: string, messageId: number, message: string) {
   const data = getData();
-  const authUser = data.users.findIndex((u) => u.token === token);
-  if (authUser < 0) return { error: 'token is invalid' };
-  const authUserId = data.users[authUser].authUserId;
+  // Check for valid token
+  const authUser = data.tokens.find((u) => u.token === token);
+  if (authUser === undefined) return { error: 'token is invalid' }; 
+  const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
-
-  let messageChannel;
-  let messageDm;
-  let channelIndex;
-  let dmIndex;
+ 
+  // Create variables
+  let chosenMessage: Message;
+  let channelIndex: Channel;
+  let dmIndex: DM;
 
   // looking for the channel that contains the message the message with the messageId
   for (const channel of data.channels) {
-    messageChannel = channel.messages.find((m) => m.messageId === messageId);
-    if (messageChannel) {
+    chosenMessage = channel.messages.find((m) => m.messageId === messageId);
+    if (chosenMessage) {
       channelIndex = channel;
     }
   }
   // if message is found = sets dmIndex to corresponding dm object
   // if not found - dmIndex remains undefined
   for (const dm of data.dms) {
-    messageDm = dm.messages.find(m => m.messageId === messageId);
-    if (messageDm) {
+    chosenMessage = dm.messages.find(m => m.messageId === messageId);
+    if (chosenMessage) {
       dmIndex = dm;
     }
   }
 
-  if (!messageDm && !messageChannel) return { error: 'message id is invalid' };
+  if (!chosenMessage) return { error: 'message id is invalid' };
 
   // checks whether authenticated user is either the sender of the message
   // or a member of the conversation's owner memver
   // if either of them are true - validtoEdit is true
-  let validToEdit = false;
-  if (messageDm) {
-    if (messageDm.uId === authUserId ||
-    (dmIndex.ownerMembers.includes(authUserId))) {
-      validToEdit = true;
-    }
-  }
+  let validToEdit = false; 
 
   // checks if message exists in the channels using messageId
   // it it does -> checks if the user who sent edit rquest is the same as the
   // one who sent the message or if they are one of the channel owners
   // if either one of these conditions is true - validToEdit: set to true
-  // meaning it can be edited
-  if (messageChannel) {
-    if (messageChannel.uId === authUserId ||
-    (channelIndex.ownerMembers.find((o) => o.uId === authUserId))) {
+  // meaning it can be edited  
+  if (channelIndex !== undefined) {
+    if (channelIndex.ownerMembers.find((o) => o === authUser.uId || authPerm.globalPerm === 1 || chosenMessage.uId === authUser.uId)) {
+      validToEdit = true;
+    }
+  } 
+  if (dmIndex !== undefined) { 
+    if (chosenMessage.uId === authUser.uId) {
+      validToEdit = true;
+    } else if (dmIndex.ownerId === authUser.uId) {
       validToEdit = true;
     }
   }
@@ -155,28 +155,19 @@ export function messageEditV1 (token: string, messageId: number, message: string
   if (!validToEdit) {
     return { error: 'message was not sent by this user, and user does not have owner permissions' };
   }
+
   // checking if the messages to be edited exists in a DM
   // if it does exist - checks if new message is empty or not
   // if empty - removes existing message from DM
   // not empty - updates message with new message text
-  if (messageDm) {
-    if (message === '') {
-      dmIndex.messages = dmIndex.messages.filter(message => message.messageId !== messageId);
-    }
-    messageDm.message = message;
-  }
-  // edits a message in a channel - checks if there is message
-  // if there is one - checks if its empty
-  // if empty, removes the message from the channel messages array
-  // otherwise updates message content with new content
-  // updated message object is returned
-  if (messageChannel) {
-    if (Object.is(message, '')) {
-      channelIndex.messages = channelIndex.messages.filter(message => message.messageId !== messageId);
-    }
-    messageChannel.message = message;
-  }
-  setData(data);
+ 
+  // Change message
+  if (message === '') {
+    messageRemoveV1(token, messageId);
+  } else {
+    chosenMessage.message = message;
+    setData(data);
+  } 
   return {};
 }
 /**
@@ -253,3 +244,5 @@ export function messageRemoveV1(token: string, messageId: number) {
   setData(data);
   return {};
 }
+ 
+
