@@ -52,6 +52,14 @@ let data = {
             uId: 2,
         }
     ],
+    dms: [
+        dmId: newId,
+        name: name,
+        ownerId: auth.uId,
+        uIds: uIds,
+        messages: [],
+    ],
+    lastDmId: 0,
 }
 ```
 

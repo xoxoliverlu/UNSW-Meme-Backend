@@ -1,6 +1,6 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
 import { User, Channel, TokenPair, DataStore, DM } from './interfaces';
-
+import fs from 'fs';
 let data = {
   users: [] as User[],
   channels: [] as Channel[],
@@ -40,6 +40,17 @@ function getData(): DataStore {
 // Hint: this function might be useful to edit in iteration 2
 function setData(newData: DataStore) {
   data = newData;
+  fileSaveData();
+}
+
+// Saves the data to a file dataStore.json
+function fileSaveData() {
+  fs.writeFileSync('data.json', JSON.stringify(data));
+}
+
+// Updates the data based on the contents of dataStore.json
+export function fileLoadData() {
+  data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 }
 
 export { getData, setData };
