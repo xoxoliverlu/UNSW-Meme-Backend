@@ -1,5 +1,11 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
+/**
+ * Creates a Dm channel
+ * @param token - user identifier
+ * @param uIds - array of users dm is directed to
+ * @returns dmId
+ */
 const dmCreateV1 = (token: string, uIds: number[]) => {
   const data = getData();
   // Error check: invalid uId in uIds
@@ -55,6 +61,12 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
     dmId: newId,
   };
 };
+/**
+ * For a valid token, returns information about all
+ * the dms the user is in
+ * @param {token} - the user making the call
+ * @returns {dms} - array of objects with dms the user is in
+*/
 
 const dmListV1 = (token: string) => {
   // check if token passed in is valid
@@ -77,6 +89,14 @@ const dmListV1 = (token: string) => {
 
   return { dms: dms };
 };
+
+/**
+ * For a valid token and valid dmId, removes user from
+ * given dm
+ * @param {token} - the user making the call
+ * @param {dmId} - dmId to be removed from
+ * @returns {}
+*/
 
 const dmRemoveV1 = (token: string, dmId: number) => {
   // Error check
@@ -101,15 +121,17 @@ const dmRemoveV1 = (token: string, dmId: number) => {
 };
 
 /**
- * Given a dm with dmID that the authorised user is a member of
- * return detail of that dm
- * @param {token}  - token of current user
- * @param {dmId} number - chanel being inspected
- * ...
- *
- * @returns {name, member} - object with name and member properties
- * @returns {error: String} - error if token and dmId are invalid
- */
+* Given a DM with ID dmId that the authorised user is a member of,
+* provide basic details about the DM.
+*
+* @param {token} string - random string used to identify specific user session
+* @param {dmId} number - number associated to the specific dm group
+* @returns {name} - string listing names of all participants in the dm. Names are separated
+*                   by a comma and space.
+* @returns {members} - Array of objects, where each object contains types of user. User is an
+                     object containing uId, email, nameFirst, nameLast, handleStr
+*
+*/
 const dmDetailsV1 = (token: string, dmId: number) => {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
