@@ -169,18 +169,18 @@ export function userProfileSetHandleV1(token: string, handleStr: string) {
   if (auth === undefined) return { error: 'Invalid token' };
 
   const userInfo = data.users.find((element) => element.uId === auth.uId);
-
   handleStr = handleStr.trim();
+  // Checks if the old and new handleStr are the same, if true then exits the function.
+  if (handleStr === userInfo.handleStr) return {};
+  // Checks the length of the handleStr.
   if (handleStr.length < 3 || handleStr.length > 20) {
     return { error: 'Length must be between 3 and 20 characters' };
   }
-
-  if (handleStr === userInfo.handleStr) return {};
+  // Checks if the handleStr contains only alphanumeric characters
   const isAlphaNumeric = (str: string) => /^[a-z0-9]+$/gi.test(str);
   if (!isAlphaNumeric(handleStr)) {
     return { error: 'handleStr must only contain alphanumeric values' };
   }
-
   // Checks if the handleStr is already in use.
   for (const user of data.users) {
     if (user.handleStr === handleStr) {
