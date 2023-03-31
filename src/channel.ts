@@ -114,19 +114,24 @@ export function channelJoinV2(token: string, channelId: number) {
  */
 export function channelInviteV1(token: string, channelId: number, uId: number) {
   const data = getData();
+  // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
   const authuserId = authUser.uId;
 
+  // Valid channelId
   const channelIndex = data.channels.findIndex((c) => c.channelId === channelId);
   if (channelIndex < 0) return { error: 'channelId is not valid' };
 
+  // uId valid check
   const uIdIndex = data.users.findIndex((u) => u.uId === uId);
   if (uIdIndex < 0) return { error: 'uId is not valid' };
 
+  // Check if user is already in the channel
   const UIdInChannel = data.channels[channelIndex].allMembers.includes(uId);
   if (UIdInChannel) return { error: 'uId is already in channel' };
 
+  // Check for authUser in channel
   const authInChannel = data.channels[channelIndex].allMembers.includes(authuserId);
   if (!authInChannel) return { error: 'authUserId is not in the channel' };
 
@@ -150,10 +155,12 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
  */
 export function channelMessagesV1(token: string, channelId: number, start: number) {
   const data = getData();
+  // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
   const authUserId = authUser.uId;
 
+  // Check for valid channelId
   const channel = data.channels.find((c) => c.channelId === channelId);
   if (!channel) return { error: 'channelId is not valid' };
 
@@ -201,6 +208,7 @@ export function channelAddOwnerV1(
   channelId: number,
   uId: number
 ) {
+  // Check for valid token
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
@@ -208,11 +216,13 @@ export function channelAddOwnerV1(
     return { error: 'invalid token' };
   }
 
+  // check for channel
   const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
     return { error: 'no channel found' };
   }
 
+  // Valid uId
   const ownerAddedData = data.users.find((item) => item.uId === uId);
   if (ownerAddedData === undefined) {
     return { error: 'invalid uId' };
@@ -251,6 +261,7 @@ export function channelRemoveOwnerV1(
   channelId: number,
   uId: number
 ) {
+  // Valid token
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
@@ -259,11 +270,13 @@ export function channelRemoveOwnerV1(
   }
   const { uId: userId } = user;
 
+  // Channel error check
   const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
     return { error: 'no channel found' };
   }
 
+  // Error checking
   const ownerRemovedData = data.users.find((item) => item.uId === uId);
   if (ownerRemovedData === undefined) {
     return { error: 'invalid uId' };
@@ -310,11 +323,12 @@ export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
+  // valid token
   if (user === undefined) {
     return { error: 'invalid token' };
   }
   const { uId: userId } = user;
-
+  // valid channel
   const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
     return { error: 'no channel found' };

@@ -1,1 +1,1 @@
-{"users":[],"channels":[],"lastAuthUserId":0,"lastChannelId":0,"lastMessageId":0,"lastToken":0,"tokens":[],"dms":[],"lastDmId":0}
+{"users":[{"uId":1,"nameFirst":"Jayden","nameLast":"Jacobs","email":"laylay123@gmail.com","password":"laylay123","handleStr":"jaydenjacobs","globalPerm":1}],"channels":[],"lastAuthUserId":1,"lastChannelId":0,"lastMessageId":0,"lastToken":1,"tokens":[{"token":"1","uId":1}],"dms":[],"lastDmId":0}
