@@ -1,7 +1,5 @@
-import { getData, setData } from './dataStore';
-import { authRegisterV2 } from './auth';
-import { channelsCreateV2 } from './channels';
-import {channelMessagesV1} from './channel';
+import { getData, setData } from './dataStore'; 
+import { Message , Channel, DM} from './interfaces'; 
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -11,8 +9,7 @@ import {channelMessagesV1} from './channel';
  */
 
 export function messageSendV1(token: string, channelId: number, message: string) {
-  const data = getData();
-  console.log('Token passed in is: ' + token);
+  const data = getData(); 
   const user = data.tokens.find((u) => u.token === token);
   if (!user) return { error: 'Token invalid' };
   const { uId } = user;
@@ -30,8 +27,8 @@ export function messageSendV1(token: string, channelId: number, message: string)
   const messageId = data.lastMessageId + 1;
   data.lastMessageId++;
   // new Message output
-  const newMessage = {
-    messageId: messageId,
+  const newMessage: Message = {
+    messageId: messageId as number,
     uId: uId,
     message: message,
     timeSent: Math.floor(Date.now() / 1000)
@@ -55,8 +52,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   const data = getData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
-
-  console.log('Token passed in is: ' + token);
+ 
   // Error checking
   if (!user) {
     return { error: 'Token invalid' };
@@ -106,12 +102,13 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
   if (authUser === undefined) return { error: 'token is invalid' }; 
+  const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
  
-  let chosenMessage;
-  let channelIndex;
-  let dmIndex;
+  let chosenMessage: Message;
+  let channelIndex: Channel;
+  let dmIndex: DM;
 
   // looking for the channel that contains the message the message with the messageId
   for (const channel of data.channels) {
@@ -134,24 +131,22 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // checks whether authenticated user is either the sender of the message
   // or a member of the conversation's owner memver
   // if either of them are true - validtoEdit is true
-  let validToEdit = false;
-  if (chosenMessage.uId !== authUser.uId) {
-    return {error: 'Message was not sent my current user who wants to edit'}
-  }
+  let validToEdit = false; 
 
   // checks if message exists in the channels using messageId
   // it it does -> checks if the user who sent edit rquest is the same as the
   // one who sent the message or if they are one of the channel owners
   // if either one of these conditions is true - validToEdit: set to true
-  // meaning it can be edited 
-  const authPerm = data.users.find((item) => item.uId === authUser.uId);
-  if (channelIndex !== null) {
-    if (channelIndex.ownerMembers.find((o) => o === authUser.uId || authPerm.globalPerm === 1)) {
+  // meaning it can be edited  
+  if (channelIndex !== undefined) {
+    if (channelIndex.ownerMembers.find((o) => o === authUser.uId || authPerm.globalPerm === 1 || chosenMessage.uId === authUser.uId)) {
       validToEdit = true;
     }
-  }
-  if (dmIndex !== null) {
-    if (dmIndex.ownerId === authUser.uId) {
+  } 
+  if (dmIndex !== undefined) { 
+    if (chosenMessage.uId === authUser.uId) {
+      validToEdit = true;
+    } else if (dmIndex.ownerId === authUser.uId) {
       validToEdit = true;
     }
   }
@@ -247,30 +242,6 @@ export function messageRemoveV1(token: string, messageId: number) {
 
   setData(data);
   return {};
-// }
-// const datastore = getData();
-// const register = authRegisterV2('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
-// const register2 = authRegisterV2('akanksha.sood@gmail.com', 'password123', 'Akanksha', 'Sood');
-// const channel = channelsCreateV2(register.token, 'Birthday Party', true);
-// const message = messageSendV1(register2.token, channel.channelId, 'testmessage');
-// const data = messageEditV1(register2.token, message.messageId, 'cat');
-// const messages = channelMessagesV1(register.token, channel.channelId, 0);
-// messages.messages.push({
+}
+ 
 
-// });
-// console.log(messages.messages);
-// console.log(messages);
-// expect(data).toStrictEqual({});
-// expect(messages).toStrictEqual({
-//   messages: [
-//     {
-//       message: 'cat',
-//       messageId: message.messageId,
-//       timeSent: expect.any(Number),
-//       uId: register2.authUserId,
-//     },
-//   ],
-//   start: 0,
-//   end: -1,
-// });
-// });
