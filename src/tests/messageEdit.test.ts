@@ -45,7 +45,7 @@ describe('Testing messageEdit', () => {
       const dm = requestDmCreate(register.token, uIds);
       requestMessageSendDm(register.token, dm.dmId, 'Hello World!');
       const invalid = requestMessageEdit(register2.token, dm.dmId, 'cat');
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(invalid).toStrictEqual({ error: expect.any(String) });
     });
     test('token is invalid', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -58,17 +58,19 @@ describe('Testing messageEdit', () => {
   describe('Valid inputs', () => {
     test('editing message should update message content', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
+      const register2 = requestAuthRegister('akanksha.sood@gmail.com', 'password123', 'Akanksha', 'Sood');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
-      const message = requestMessageSend(register.token, channel.channelId, 'testmessage');
-      const data = requestMessageEdit(register.token, message.messageId, 'cat');
+      const message = requestMessageSend(register2.token, channel.channelId, 'testmessage');
+      const data = requestMessageEdit(register2.token, message.messageId, 'cat');
       const messages = requestChannelMessages(register.token, channel.channelId, 0);
+      expect(data).toStrictEqual({});
       expect(messages).toStrictEqual({
         messages: [
           {
             message: 'cat',
             messageId: message.messageId,
             timeSent: expect.any(Number),
-            uId: register.authUserId,
+            uId: register2.authUserId,
           },
         ],
         start: 0,
@@ -83,6 +85,30 @@ describe('Testing messageEdit', () => {
       const message = requestMessageSend(register2.token, channel.channelId, 'dog');
       const data = requestMessageEdit(register.token, message.messageId, 'cat');
       const messages = requestChannelMessages(register.token, channel.channelId, 0);
+      expect(messages).toStrictEqual({
+        messages: [
+          {
+            messageId: message.messageId,
+            uId: register2.authUserId,
+            message: 'cat',
+            timeSent: expect.any(Number),
+          }
+        ],
+        start: 0,
+        end: -1
+      });
+    });
+    test('user with global perms in channel edits message', () => {
+      const user = requestAuthRegister('akanksha.sood08@gmail.com', '123passwoRD', 'Akanksha', 'Sood');
+      const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
+      const register2 = requestAuthRegister('dimpisgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
+      const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
+      requestChannelInvite(register.token, channel.channelId, register2.authUserId);
+      requestChannelInvite(register.token, channel.channelId, user.authUserId);
+      const message = requestMessageSend(register2.token, channel.channelId, 'dog');
+      const data = requestMessageEdit(user.token, message.messageId, 'cat');
+      const messages = requestChannelMessages(register.token, channel.channelId, 0);
+      expect(data).toStrictEqual({});
       expect(messages).toStrictEqual({
         messages: [
           {
