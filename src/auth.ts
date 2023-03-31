@@ -1,19 +1,30 @@
 import { getData, setData } from './dataStore';
 import validator from 'validator';
 
+// Return types
 type authUserId = {
-
     token?: string;
     authUserId?: number;
     error?: string;
-
 };
-
 type tokenReturn = string;
 type handleReturn = string;
-
+/**
+  * Returns a unique authUserId value and token with a
+  * given registerd user email and password
+  *
+  * @param {string} email - the email address the user is registered with
+  * @param {string} password -  the password that they will use to login with once registered
+  * ...
+  *
+  * @returns {number} -  a unique integer as the userId
+  * @return {string} = a unique string as the token
+  * @returns {object} - error if email or password is invalid
+*/
 const authLoginV2 = (email: string, password: string): authUserId => {
+  // Iteration 1
   const login = authLoginV1(email, password);
+  // Iteration 2
   if ('authUserId' in login) {
     const token = generateToken(login.authUserId);
     return {
@@ -21,6 +32,7 @@ const authLoginV2 = (email: string, password: string): authUserId => {
       authUserId: login.authUserId
     };
   }
+  // Return error
   return login;
 };
 /**
@@ -39,20 +51,34 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   // Error checking
   // change email to lowercase
   email = email.toLowerCase();
-  for (const userObject of data.users) {
-    if (userObject.email === email && userObject.password === password) {
-      return {
-        authUserId: userObject.uId,
-      };
-    }
+  const authUserId = data.users.find((item) => item.email === email && item.password === password);
+  // Error check
+  if (authUserId !== undefined) {
+    return { authUserId: authUserId.uId };
   }
   return {
     error: 'Invalid email or password',
   };
 };
 
+/**
+  * Register a user given their email, password, nameFirst and nameLast.
+  * Also generate a unique handleStr and unique token for each user.
+  *
+  * @param {string} email - the email address the user is registering with
+  * @param {string} password -  the password the user is registering with
+  * @param {string} nameFirst - the first name of the user
+  * @param {string} nameLast - the last name of the user
+  * ...
+  *
+  * @returns {number} -  return a unique user ID for the user
+	* @returns {string} - return a unique user token for the user
+  * @returns {object} - Invalid parameters from authRegisterV1
+*/
+
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
-  const register = authRegisterV1(email, password, nameFirst, nameLast);
+  // Iteration 1
+	const register = authRegisterV1(email, password, nameFirst, nameLast);
   if ('authUserId' in register) {
     const token = generateToken(register.authUserId);
     return {
@@ -60,8 +86,10 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
       authUserId: register.authUserId,
     };
   }
+	// Return error
   return register;
 };
+
 /**
   * Register a user given their email, password, nameFirst and nameLast.
   * Also generate a unique handleStr for each user.
@@ -81,20 +109,17 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Error checking
   // Invalid email using validator package
   email = email.toLowerCase();
-  if (validator.isEmail(email) === false) {
+  if (!validator.isEmail(email)) {
     return {
       error: 'Invalid email',
     };
   }
 
   // Email already in use
-  for (const userObject of data.users) {
-    if (userObject.email === email) {
-      return {
-        error: 'Email already in use',
-      };
-    }
-  }
+	const emailFound = data.users.find((item) => item.email === email);
+	if (emailFound !== undefined) {
+		return { error: 'Email already in use'};
+	}
 
   // Eliminate white spaces in parameters
   password = password.trim();
@@ -145,11 +170,23 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   };
 };
 
+/**
+ * Helper function - Generate a unique token for user with a valid userId.
+ * Convert this token to a string and return
+ *
+ * @param {number} - authUserId of user
+ *
+ * @returns {string} - token unique to the user
+ */
 const generateToken = (uId: number): tokenReturn => {
   const data = getData();
-  const tokenNumber = data.lastToken + 1;
+  // Generate unique token
+	const tokenNumber = data.lastToken + 1;
+	// Convert to string
   const tokenString = tokenNumber.toString();
+	// Update last token
   data.lastToken = tokenNumber;
+	// Add to dataset
   data.tokens.push(
     {
       token: tokenString,
@@ -160,6 +197,15 @@ const generateToken = (uId: number): tokenReturn => {
   return tokenString;
 };
 
+/**
+ * Generate a unique handle string for user by converting
+ * their name to lowercase and appending a digit if necessarry
+ *
+ * @param {string} - first name of the user
+ * @param {string} - last name of the user
+ *
+ * @returns {string} - handleString unique to the user
+ */
 const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   const data = getData();
   // Create unique handle
@@ -197,6 +243,15 @@ const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
   return newHandle;
 };
 
+/**
+  * Given a valid token for a user, logs them out by deactivating their token
+  *
+  * @param {string} token - a string token unique to the user
+  * ...
+  *
+  * @returns {object} - empty object when the token is successfully deleted
+  * @returns {object} - error if the token is not valid
+*/
 const authLogoutV1 = (token: string) => {
   const data = getData();
   // Check for a valid token
@@ -209,4 +264,5 @@ const authLogoutV1 = (token: string) => {
   setData(data);
   return {};
 };
-export { authRegisterV1, authRegisterV2, authLoginV2, authLogoutV1 };
+// Export all functions
+export { authRegisterV2, authLoginV2, authLogoutV1 };
