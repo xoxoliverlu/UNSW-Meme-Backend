@@ -108,7 +108,7 @@ const dmRemoveV1 = (token: string, dmId: number) => {
  * ...
  *
  * @returns {name, member} - object with name and member properties
- * @returns {error: String} - error if token and dmId are invalid 
+ * @returns {error: String} - error if token and dmId are invalid
  */
 const dmDetailsV1 = (token: string, dmId: number) => {
   const data = getData();

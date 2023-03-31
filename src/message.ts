@@ -1,5 +1,5 @@
-import { getData, setData } from './dataStore'; 
-import { Message , Channel, DM} from './interfaces'; 
+import { getData, setData } from './dataStore';
+import { Message, Channel, DM } from './interfaces';
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -9,7 +9,7 @@ import { Message , Channel, DM} from './interfaces';
  */
 
 export function messageSendV1(token: string, channelId: number, message: string) {
-  const data = getData(); 
+  const data = getData();
   const user = data.tokens.find((u) => u.token === token);
   if (!user) return { error: 'Token invalid' };
   const { uId } = user;
@@ -52,7 +52,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   const data = getData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
- 
+
   // Error checking
   if (!user) {
     return { error: 'Token invalid' };
@@ -101,11 +101,11 @@ export function messageEditV1 (token: string, messageId: number, message: string
   const data = getData();
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' }; 
+  if (authUser === undefined) return { error: 'token is invalid' };
   const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
- 
+
   // Create variables
   let chosenMessage: Message;
   let channelIndex: Channel;
@@ -132,19 +132,19 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // checks whether authenticated user is either the sender of the message
   // or a member of the conversation's owner memver
   // if either of them are true - validtoEdit is true
-  let validToEdit = false; 
+  let validToEdit = false;
 
   // checks if message exists in the channels using messageId
   // it it does -> checks if the user who sent edit rquest is the same as the
   // one who sent the message or if they are one of the channel owners
   // if either one of these conditions is true - validToEdit: set to true
-  // meaning it can be edited  
+  // meaning it can be edited
   if (channelIndex !== undefined) {
     if (channelIndex.ownerMembers.find((o) => o === authUser.uId || authPerm.globalPerm === 1 || chosenMessage.uId === authUser.uId)) {
       validToEdit = true;
     }
-  } 
-  if (dmIndex !== undefined) { 
+  }
+  if (dmIndex !== undefined) {
     if (chosenMessage.uId === authUser.uId) {
       validToEdit = true;
     } else if (dmIndex.ownerId === authUser.uId) {
@@ -160,14 +160,14 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // if it does exist - checks if new message is empty or not
   // if empty - removes existing message from DM
   // not empty - updates message with new message text
- 
+
   // Change message
   if (message === '') {
     messageRemoveV1(token, messageId);
   } else {
     chosenMessage.message = message;
     setData(data);
-  } 
+  }
   return {};
 }
 /**
@@ -244,5 +244,3 @@ export function messageRemoveV1(token: string, messageId: number) {
   setData(data);
   return {};
 }
- 
-

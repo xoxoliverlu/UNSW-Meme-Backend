@@ -3,9 +3,9 @@ import validator from 'validator';
 
 // Return types
 type authUserId = {
-    token?: string;
-    authUserId?: number;
-    error?: string;
+  token?: string;
+  authUserId?: number;
+  error?: string;
 };
 type tokenReturn = string;
 type handleReturn = string;
@@ -72,13 +72,13 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   * ...
   *
   * @returns {number} -  return a unique user ID for the user
-	* @returns {string} - return a unique user token for the user
+  * @returns {string} - return a unique user token for the user
   * @returns {object} - Invalid parameters from authRegisterV1
 */
 
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   // Iteration 1
-	const register = authRegisterV1(email, password, nameFirst, nameLast);
+  const register = authRegisterV1(email, password, nameFirst, nameLast);
   if ('authUserId' in register) {
     const token = generateToken(register.authUserId);
     return {
@@ -86,7 +86,7 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
       authUserId: register.authUserId,
     };
   }
-	// Return error
+  // Return error
   return register;
 };
 
@@ -116,10 +116,10 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   }
 
   // Email already in use
-	const emailFound = data.users.find((item) => item.email === email);
-	if (emailFound !== undefined) {
-		return { error: 'Email already in use'};
-	}
+  const emailFound = data.users.find((item) => item.email === email);
+  if (emailFound !== undefined) {
+    return { error: 'Email already in use' };
+  }
 
   // Eliminate white spaces in parameters
   password = password.trim();
@@ -181,12 +181,12 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 const generateToken = (uId: number): tokenReturn => {
   const data = getData();
   // Generate unique token
-	const tokenNumber = data.lastToken + 1;
-	// Convert to string
+  const tokenNumber = data.lastToken + 1;
+  // Convert to string
   const tokenString = tokenNumber.toString();
-	// Update last token
+  // Update last token
   data.lastToken = tokenNumber;
-	// Add to dataset
+  // Add to dataset
   data.tokens.push(
     {
       token: tokenString,
