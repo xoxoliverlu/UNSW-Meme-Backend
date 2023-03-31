@@ -18,57 +18,57 @@ describe('Testing messageEdit', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
-      expect(message).toStrictEqual({ messageId: message.messageId });
       const over1000chars = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Na';
       const data = requestMessageEdit(register.token, message.messageId, over1000chars);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      expect(data).toStrictEqual({ error: expect.any(String) });
     });
-    test('messageId does not refer to a valid message within a channel/DM that the authorised user has joined', () => {
+    test('messageId is invalid within a channel/DM that the authorised user has joined', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
-      expect(message).toStrictEqual({ messageId: message.messageId });
-      const edit = 'cat';
-      const data = requestMessageEdit(register.token, message.messageId + 1, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const invalid = requestMessageEdit(register.token, message.messageId + 1, 'cat');
+      expect(invalid).toStrictEqual({ error: expect.any(String) });
     });
-    test('the message was not sent by the authorised user making this request and the user does not have owner permissions in the channel/DM', () => {
+    test('the message was not sent by the authorised user making this request and the user does not have owner permissions in the channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       requestChannelInvite(register.token, channel.channelId, register2.authUserId);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
-      expect(message).toStrictEqual({ messageId: message.messageId });
-      const edit = 'cat';
-      const data = requestMessageEdit(register2.token, message.messageId, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const data = requestMessageEdit(register2.token, message.messageId, 'cat');
+      expect(data).toStrictEqual({ error: expect.any(String) });
+    });
+    test('the message was not sent by the authorised user making this request and the user does not have owner permissions in the dm', () => {
+      const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
+      const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
+      const uIds = [register2.authUserId];
+      const dm = requestDmCreate(register.token, uIds);
+      requestMessageSendDm(register.token, dm.dmId, 'Hello World!');
+      const invalid = requestMessageEdit(register2.token, dm.dmId, 'cat');
+      expect(data).toStrictEqual({ error: expect.any(String) });
     });
     test('token is invalid', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
-      expect(message).toStrictEqual({ messageId: message.messageId });
-      const edit = 'cat';
-      const data = requestMessageEdit(register.token + 1, message.messageId, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const data = requestMessageEdit('Invalid token', message.messageId, 'cat');
+      expect(data).toStrictEqual({ error: expect.any(String) });
     });
   });
-  describe('errors', () => {
+  describe('Valid inputs', () => {
     test('editing message should update message content', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const message = requestMessageSend(register.token, channel.channelId, 'testmessage');
-      const edit = 'cat';
-      const data = requestMessageEdit(register.token, message.messageId, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const data = requestMessageEdit(register.token, message.messageId, 'cat');
       const messages = requestChannelMessages(register.token, channel.channelId, 0);
       expect(messages).toStrictEqual({
         messages: [
           {
-            message: 'testmessage',
-            messageId: 1,
+            message: 'cat',
+            messageId: message.messageId,
             timeSent: expect.any(Number),
-            uId: 1,
+            uId: register.authUserId,
           },
         ],
         start: 0,
@@ -81,16 +81,14 @@ describe('Testing messageEdit', () => {
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       requestChannelInvite(register.token, channel.channelId, register2.authUserId);
       const message = requestMessageSend(register2.token, channel.channelId, 'dog');
-      const edit = 'cat';
-      const data = requestMessageEdit(register.token, message.messageId, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const data = requestMessageEdit(register.token, message.messageId, 'cat');
       const messages = requestChannelMessages(register.token, channel.channelId, 0);
       expect(messages).toStrictEqual({
         messages: [
           {
             messageId: message.messageId,
-            uId: 2,
-            message: 'dog',
+            uId: register2.authUserId,
+            message: 'cat',
             timeSent: expect.any(Number),
           }
         ],
@@ -108,10 +106,9 @@ describe('Testing messageEdit', () => {
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
 
       // Edit the message using register's token
-      const edit = 'cat';
-      const data = requestMessageEdit(register.token, message.messageId, edit);
+      const data = requestMessageEdit(register.token, message.messageId, 'cat');
       // Verify that the message was successfully edited
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      expect(data).toStrictEqual({ error: expect.any(String) });
 
       // Get the messages in the DM and verify that the edited message is present
       const messages = requestDmMessages(register.token, dm.dmId, 0);
@@ -123,18 +120,16 @@ describe('Testing messageEdit', () => {
       const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-      expect(message).toStrictEqual({ messageId: 1 });
-      const edit = 'cat';
-      const data = requestMessageEdit(register2.token, message.messageId, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const data = requestMessageEdit(register2.token, message.messageId, 'cat');
+      expect(data).toStrictEqual({ error: expect.any(String) });
       const messages = requestDmMessages(register.token, dm.dmId, 0);
       expect(messages).toStrictEqual({
         messages: [
           {
-            message: 'dog',
-            messageId: 1,
+            message: 'cat',
+            messageId: message.messageId,
             timeSent: expect.any(Number),
-            uId: 2,
+            uId: register2.authUserId,
           }
 
         ],
@@ -147,10 +142,8 @@ describe('Testing messageEdit', () => {
       const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-      expect(message).toStrictEqual({ messageId: 1 });
-      const edit = '';
-      const data = requestMessageEdit(register2.token, message.messageId, edit);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      const data = requestMessageEdit(register2.token, message.messageId, '');
+      expect(data).toStrictEqual({ error: expect.any(String) });
       const messages = requestDmMessages(register.token, dm.dmId, 0);
       expect(messages.messages.length).toStrictEqual(1);
       expect(messages.start).toStrictEqual(0);
