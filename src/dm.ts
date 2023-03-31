@@ -100,6 +100,16 @@ const dmRemoveV1 = (token: string, dmId: number) => {
   return {};
 };
 
+/**
+ * Given a dm with dmID that the authorised user is a member of
+ * return detail of that dm
+ * @param {token}  - token of current user
+ * @param {dmId} number - chanel being inspected
+ * ...
+ *
+ * @returns {name, member} - object with name and member properties
+ * @returns {error: String} - error if token and dmId are invalid 
+ */
 const dmDetailsV1 = (token: string, dmId: number) => {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);

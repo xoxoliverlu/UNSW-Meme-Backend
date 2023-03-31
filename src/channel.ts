@@ -182,6 +182,16 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   return { messages, end, start };
 }
 
+/**
+ * Make user with user id uId an owner of the channel.
+ * @param {token}  - token of current user
+ * @param {channelId} number - chanel being inspected
+ * @param {uId} number - owner to be added
+ * ...
+ *
+ * @returns {} - empty object on success
+ * @returns {error: String} - error if user id and channelid are invalid 
+ */
 export function channelAddOwnerV1(
   token: string,
   channelId: number,
@@ -222,6 +232,17 @@ export function channelAddOwnerV1(
   return {};
 }
 
+
+/**
+ * Remove user with uId from the owners of the channel.
+ * @param {token}  - token of current user
+ * @param {channelId} number - chanel being inspected
+ * @param {uId} number - owner to be removed
+ * ...
+ *
+ * @returns {} - empty object on success
+ * @returns {error: String} - error if user id and channelid are invalid 
+ */
 export function channelRemoveOwnerV1(
   token: string,
   channelId: number,
@@ -272,6 +293,16 @@ export function channelRemoveOwnerV1(
   return {};
 }
 
+/**
+ * Given a channel with ID channelId that the authorised user is a member of
+ * remove them as a member of the channel.
+ * @param {token}  - token of current user
+ * @param {channelId} number - chanel being inspected
+ * ...
+ *
+ * @returns {} - empty object on success
+ * @returns {error: String} - error if token and channelid are invalid 
+ */
 export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
