@@ -11,7 +11,7 @@ import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, ch
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
-import { fileLoadData } from './dataStore'
+import { fileLoadData } from './dataStore';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests

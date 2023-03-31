@@ -194,7 +194,7 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
  * ...
  *
  * @returns {} - empty object on success
- * @returns {error: String} - error if user id and channelid are invalid 
+ * @returns {error: String} - error if user id and channelid are invalid
  */
 export function channelAddOwnerV1(
   token: string,
@@ -236,7 +236,6 @@ export function channelAddOwnerV1(
   return {};
 }
 
-
 /**
  * Remove user with uId from the owners of the channel.
  * @param {token}  - token of current user
@@ -245,7 +244,7 @@ export function channelAddOwnerV1(
  * ...
  *
  * @returns {} - empty object on success
- * @returns {error: String} - error if user id and channelid are invalid 
+ * @returns {error: String} - error if user id and channelid are invalid
  */
 export function channelRemoveOwnerV1(
   token: string,
@@ -305,7 +304,7 @@ export function channelRemoveOwnerV1(
  * ...
  *
  * @returns {} - empty object on success
- * @returns {error: String} - error if token and channelid are invalid 
+ * @returns {error: String} - error if token and channelid are invalid
  */
 export function channelLeaveV1(token: string, channelId: number) {
   const data = getData();
