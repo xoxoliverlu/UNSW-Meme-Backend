@@ -106,6 +106,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
  
+  // Create variables
   let chosenMessage: Message;
   let channelIndex: Channel;
   let dmIndex: DM;
