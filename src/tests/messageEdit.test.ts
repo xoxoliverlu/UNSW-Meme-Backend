@@ -60,6 +60,7 @@ describe('Testing messageEdit', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const register2 = requestAuthRegister('akanksha.sood@gmail.com', 'password123', 'Akanksha', 'Sood');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
+      requestChannelInvite(register.token, channel.channelId, register2.authUserId);
       const message = requestMessageSend(register2.token, channel.channelId, 'testmessage');
       const data = requestMessageEdit(register2.token, message.messageId, 'cat');
       const messages = requestChannelMessages(register.token, channel.channelId, 0);
@@ -85,6 +86,7 @@ describe('Testing messageEdit', () => {
       const message = requestMessageSend(register2.token, channel.channelId, 'dog');
       const data = requestMessageEdit(register.token, message.messageId, 'cat');
       const messages = requestChannelMessages(register.token, channel.channelId, 0);
+      expect(data).toStrictEqual({});
       expect(messages).toStrictEqual({
         messages: [
           {
@@ -134,12 +136,12 @@ describe('Testing messageEdit', () => {
       // Edit the message using register's token
       const data = requestMessageEdit(register.token, message.messageId, 'cat');
       // Verify that the message was successfully edited
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(data).toStrictEqual({});
 
       // Get the messages in the DM and verify that the edited message is present
       const messages = requestDmMessages(register.token, dm.dmId, 0);
       expect(messages.messages.length).toBe(1);
-      expect(messages.messages[0].message).toBe('dog');
+      expect(messages.messages[0].message).toBe('cat');
     });
     test('user that sent message in DM, edits message', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -147,7 +149,7 @@ describe('Testing messageEdit', () => {
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
       const data = requestMessageEdit(register2.token, message.messageId, 'cat');
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(data).toStrictEqual({});
       const messages = requestDmMessages(register.token, dm.dmId, 0);
       expect(messages).toStrictEqual({
         messages: [
@@ -169,7 +171,7 @@ describe('Testing messageEdit', () => {
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
       const data = requestMessageEdit(register2.token, message.messageId, '');
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(data).toStrictEqual({});
       const messages = requestDmMessages(register.token, dm.dmId, 0);
       expect(messages.messages.length).toStrictEqual(1);
       expect(messages.start).toStrictEqual(0);
