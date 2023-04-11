@@ -4,6 +4,9 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
 describe('/dm/messages/v1', () => {
   describe('errors', () => {
     test('dmId does not refer to a valid channel', () => {
