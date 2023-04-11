@@ -4,6 +4,9 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
 describe('Valid inputs fordm/list/v1', () => {
   test('Valid return', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');

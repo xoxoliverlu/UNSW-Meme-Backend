@@ -3,6 +3,10 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
+
 describe('dm Create valid inputs', () => {
   test('Correct return - one user', () => {
     const user1 = requestAuthRegister('akanksha.sood@gmail.com', 'samplePass', 'Akanksha', 'Sood');

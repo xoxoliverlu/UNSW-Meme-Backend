@@ -4,6 +4,10 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
+
 describe('Invalid inputs for dmRemove', () => {
   test('Invalid token', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');

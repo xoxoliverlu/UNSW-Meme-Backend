@@ -12,6 +12,10 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
+
 test('success channel details', () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
