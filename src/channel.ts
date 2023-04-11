@@ -1,6 +1,5 @@
 import { getData, setData } from './dataStore';
-import { userProfileV2 } from './users';
-
+import { memberObject } from './helper';
 /**
  * Given an uId and a channelId, the function
  * prints out basic information about the channel.
@@ -42,25 +41,7 @@ export function channelDetailsV2(token: string, channelId: number) {
   };
 }
 
-/* Helper function
-* This function creates an array of objects of all the users
-* that are in the members/owners array. It takes each uId and
-* returns basic information about the user.
-*/
-function memberObject(token: string, users: number[]) {
-  const result = [];
-  for (const userId of users) {
-    const user = userProfileV2(token, userId);
-    result.push({
-      uId: user.user.uId,
-      nameFirst: user.user.nameFirst,
-      nameLast: user.user.nameLast,
-      email: user.user.email,
-      handleStr: user.user.handleStr,
-    });
-  }
-  return result;
-}
+
 /**
  * Given an uId and a channelId, the function
  * adds the user to the channel if it is public.
@@ -216,6 +197,7 @@ export function channelAddOwnerV1(
     return { error: 'invalid token' };
   }
 
+  const userInfo = data.users.find((element) => element.uId === user.uId);
   // check for channel
   const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
@@ -239,7 +221,9 @@ export function channelAddOwnerV1(
   }
 
   if (!channel.ownerMembers.includes(user.uId)) {
-    return { error: 'This user does not have permission to add owners.' };
+    if (userInfo.globalPerm === 2) {
+      return { error: 'This user does not have permission to add owners.' };
+    }
   }
 
   channel.ownerMembers.push(uId);
@@ -268,8 +252,8 @@ export function channelRemoveOwnerV1(
   if (user === undefined) {
     return { error: 'invalid token' };
   }
-  const { uId: userId } = user;
 
+  const userInfo = data.users.find((element) => element.uId === user.uId);
   // Channel error check
   const channel = data.channels.find((item) => item.channelId === channelId);
   if (channel === undefined) {
@@ -284,7 +268,7 @@ export function channelRemoveOwnerV1(
   const { uId: ownerRemoved } = ownerRemovedData;
 
   if (!channel.allMembers.includes(ownerRemoved)) {
-    return { error: 'user to be added is not a member of the channel' };
+    return { error: 'user to be removed is not a member of the channel' };
   }
 
   if (!channel.ownerMembers.includes(ownerRemoved)) {
@@ -298,11 +282,13 @@ export function channelRemoveOwnerV1(
     return { error: 'user is the only owner of this channel.' };
   }
 
-  if (!channel.ownerMembers.includes(userId)) {
-    return { error: 'This user does not have permission to add owners.' };
+  if (!channel.ownerMembers.includes(uId)) {
+    if (userInfo.globalPerm === 2) {
+      return { error: 'This user does not have permission to remove owners.' };
+    }
   }
 
-  const index = channel.ownerMembers.indexOf(userId);
+  const index = channel.ownerMembers.indexOf(uId);
   channel.ownerMembers.splice(index, 1);
 
   setData(data);
