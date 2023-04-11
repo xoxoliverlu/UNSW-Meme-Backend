@@ -10,7 +10,7 @@ import { getData, setData } from './dataStore';
  * @returns {object} - containing channelId
  * @returns {object} - error if name or token is invalid
  */
-const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
+const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
   const data = getData();
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
@@ -58,12 +58,12 @@ const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
  * @returns {object} - error if token is invalid.
  * @returns {object} - list of all channels user is a part of.
  */
-const channelsListV2 = (token: string) => {
+const channelsListV3 = (token: string) => {
   const data = getData();
   // Check for valid token
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
-    return { error: 'user not found' };
+    return { error: 'token' };
   }
   const { uId: authUserId } = user;
   const associatedChannels = [];
@@ -104,4 +104,4 @@ const channelsListAllV2 = (token: string) => {
   };
 };
 
-export { channelsListAllV2, channelsListV2, channelsCreateV2 };
+export { channelsListAllV2, channelsListV3, channelsCreateV3 };
