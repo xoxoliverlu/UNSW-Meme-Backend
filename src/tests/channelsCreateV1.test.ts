@@ -36,27 +36,27 @@ describe('Valid channelId produced', () => {
 describe('Invalid inputs', () => {
   test('Invalid token', () => {
     const user1 = requestAuthRegister('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
-    const channelCreationValid = requestChannelsCreate(user1.token + 1, 'jaydensGang', true);
-    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
+    const res = requestChannelsCreate(user1.token + 1, 'jaydensGang', true);
+    expect(res).toBe(403);
   });
   test('Channel name too short - public channel', () => {
     const user1 = requestAuthRegister('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
-    const channelCreationValid = requestChannelsCreate(user1.token, '', true);
-    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
+    const res = requestChannelsCreate(user1.token, '', true);
+    expect(res).toBe(400);
   });
   test('Channel name too short - private channel', () => {
     const user1 = requestAuthRegister('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
-    const channelCreationValid = requestChannelsCreate(user1.token, '', false);
-    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
+    const res = requestChannelsCreate(user1.token, '', false);
+    expect(res).toBe(400);
   });
   test('Channel name too long - public channel', () => {
     const user1 = requestAuthRegister('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
-    const channelCreationValid = requestChannelsCreate(user1.token, 'hellomynameisDIMPIGARNEPUDI28', true);
-    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
+    const res = requestChannelsCreate(user1.token, 'hellomynameisDIMPIGARNEPUDI28', true);
+    expect(res).toBe(400);
   });
   test('Channel name too long - private channel', () => {
     const user1 = requestAuthRegister('laylay123@gmail.com', 'laylay123', 'Jayden', 'Jacobs');
-    const channelCreationValid = requestChannelsCreate(user1.token, 'hellomynameisDIMPIGARNEPUDI28', false);
-    expect(channelCreationValid).toMatchObject({ error: expect.any(String) });
+    const res = requestChannelsCreate(user1.token, 'hellomynameisDIMPIGARNEPUDI28', true);
+    expect(res).toBe(400);
   });
 });

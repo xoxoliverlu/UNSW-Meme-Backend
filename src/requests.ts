@@ -83,9 +83,11 @@ export const requestChannelsCreate = (token: string, name: string, isPublic: boo
         `${url}:${port}` + '/channels/create/v2',
         {
           json: {
-            token: token,
             name: name,
             isPublic: isPublic
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -490,3 +492,4 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   }
   return res.statusCode;
 };
+
