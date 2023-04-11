@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import validator from 'validator';
+import { v4 as uuidv4 } from 'uuid';
 
 // Return types
 type authUserId = {
@@ -181,11 +182,9 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 const generateToken = (uId: number): tokenReturn => {
   const data = getData();
   // Generate unique token
-  const tokenNumber = data.lastToken + 1;
+  const tokenNumber = uuidv4();  
   // Convert to string
   const tokenString = tokenNumber.toString();
-  // Update last token
-  data.lastToken = tokenNumber;
   // Add to dataset
   data.tokens.push(
     {
