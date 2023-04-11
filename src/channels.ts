@@ -87,12 +87,12 @@ const channelsListV3 = (token: string) => {
  * @returns {object} - error if token is invalid.
  * @returns {object} - list of all channels.
  */
-const channelsListAllV2 = (token: string) => {
+const channelsListAllV3 = (token: string) => {
   const data = getData();
   // Invalid token
   const user = data.tokens.find(item => item.token === token);
   if (user === undefined) {
-    return { error: 'error' };
+    return { error: 'token' };
   }
 
   const result = data.channels.map(channel => {
@@ -104,4 +104,4 @@ const channelsListAllV2 = (token: string) => {
   };
 };
 
-export { channelsListAllV2, channelsListV3, channelsCreateV3 };
+export { channelsListAllV3, channelsListV3, channelsCreateV3 };

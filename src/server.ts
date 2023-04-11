@@ -7,7 +7,7 @@ import errorHandler from 'middleware-http-errors';
 
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
-import { channelsCreateV3, channelsListAllV2, channelsListV3 } from './channels';
+import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
 import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
@@ -88,9 +88,14 @@ app.get('/channels/list/v3', (req: Request, res: Response, next) => {
   res.json(result);
 });
 
-app.get('/channels/listall/v2', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  res.json(channelsListAllV2(token));
+app.get('/channels/listall/v3', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const result = channelsListAllV3(token);
+  const {error} = result;
+  if (error === 'token'){
+    res.statusCode = 403;
+  }
+  res.json(result);
 });
 /*****************
 *  Other Routes
