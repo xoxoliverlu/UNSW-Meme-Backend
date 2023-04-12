@@ -116,9 +116,9 @@ export const requestChannelsList = (token: string) => {
 export const requestChannelsListAll = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channels/listall/v2',
+        `${url}:${port}` + '/channels/listall/v3',
         {
-          qs: {
+          headers: {
             token: token,
           }
         }

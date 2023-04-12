@@ -25,7 +25,6 @@ test('error token', () => {
   let { token } = loginRes;
   requestChannelsCreate(token, 'sampleChannel', true);
   token += 'errorToken';
-  const channelsListRes = requestChannelsListAll(token);
-  const { error } = channelsListRes;
-  expect(error).toEqual(expect.any(String));
+  const res = requestChannelsListAll(token);
+  expect(res).toEqual(403);
 });
