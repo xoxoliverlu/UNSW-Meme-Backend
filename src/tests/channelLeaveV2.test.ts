@@ -46,10 +46,9 @@ test('error invalid channelId', () => {
   const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
   const { channelId } = channelCreateRes;
 
-  const channelLeaveRes = requestChannelLeave(token1, channelId + 1);
+  const err = requestChannelLeave(token1, channelId + 1);
 
-  const { error } = channelLeaveRes;
-  expect(error).toEqual(expect.any(String));
+  expect(err).toEqual(400);
 });
 
 test('error authUser not a part of channel', () => {
@@ -63,10 +62,9 @@ test('error authUser not a part of channel', () => {
   const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
   const { channelId } = channelCreateRes;
 
-  const channelRemoveRes = requestChannelLeave(token2, channelId);
+  const err = requestChannelLeave(token2, channelId);
 
-  const { error } = channelRemoveRes;
-  expect(error).toEqual(expect.any(String));
+  expect(err).toEqual(403);
 });
 
 test('error invalid token', () => {
@@ -78,8 +76,7 @@ test('error invalid token', () => {
   const channelCreateRes = requestChannelsCreate(token1, 'testing', true);
   const { channelId } = channelCreateRes;
 
-  const channelLeaveRes = requestChannelLeave(token1 + 'error', channelId);
+  const err = requestChannelLeave(token1 + 'error', channelId);
 
-  const { error } = channelLeaveRes;
-  expect(error).toEqual(expect.any(String));
+  expect(err).toEqual(403);
 });
