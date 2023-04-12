@@ -305,13 +305,13 @@ export function channelRemoveOwnerV2(
  * @returns {} - empty object on success
  * @returns {error: String} - error if token and channelid are invalid
  */
-export function channelLeaveV1(token: string, channelId: number) {
+export function channelLeaveV2(token: string, channelId: number) {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
   // valid token
   if (user === undefined) {
-    return { error: 'invalid token' };
+    return { error: 'token' };
   }
   const { uId: userId } = user;
   // valid channel
