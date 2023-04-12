@@ -1,3 +1,4 @@
+import { Message } from "../interfaces";
 import { requestClear, requestAuthRegister, requestChannelsCreate, requestMessageSend, requestSearch, requestDmCreate, requestMessageSendDm } from "../requests";
 
 beforeEach(() => {
@@ -23,7 +24,8 @@ test('search channel messages', () => {
   requestMessageSendDm(token, dmId, 'testDm2');
   requestMessageSendDm(token, dmId, 'testDm3');
   const res = requestSearch(token,'test');
-  expect(res.sort()).toEqual(['test1','test2','test3','test4','testDm1','testDm2','testDm3'].sort());
+  const messages = res.map((item: Message) => item.message).sort();
+  expect(messages).toEqual(['test1','test2','test3','test4','testDm1','testDm2','testDm3'].sort());
 });
 
 test('token error', () => {
@@ -38,7 +40,7 @@ test('token error', () => {
   expect(res).toEqual(403);
 });
 
-test('length < 1', () => {
+test('error Query Length', () => {
   const {token} = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
   const {authUserId} = requestAuthRegister('oliverlu@gmail.com','cl3cl3vul4','Oliver','Lu');
 
@@ -49,3 +51,4 @@ test('length < 1', () => {
   const res = requestSearch(token,'');
   expect(res).toEqual(400);
 });
+
