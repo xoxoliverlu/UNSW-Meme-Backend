@@ -65,8 +65,17 @@ app.post('/auth/logout/v1', (req: Request, res: Response, next) => {
 *  Channels Routes  *
 ****************/
 app.post('/channels/create/v2', (req: Request, res: Response, next) => {
-  const { token, name, isPublic } = req.body;
-  res.json(channelsCreateV2(token, name, isPublic));
+  const { name, isPublic } = req.body;
+  const token = req.header('token');
+  const result = channelsCreateV2(token, name, isPublic);
+  const {error} = result;
+  if (error == 'user not found'){
+    res.statusCode = 403;
+  }
+  if (error == 'length'){
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
 
 app.get('/channels/list/v2', (req: Request, res: Response, next) => {

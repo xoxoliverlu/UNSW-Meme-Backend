@@ -21,12 +21,12 @@ const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
   name = name.trim();
   if (name.length < 1) {
     return {
-      error: 'name length needs to be greater than 1'
+      error: 'length'
     };
   }
   if (name.length > 20) {
     return {
-      error: 'name length needs ot be greater than 20'
+      error: 'length'
     };
   }
 
