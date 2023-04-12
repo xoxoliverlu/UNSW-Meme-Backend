@@ -197,7 +197,6 @@ app.post('/channel/leave/v2', (req: Request, res: Response, next) => {
   const token = req.header('token');
   const result = channelLeaveV2(token,channelId);
   const {error} = result;
-  console.log(error);
   if (error === 'token' || error === 'user to be remove is not a member of the channel'){
     res.statusCode = 403;
   }
