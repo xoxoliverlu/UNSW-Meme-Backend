@@ -1,5 +1,7 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
+import { memberObject } from './helper';
+
 /**
  * Creates a Dm channel
  * @param token - user identifier
@@ -67,7 +69,6 @@ const dmCreateV1 = (token: string, uIds: number[]) => {
  * @param {token} - the user making the call
  * @returns {dms} - array of objects with dms the user is in
 */
-
 const dmListV1 = (token: string) => {
   // check if token passed in is valid
   // Invalid token
@@ -89,7 +90,6 @@ const dmListV1 = (token: string) => {
 
   return { dms: dms };
 };
-
 /**
  * For a valid token and valid dmId, removes user from
  * given dm
@@ -97,7 +97,6 @@ const dmListV1 = (token: string) => {
  * @param {dmId} - dmId to be removed from
  * @returns {}
 */
-
 const dmRemoveV1 = (token: string, dmId: number) => {
   // Error check
   // Valid token
@@ -150,11 +149,13 @@ const dmDetailsV1 = (token: string, dmId: number) => {
     return { error: 'This user is not a part of the dm' };
   }
 
-  const members = dm.uIds.slice();
-  members.push(dm.ownerId);
+  const membersUIds = dm.uIds.slice();
+  membersUIds.push(dm.ownerId);
+  const membersInfo = memberObject(token, membersUIds);
+
   return {
     name: dm.name,
-    members: members
+    members: membersInfo
   };
 };
 
@@ -179,13 +180,17 @@ const dmLeaveV1 = (token: string, dmId: number) => {
   // Checks if the dmId is valid.
   const dm = data.dms.find((element) => element.dmId === dmId);
   if (dm === undefined) return { error: 'Invalid dmId' };
+  // Checks if user is the owner.
+  if (auth.uId === dm.ownerId) {
+    // Since the owner isn't in the members array, setting
+    // the id to -1 indicates that the owner has left.
+    dm.ownerId = -1;
+    setData(data);
+    return {};
+  }
   // Checks if the user is a member of the dm.
   const user = data.users.find((element) => element.uId === auth.uId);
   if (!dm.uIds.includes(user.uId)) return { error: 'User is already not a member' };
-  // Checks if user is the owner.
-  if (auth.uId === dm.ownerId) {
-    dm.ownerId = -1;
-  }
   // Removes the user from the members array.
   const index = dm.uIds.indexOf(user.uId);
   if (index > -1) { dm.uIds.splice(index, 1); }

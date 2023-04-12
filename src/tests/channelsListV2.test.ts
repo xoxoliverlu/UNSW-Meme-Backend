@@ -6,6 +6,10 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
+
 test('success channels List', () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');

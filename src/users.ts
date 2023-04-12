@@ -63,7 +63,7 @@ export function usersAllV1(token: string) {
     };
   });
 
-  return { users: { resultUsers } };
+  return { users: resultUsers };
 }
 
 /**

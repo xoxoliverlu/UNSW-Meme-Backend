@@ -12,6 +12,10 @@ beforeEach(() => {
   requestClear();
 });
 
+afterAll(() => {
+  requestClear();
+});
+
 test('success channel details', () => {
   requestAuthRegister('oliverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
@@ -27,7 +31,24 @@ test('success channel details', () => {
   const { name, members } = dmDetailsRes;
 
   expect(name).toEqual(expect.any(String));
-  expect(members).toEqual([authUserId2, authUserId1]);
+  expect(members).toEqual(
+    [
+      {
+        uId: authUserId2,
+        email: 'oliverwluu@gmail.com',
+        handleStr: 'oliverlu0',
+        nameFirst: 'Oliver',
+        nameLast: 'Lu',
+      },
+      {
+        uId: authUserId1,
+        email: 'oliverwlu@gmail.com',
+        handleStr: 'oliverlu',
+        nameFirst: 'Oliver',
+        nameLast: 'Lu',
+      },
+    ],
+    );
 });
 
 test('error invalid dm id', () => {
