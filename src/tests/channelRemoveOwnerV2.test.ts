@@ -1,4 +1,3 @@
-import { channelRemoveOwnerV1 } from '../channel';
 import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelInvite, requestChannelAddOwner, requestChannelRemoveOwner, requestChannelDetails, requestClear } from '../requests';
 require('sync-request');
 
@@ -79,7 +78,7 @@ test('error userID', () => {
     authUserId1 + authUserId2
   );
 
-  expect(res).toEqual(400);
+  expect(res).toEqual(403);
 });
 
 test('error invalid channelID', () => {
@@ -103,7 +102,7 @@ test('error invalid channelID', () => {
     authUserId1
   );
   
-  expect(res).toEqual(400);
+  expect(res).toEqual(403);
 });
 
 test('error user not a part of channel ', () => {
@@ -176,7 +175,7 @@ test('error uId is the only owner ', () => {
   const { channelId } = channelCreateRes;
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const res = channelRemoveOwnerV1(token1, channelId, authUserId1);
+  const res = requestChannelRemoveOwner(token1, channelId, authUserId1);
 
-  expect(res).toEqual(400);
+  expect(res).toEqual(403);
 });

@@ -289,12 +289,14 @@ export const requestChannelInvite = (token: string, channelId: number, uId: numb
 export const requestChannelRemoveOwner = (token: string, channelId: number, uId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/removeowner/v1',
+        `${url}:${port}` + '/channel/removeowner/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             uId: uId
+          },
+          headers: {
+            token: token
           }
         }
   );

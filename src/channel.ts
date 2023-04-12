@@ -240,7 +240,7 @@ export function channelAddOwnerV2(
  * @returns {} - empty object on success
  * @returns {error: String} - error if user id and channelid are invalid
  */
-export function channelRemoveOwnerV1(
+export function channelRemoveOwnerV2(
   token: string,
   channelId: number,
   uId: number
@@ -250,7 +250,7 @@ export function channelRemoveOwnerV1(
   const user = data.tokens.find((item) => item.token === token);
 
   if (user === undefined) {
-    return { error: 'invalid token' };
+    return { error: 'token' };
   }
 
   const userInfo = data.users.find((element) => element.uId === user.uId);
