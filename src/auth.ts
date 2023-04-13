@@ -1,5 +1,9 @@
 import { getData, setData } from './dataStore';
 import validator from 'validator';
+import HTTPError from 'http-errors';
+const bcrypt = require('bcrypt');
+const saltRounds = 10; 
+const fs = require('fs');
 
 // Return types
 type authUserId = {
@@ -9,6 +13,7 @@ type authUserId = {
 };
 type tokenReturn = string;
 type handleReturn = string;
+
 /**
   * Returns a unique authUserId value and token with a
   * given registerd user email and password
@@ -106,44 +111,25 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
 */
 const authRegisterV1 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const data = getData();
-  // Error checking
-  // Invalid email using validator package
+  // Conver email to lowercase
   email = email.toLowerCase();
-  if (!validator.isEmail(email)) {
-    return {
-      error: 'Invalid email',
-    };
-  }
-
-  // Email already in use
-  const emailFound = data.users.find((item) => item.email === email);
-  if (emailFound !== undefined) {
-    return { error: 'Email already in use' };
-  }
-
   // Eliminate white spaces in parameters
   password = password.trim();
   nameFirst = nameFirst.trim();
   nameLast = nameLast.trim();
 
-  // Password length
-  if (password.length < 6) {
-    return {
-      error: 'Password length less than 6 characters',
-    };
-  }
+  // Error checking
+  // Invalid email using validator package
+  if (!validator.isEmail(email)) {throw HTTPError(400, 'Invalid Email');}
+  // Email already in use
+  const emailFound = data.users.find((item) => item.email === email);
+  if (emailFound) {throw HTTPError(400, 'Email already in use.'); }
+  // Password length 
+  if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
-  if (nameFirst.length < 1 || nameLast.length < 1) {
-    return {
-      error: 'First name or last name is too short',
-    };
-  }
-  if (nameFirst.length > 50 || nameLast.length > 50) {
-    return {
-      error: 'First name or last name is too long',
-    };
-  }
-
+  if (nameFirst.length < 1 || nameLast.length < 1) { throw HTTPError( 400, 'First name or last name is too short'); }
+  if (nameFirst.length > 50 || nameLast.length > 50) { throw HTPPError (400, 'First name or last name is too long'); }
+  
   // Generate handle
   const newHandle = generateHandle(nameFirst, nameLast);
   // Generate userID
@@ -152,15 +138,36 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Permissions !!!
   const permission = (newUserId === 1) ? 1 : 2;
 
+  const passwordHash = password;
+  // Hash password
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    bcrypt.hash(password, salt, function(err, hash) {
+      passwordHash = hash;
+    });
+  });   
+
+  // Profile image
+  const PORT: number = parseInt(process.env.PORT || config.port);
+  const HOST: string = process.env.IP || 'localhost';
+  const imageUrl = 'default.jpg';
+  const res = request(
+    'GET',
+    imageUrl
+  );
+  const imgPath = 'img/default.jpg';
+  fs.writeFileSync(imgPath, res.body, { flag: 'w' });
+
   // Create new user Object
   const newUser = {
     uId: newUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
-    password: password,
+    password: passwordHash,
     handleStr: newHandle,
     globalPerm: permission,
+    notification: [] as Notif[],
+    profileImgUrl: `http://${HOST}:${PORT}/img/default.jpg`,
   };
   // Update data
   data.users.push(newUser);
@@ -184,12 +191,19 @@ const generateToken = (uId: number): tokenReturn => {
   const tokenNumber = data.lastToken + 1;
   // Convert to string
   const tokenString = tokenNumber.toString();
+  // Hash token
+  const hashToken = tokenString;  
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    bcrypt.hash(tokenString, salt, function(err, hash) {
+      hashToken = hash;
+    });
+  });   
   // Update last token
   data.lastToken = tokenNumber;
   // Add to dataset
   data.tokens.push(
     {
-      token: tokenString,
+      token: hashToken,
       uId: uId
     }
   );
