@@ -1,4 +1,7 @@
 import { getData, setData } from './dataStore';
+import { Notif } from './interfaces';
+import config from './config.json';
+import request from 'sync-request';
 import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
@@ -128,7 +131,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
   if (nameFirst.length < 1 || nameLast.length < 1) { throw HTTPError( 400, 'First name or last name is too short'); }
-  if (nameFirst.length > 50 || nameLast.length > 50) { throw HTPPError (400, 'First name or last name is too long'); }
+  if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError (400, 'First name or last name is too long'); }
   
   // Generate handle
   const newHandle = generateHandle(nameFirst, nameLast);
@@ -138,24 +141,17 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Permissions !!!
   const permission = (newUserId === 1) ? 1 : 2;
 
-  const passwordHash = password;
+  let passwordHash = password;
   // Hash password
-  bcrypt.genSalt(saltRounds, function(err, salt) {
-    bcrypt.hash(password, salt, function(err, hash) {
+  bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
+    bcrypt.hash(password, salt, function(err: any, hash: any) {
       passwordHash = hash;
     });
   });   
 
   // Profile image
   const PORT: number = parseInt(process.env.PORT || config.port);
-  const HOST: string = process.env.IP || 'localhost';
-  const imageUrl = 'default.jpg';
-  const res = request(
-    'GET',
-    imageUrl
-  );
-  const imgPath = 'img/default.jpg';
-  fs.writeFileSync(imgPath, res.body, { flag: 'w' });
+  const HOST: string = process.env.IP || 'localhost'; 
 
   // Create new user Object
   const newUser = {
@@ -192,9 +188,9 @@ const generateToken = (uId: number): tokenReturn => {
   // Convert to string
   const tokenString = tokenNumber.toString();
   // Hash token
-  const hashToken = tokenString;  
-  bcrypt.genSalt(saltRounds, function(err, salt) {
-    bcrypt.hash(tokenString, salt, function(err, hash) {
+  let hashToken = tokenString;  
+  bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
+    bcrypt.hash(tokenString, salt, function(err: any, hash: any) {
       hashToken = hash;
     });
   });   
@@ -280,3 +276,5 @@ const authLogoutV1 = (token: string) => {
 };
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };
+
+ 
