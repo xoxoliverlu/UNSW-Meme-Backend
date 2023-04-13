@@ -1,4 +1,5 @@
 import { getData, setData } from "./dataStore"
+import { PwReset } from "./interfaces";
 
 export const pwResetReqeust = (email: string) => {
   const data = getData();
@@ -19,7 +20,12 @@ export const pwResetReqeust = (email: string) => {
     }
   });
 
-  const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+  // ensure no repeated resetCode
+  let resetCode: string = Math.floor(100000 + Math.random() * 900000).toString();
+  while (data.pwReset.find((item: PwReset) => item.code === resetCode)){
+    resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
 
   let mailOptions = {
     from: 't13a.23t1@gmail.com',
