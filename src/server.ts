@@ -14,7 +14,7 @@ import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from '
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
 import { searchV1 } from './search';
-import { pwResetReqeust } from './password';
+import { pwResetReqeust, pwReset } from './password';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -292,13 +292,25 @@ app.get('/search/v1',(req: Request, res: Response, next) => {
 /****************
 *  Password Routes  *
 ****************/
-
 app.post('/auth/passwordreset/request/v1',(req: Request, res: Response, next) => {
   const email = req.body.email as string;
   const result = pwResetReqeust(email);
   const {error} = result;
   if (error === 'token'){
     res.statusCode = 403;
+  }
+
+  res.json(result);
+})
+
+app.post('/auth/passwordreset/reset/v1',(req: Request, res: Response, next) => {
+  const newPassword = req.body.newPassword as string;
+  const resetCode = req.body.resetCode as string;
+  const result = pwReset(resetCode, newPassword);
+  console.log(result);
+  const {error} = result;
+  if (error){
+    res.statusCode = 400;
   }
 
   res.json(result);
