@@ -1,5 +1,5 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-import { User, Channel, TokenPair, DataStore, DM } from './interfaces';
+import { User, Channel, TokenPair, DataStore, DM, PwReset } from './interfaces';
 import fs from 'fs';
 let data = {
   users: [] as User[],
@@ -11,6 +11,7 @@ let data = {
   tokens: [] as TokenPair[],
   dms: [] as DM[],
   lastDmId: 0,
+  pwReset: [] as PwReset[]
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1

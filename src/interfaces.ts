@@ -38,6 +38,7 @@ export interface DM {
 }
 
 export interface DataStore {
+    pwReset: any;
     users: User[];
     channels: Channel[];
     tokens: TokenPair[];
@@ -55,4 +56,9 @@ export interface Profile {
     nameLast: string;
     email: string;
     handleStr: string;
+}
+
+export interface PwReset {
+    uId: number;
+    code: string;
 }
