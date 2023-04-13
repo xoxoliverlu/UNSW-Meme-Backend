@@ -1,4 +1,4 @@
-import { requestClear, requestAuthRegister, reqeustPwReset, requestChannelsCreate } from "../requests";
+import { requestClear, requestAuthRegister, requestPwResetRequest, requestChannelsCreate, requestPwReset } from "../requests";
 
 beforeEach(() => {
     requestClear();
@@ -9,9 +9,16 @@ afterAll(() => {
 });
 
 
-test("successful reset request", () => {
+test("invalid reset code", () => {
     const {token} = requestAuthRegister('otonnokoo713@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-    reqeustPwReset('otonnokoo713@gmail.com');
-    const res = requestChannelsCreate(token, "errorToken", true)
-    expect(res).toBe(403);
+    requestPwResetRequest('otonnokoo713@gmail.com');
+    const res = requestPwReset('error','jdiosajio')
+    expect(res).toBe(400);
+})
+
+test("newPassword Less than 6 characters long", () => {
+    const {token} = requestAuthRegister('otonnokoo713@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
+    requestPwResetRequest('otonnokoo713@gmail.com');
+    const res = requestPwReset('error','jdio')
+    expect(res).toBe(400);
 })
