@@ -59,12 +59,12 @@ export const pwReset = (resetCode: string, newPassword: string) => {
     return {error: 'length'};
   }
   console.log('finding user');
-  let user = data.users.find(item => item.uId == target.uId);
+  let index = data.users.findIndex(item => item.uId == target.uId);
   const bcrypt = require('bcrypt');
   const saltRounds = 10;
   bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
     bcrypt.hash(newPassword, salt, function(err:any , hash: any) {
-      user.password = hash;
+      data.users[index].password = hash;
     });
   });
   setData(data);
