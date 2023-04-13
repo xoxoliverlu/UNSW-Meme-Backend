@@ -56,3 +56,9 @@ export interface Profile {
     email: string;
     handleStr: string;
 }
+
+export interface Notif {
+    channelId: number;
+    dmId: number;
+    notificationMessage: string;
+}
