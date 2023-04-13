@@ -20,14 +20,14 @@ describe('Testing messageEdit', () => {
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
       const over1000chars = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Na';
       const data = requestMessageEdit(register.token, message.messageId, over1000chars);
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(data).toEqual(400);
     });
     test('messageId is invalid within a channel/DM that the authorised user has joined', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
       const invalid = requestMessageEdit(register.token, message.messageId + 1, 'cat');
-      expect(invalid).toStrictEqual({ error: expect.any(String) });
+      expect(data).toEqual(400);
     });
     test('the message was not sent by the authorised user making this request and the user does not have owner permissions in the channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -36,7 +36,7 @@ describe('Testing messageEdit', () => {
       requestChannelInvite(register.token, channel.channelId, register2.authUserId);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
       const data = requestMessageEdit(register2.token, message.messageId, 'cat');
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(data).toEqual(403);
     });
     test('the message was not sent by the authorised user making this request and the user does not have owner permissions in the dm', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -45,14 +45,14 @@ describe('Testing messageEdit', () => {
       const dm = requestDmCreate(register.token, uIds);
       requestMessageSendDm(register.token, dm.dmId, 'Hello World!');
       const invalid = requestMessageEdit(register2.token, dm.dmId, 'cat');
-      expect(invalid).toStrictEqual({ error: expect.any(String) });
+      expect(data).toEqual(403);
     });
     test('token is invalid', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const message = requestMessageSend(register.token, channel.channelId, 'dog');
       const data = requestMessageEdit('Invalid token', message.messageId, 'cat');
-      expect(data).toStrictEqual({ error: expect.any(String) });
+      expect(data).toEqual(403);
     });
   });
   describe('Valid inputs', () => {

@@ -14,7 +14,7 @@ describe('/dm/messages/v1', () => {
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register.token, -1, 0);
-      expect(data).toStrictEqual({ error: 'invalid dmId' });
+      expect(data).toEqual(400);
     });
     test('dmId is valid and the authorised user is not a member of the DM', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
@@ -22,21 +22,21 @@ describe('/dm/messages/v1', () => {
       const register3 = requestAuthRegister('madhu.shrestha@gmail.com', 'helloworld', 'madhu', 'shrestha');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register3.token, dm.dmId, 0);
-      expect(data).toStrictEqual({ error: 'user is not a member of the DM' });
+      expect(data).toEqual(403);
     });
     test('start is greater than the total number of messages in the channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register.token, dm.dmId, 2);
-      expect(data).toStrictEqual({ error: 'start parameter is greater than number of messages in DM' });
+      expect(data).toEqual(400);
     });
     test('token is invalid', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpi', 'dimpi', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register.token + '1', dm.dmId, 0);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      expect(data).toEqual(403);
     });
   });
   describe('success', () => {

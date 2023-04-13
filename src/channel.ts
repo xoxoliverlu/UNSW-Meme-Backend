@@ -97,7 +97,7 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
   const data = getData();
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (authUser === undefined) return { error: 'token' };
   const authuserId = authUser.uId;
 
   // Valid channelId
