@@ -80,12 +80,14 @@ export const requestDmCreate = (token: string, uIds: number[]) => {
 export const requestChannelsCreate = (token: string, name: string, isPublic: boolean) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channels/create/v2',
+        `${url}:${port}` + '/channels/create/v3',
         {
           json: {
-            token: token,
             name: name,
             isPublic: isPublic
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -98,9 +100,9 @@ export const requestChannelsCreate = (token: string, name: string, isPublic: boo
 export const requestChannelsList = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channels/list/v2',
+        `${url}:${port}` + '/channels/list/v3',
         {
-          qs: {
+          headers: {
             token: token,
           }
         }
@@ -114,9 +116,9 @@ export const requestChannelsList = (token: string) => {
 export const requestChannelsListAll = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channels/listall/v2',
+        `${url}:${port}` + '/channels/listall/v3',
         {
-          qs: {
+          headers: {
             token: token,
           }
         }
@@ -490,3 +492,4 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   }
   return res.statusCode;
 };
+

@@ -2,11 +2,12 @@ import { getData, setData } from './dataStore';
 import { Notif } from './interfaces';
 import config from './config.json';
 import request from 'sync-request';
-import validator from 'validator';
+import validator from 'validator'; 
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
 const saltRounds = 10; 
-const fs = require('fs');
+const fs = require('fs'); 
+import { v4 as uuidv4 } from 'uuid'; 
 
 // Return types
 type authUserId = {
@@ -184,9 +185,9 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 const generateToken = (uId: number): tokenReturn => {
   const data = getData();
   // Generate unique token
-  const tokenNumber = data.lastToken + 1;
+  const tokenNumber = uuidv4();  
   // Convert to string
-  const tokenString = tokenNumber.toString();
+  const tokenString = tokenNumber.toString(); 
   // Hash token
   let hashToken = tokenString;  
   bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
@@ -195,7 +196,7 @@ const generateToken = (uId: number): tokenReturn => {
     });
   });   
   // Update last token
-  data.lastToken = tokenNumber;
+  data.lastToken = tokenNumber; 
   // Add to dataset
   data.tokens.push(
     {

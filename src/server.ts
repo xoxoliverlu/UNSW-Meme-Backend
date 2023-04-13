@@ -7,7 +7,7 @@ import errorHandler from 'middleware-http-errors';
 
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
-import { channelsCreateV2, channelsListAllV2, channelsListV2 } from './channels';
+import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
 import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
@@ -68,19 +68,38 @@ app.post('/auth/logout/v1', (req: Request, res: Response, next) => {
 /****************
 *  Channels Routes  *
 ****************/
-app.post('/channels/create/v2', (req: Request, res: Response, next) => {
-  const { token, name, isPublic } = req.body;
-  res.json(channelsCreateV2(token, name, isPublic));
+app.post('/channels/create/v3', (req: Request, res: Response, next) => {
+  const { name, isPublic } = req.body;
+  const token = req.header('token');
+  const result = channelsCreateV3(token, name, isPublic);
+  const {error} = result;
+  if (error === 'user not found'){
+    res.statusCode = 403;
+  }
+  if (error === 'length'){
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
 
-app.get('/channels/list/v2', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  res.json(channelsListV2(token));
+app.get('/channels/list/v3', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const result = channelsListV3(token);
+  const {error} = result;
+  if (error === 'token'){
+    res.statusCode = 403;
+  }
+  res.json(result);
 });
 
-app.get('/channels/listall/v2', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  res.json(channelsListAllV2(token));
+app.get('/channels/listall/v3', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const result = channelsListAllV3(token);
+  const {error} = result;
+  if (error === 'token'){
+    res.statusCode = 403;
+  }
+  res.json(result);
 });
 /*****************
 *  Other Routes
