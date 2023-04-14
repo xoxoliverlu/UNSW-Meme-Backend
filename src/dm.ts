@@ -219,7 +219,7 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
   if (!dm) return { error: 'invalid dmId' };
   // checks if the token is valid
   const user = data.tokens.find((u) => u.token === token);
-  if (!user) return { error: 'token is invalid' };
+  if (!user) return { error: 'token' };
   const { uId } = user;
   // checks whether authenticated user is member of the DM
   // user is not a member of the DM
