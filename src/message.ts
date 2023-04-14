@@ -1,6 +1,5 @@
 import { getData, setData } from './dataStore';
 import { Message, Channel, DM } from './interfaces';
-import HTTPError from 'http-errors';
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -102,7 +101,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
   const data = getData();
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (authUser === undefined) return { error: 'token' };
   const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
@@ -185,7 +184,7 @@ export function messageRemoveV1(token: string, messageId: number) {
   const user = data.tokens.find((u) => u.token === token);
   // checks if provided token is valid - checks if the user object exists
   if (!user) {
-    return { error: 'token is invalid' };
+    return { error: 'token' };
   }
 
   const { uId } = user;
@@ -252,7 +251,7 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
   //token = hash({ string: token });
   const indexUser = data.users.findIndex((u) => u.token === token);
   if (indexUser < 0) {
-    throw HTTPError(403, 'Token invalid');
+    (403, 'Token invalid');
   }
   const authUserId = data.users[indexUser].authUserId;
 

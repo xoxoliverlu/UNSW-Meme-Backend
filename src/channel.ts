@@ -138,7 +138,7 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
   const data = getData();
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (authUser === undefined) return { error: 'token' };
   const authUserId = authUser.uId;
 
   // Check for valid channelId

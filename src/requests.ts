@@ -270,9 +270,11 @@ export const requestChannelInvite = (token: string, channelId: number, uId: numb
         `${url}:${port}` + '/channel/invite/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             uId: uId
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -390,9 +392,11 @@ export const requestChannelMessages = (token: string, channelId: number, start: 
         `${url}:${port}` + '/channel/messages/v2',
         {
           qs: {
-            token: token,
             channelId: channelId,
             start: start
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -462,8 +466,10 @@ export const requestMessageRemove = (token: string, messageId: number) => {
         `${url}:${port}` + '/message/remove/v1',
         {
           qs: {
-            token: token,
             messageId: messageId
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -479,9 +485,11 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
         `${url}:${port}` + '/message/edit/v1',
         {
           json: {
-            token: token,
             messageId: messageId,
             message: message
+          },
+          headers:{
+            token: token
           }
         }
   );

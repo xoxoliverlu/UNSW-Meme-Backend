@@ -132,8 +132,39 @@ app.post('/channel/join/v2', (req: Request, res: Response, next) => {
 });
 
 app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
-  const { token, channelId, uId } = req.body;
-  res.json(channelInviteV1(token, channelId, uId));
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  const result = channelInviteV1(token, channelId, uId);
+  const {error} = result;
+  if (error === 'token' || error === 'authUserId is not in the channel') {
+    res.statusCode = 403;
+  }
+  if (
+    error === 'channelId is not valid' ||
+    error === 'uId is not valid' ||
+    error === 'uId is already in channel'
+    
+  )
+  {
+    res.statusCode = 400;
+  }
+  res.json(result);
+});
+
+app.get('/channel/messages/v2', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const channelId = parseInt(req.query.channelId as string);
+  const start = parseInt(req.query.start as string);
+  const result = channelMessagesV1(token, channelId, start);
+  const {error} = result;
+  if (error === 'token' || 'the user is not a member of the channel'
+  || error === 'channelId does not refer to a valid channel' ) {
+    res.statusCode = 403;
+  }
+  if (error === 'start parameter is greater than the total number of messages' ) {
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
 
 app.post('/channel/addowner/v1', (req: Request, res: Response, next) => {
@@ -150,6 +181,8 @@ app.post('/channel/leave/v1', (req: Request, res: Response, next) => {
   const { token, channelId } = req.body;
   res.json(channelLeaveV1(token, channelId));
 });
+
+
 /****************
 *  DM Routes  *
 ****************/
@@ -194,14 +227,44 @@ app.post('/message/senddm/v1', (req: Request, res: Response, next) => {
 });
 
 app.put('/message/edit/v1', (req: Request, res: Response, next) => {
-  const { token, messageId, message } = req.body;
-  res.json(messageEditV1(token, messageId, message));
+  const { messageId, message } = req.body;
+  const token = req.header('token');
+  const result = messageEditV1(token, messageId, message);
+  const {error} = result;
+  if ( error ===  'message was not sent by this user, and user does not have owner permissions') {
+    res.statusCode = 403;
+  } 
+  if (error === 'token' || 'message id is invalid' || 'Message is greater than 1000 characters') {
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
-
+app.post('/message/share/v1', (req: Request, res: Response, next) => {
+  const { ogmessageId, message, channelId, dmId } = req.body;
+  const token = req.header('token');
+  const result = messageShareV1(token, messageId, message);
+  const {error} = result;
+  if ( error ===  'message was not sent by this user, and user does not have owner permissions') {
+    res.statusCode = 403;
+  } 
+  if (error === 'token' || 'message id is invalid' || 'Message is greater than 1000 characters') {
+    res.statusCode = 400;
+  }
+  res.json(result);
+});
 app.delete('/message/remove/v1', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
+  const token = req.header('token');
   const messageId = parseInt(req.query.messageId as string);
-  res.json(messageRemoveV1(token, messageId));
+  const result = messageRemoveV1(token, messageId);
+  const {error} = result;
+  if (error === 'token' || 'user did not send this message' ) {
+    res.statusCode = 403;
+  }
+  if (error === 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' ||
+  'This user does not have permission to delete this message.' || 'This user does not have permission to delete this message.') {
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
 
 app.get('/dm/messages/v1', (req: Request, res: Response, next) => {
@@ -209,11 +272,4 @@ app.get('/dm/messages/v1', (req: Request, res: Response, next) => {
   const dmId = parseInt(req.query.dmId as string);
   const start = parseInt(req.query.start as string);
   res.json(dmMessagesV1(token, dmId, start));
-});
-
-app.get('/channel/messages/v2', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  const channelId = parseInt(req.query.channelId as string);
-  const start = parseInt(req.query.start as string);
-  res.json(channelMessagesV1(token, channelId, start));
 });
