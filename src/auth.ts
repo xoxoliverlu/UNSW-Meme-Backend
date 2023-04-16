@@ -2,12 +2,11 @@ import { getData, setData } from './dataStore';
 import { Notif } from './interfaces';
 import config from './config.json';
 import request from 'sync-request';
-import validator from 'validator'; 
+import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
-const saltRounds = 10; 
-const fs = require('fs'); 
-import { v4 as uuidv4 } from 'uuid'; 
+const saltRounds = 10;
+import { v4 as uuidv4 } from 'uuid';
 
 // Return types
 type authUserId = {
@@ -128,12 +127,12 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Email already in use
   const emailFound = data.users.find((item) => item.email === email);
   if (emailFound) {throw HTTPError(400, 'Email already in use.'); }
-  // Password length 
+  // Password length
   if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
   if (nameFirst.length < 1 || nameLast.length < 1) { throw HTTPError( 400, 'First name or last name is too short'); }
   if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError (400, 'First name or last name is too long'); }
-  
+
   // Generate handle
   const newHandle = generateHandle(nameFirst, nameLast);
   // Generate userID
@@ -148,11 +147,11 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
     bcrypt.hash(password, salt, function(err: any, hash: any) {
       passwordHash = hash;
     });
-  });   
+  });
 
   // Profile image
   const PORT: number = parseInt(process.env.PORT || config.port);
-  const HOST: string = process.env.IP || 'localhost'; 
+  const HOST: string = process.env.IP || 'localhost';
 
   // Create new user Object
   const newUser = {
@@ -185,22 +184,13 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 const generateToken = (uId: number): tokenReturn => {
   const data = getData();
   // Generate unique token
-  const tokenNumber = uuidv4();  
+  const tokenNumber = uuidv4();
   // Convert to string
-  const tokenString = tokenNumber.toString(); 
-  // Hash token
-  let hashToken = tokenString;  
-  bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
-    bcrypt.hash(tokenString, salt, function(err: any, hash: any) {
-      hashToken = hash;
-    });
-  });   
-  // Update last token
-  data.lastToken = tokenNumber; 
+  const tokenString = tokenNumber.toString();
   // Add to dataset
   data.tokens.push(
     {
-      token: hashToken,
+      token: tokenString,
       uId: uId
     }
   );
@@ -278,4 +268,7 @@ const authLogoutV1 = (token: string) => {
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };
 
- 
+
+// const register1 = authRegisterV2('alice.smith@gmail.com', 'password', 'Alice', ' ');
+// const register2 = authRegisterV2('bob.langford@gmail.com', '123456', 'Bob', 'ABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyz');
+// console.log(register1);
