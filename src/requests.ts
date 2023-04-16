@@ -492,4 +492,3 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   }
   return res.statusCode;
 };
-

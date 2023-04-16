@@ -1,7 +1,6 @@
 import { getData, setData } from './dataStore';
 import { Notif } from './interfaces';
 import config from './config.json';
-import request from 'sync-request';
 import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
@@ -92,7 +91,6 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
     token: token,
     authUserId: register.authUserId,
   };
-
 };
 
 /**
@@ -120,15 +118,15 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 
   // Error checking
   // Invalid email using validator package
-  if (!validator.isEmail(email)) {throw HTTPError(400, 'Invalid Email');}
+  if (!validator.isEmail(email)) { throw HTTPError(400, 'Invalid Email'); }
   // Email already in use
   const emailFound = data.users.find((item) => item.email === email);
-  if (emailFound) {throw HTTPError(400, 'Email already in use.'); }
+  if (emailFound) { throw HTTPError(400, 'Email already in use.'); }
   // Password length
   if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
-  if (nameFirst.length < 1 || nameLast.length < 1) { throw HTTPError( 400, 'First name or last name is too short'); }
-  if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError (400, 'First name or last name is too long'); }
+  if (nameFirst.length < 1 || nameLast.length < 1) { throw HTTPError(400, 'First name or last name is too short'); }
+  if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError(400, 'First name or last name is too long'); }
 
   // Generate handle
   const newHandle = generateHandle(nameFirst, nameLast);
@@ -264,7 +262,6 @@ const authLogoutV1 = (token: string) => {
 };
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };
-
 
 // const register1 = authRegisterV2('alice.smith@gmail.com', 'password', 'Alice', ' ');
 // const register2 = authRegisterV2('bob.langford@gmail.com', '123456', 'Bob', 'ABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyz');
