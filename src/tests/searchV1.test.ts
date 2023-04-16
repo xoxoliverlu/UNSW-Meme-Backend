@@ -23,7 +23,7 @@ test('search channel messages', () => {
   requestMessageSendDm(token, dmId, 'testDm1');
   requestMessageSendDm(token, dmId, 'testDm2');
   requestMessageSendDm(token, dmId, 'testDm3');
-  const res = requestSearch(token,'test');
+  const {result: res} = requestSearch(token,'test');
   const messages = res.map((item: Message) => item.message).sort();
   expect(messages).toEqual(['test1','test2','test3','test4','testDm1','testDm2','testDm3'].sort());
 });
