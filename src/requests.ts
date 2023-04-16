@@ -309,11 +309,13 @@ export const requestChannelRemoveOwner = (token: string, channelId: number, uId:
 export const requestChannelLeave = (token: string, channelId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/leave/v1',
+        `${url}:${port}` + '/channel/leave/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
+          },
+          headers: {
+            token: token,
           }
         }
   );

@@ -8,7 +8,7 @@ import errorHandler from 'middleware-http-errors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
-import { channelDetailsV2, channelJoinV2, channelAddOwnerV2, channelInviteV1, channelLeaveV1, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
+import { channelDetailsV2, channelJoinV2, channelAddOwnerV2, channelInviteV1, channelLeaveV2, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
@@ -200,9 +200,19 @@ app.post('/channel/removeowner/v2', (req: Request, res: Response, next) => {
   res.json(result);
 });
 
-app.post('/channel/leave/v1', (req: Request, res: Response, next) => {
-  const { token, channelId } = req.body;
-  res.json(channelLeaveV1(token, channelId));
+app.post('/channel/leave/v2', (req: Request, res: Response, next) => {
+  const { channelId } = req.body;
+  const token = req.header('token');
+  const result = channelLeaveV2(token,channelId);
+  const {error} = result;
+  console.log(error);
+  if (error === 'token' || error === 'user to be remove is not a member of the channel'){
+    res.statusCode = 403;
+  }
+  if (error === 'no channel found'){
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
 /****************
 *  DM Routes  *
