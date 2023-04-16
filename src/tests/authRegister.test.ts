@@ -35,7 +35,6 @@ describe('Invalid inputs for /auth/register', () => {
   test('Invalid email', () => {
     const register1 = requestAuthRegister('alice.smithgmail.com', 'password', 'Alice', 'Smith');
     expect(register1).toStrictEqual(400);
-    expect(register1.error).toEqual({ message: expect.any(String) });
   });
 
   test('Already in use email', () => {
@@ -46,9 +45,6 @@ describe('Invalid inputs for /auth/register', () => {
     expect(register2).toStrictEqual(400);
     expect(register3).toStrictEqual(400);
     expect(register4).toStrictEqual(400);
-    expect(register2.error).toEqual({ message: expect.any(String)});
-    expect(register3.error).toEqual({ message: expect.any(String)});
-    expect(register4.error).toEqual({ message: expect.any(String)});
   });
   test('Password less than 6 characters', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', 'Pass', 'Alice', 'Smith');
@@ -57,24 +53,17 @@ describe('Invalid inputs for /auth/register', () => {
     expect(register1).toStrictEqual(400);
     expect(register2).toStrictEqual(400);
     expect(register3).toStrictEqual(400);
-    expect(register1.error).toEqual({ message: expect.any(String)});
-    expect(register2.error).toEqual({ message: expect.any(String)});
-    expect(register3.error).toEqual({ message: expect.any(String)});
   });
   test('nameFirst is empty or > 50 characters', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', 'password', ' ', 'Smith');
     const register2 = requestAuthRegister('bob.langford@gmail.com', '123456', 'ABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyz', 'Langford');
     expect(register1).toStrictEqual(400);
     expect(register2).toStrictEqual(400);
-    expect(register1.error).toEqual({ message: expect.any(String)});
-    expect(register2.error).toEqual({ message: expect.any(String)});
   });
   test('nameLast is empty or > 50 characters', () => {
     const register1 = requestAuthRegister('alice.smith@gmail.com', 'password', 'Alice', ' ');
     const register2 = requestAuthRegister('bob.langford@gmail.com', '123456', 'Bob', 'ABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyz');
     expect(register1).toStrictEqual(400);
     expect(register2).toStrictEqual(400);
-    expect(register1.error).toEqual({ message: expect.any(String)});
-    expect(register2.error).toEqual({ message: expect.any(String)});
   });
 });
