@@ -279,9 +279,11 @@ export const requestChannelInvite = (token: string, channelId: number, uId: numb
         `${url}:${port}` + '/channel/invite/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             uId: uId
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -403,9 +405,11 @@ export const requestChannelMessages = (token: string, channelId: number, start: 
         `${url}:${port}` + '/channel/messages/v2',
         {
           qs: {
-            token: token,
             channelId: channelId,
             start: start
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -421,9 +425,11 @@ export const requestMessageSend = (token: string, channelId: number, message: st
         `${url}:${port}` + '/message/send/v1',
         {
           json: {
-            token: token,
             channelId: channelId,
             message: message
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -439,9 +445,11 @@ export const requestDmMessages = (token: string, dmId: number, start: number) =>
         `${url}:${port}` + '/dm/messages/v1',
         {
           qs: {
-            token: token,
             dmId: dmId,
             start: start
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -457,9 +465,11 @@ export const requestMessageSendDm = (token: string, dmId: number, message: strin
         `${url}:${port}` + '/message/senddm/v1',
         {
           json: {
-            token: token,
             dmId: dmId,
             message: message
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -471,12 +481,14 @@ export const requestMessageSendDm = (token: string, dmId: number, message: strin
 
 export const requestMessageRemove = (token: string, messageId: number) => {
   const res = request(
-    'DELETE',
-        `${url}:${port}` + '/message/remove/v1',
+    'GET',
+        `${url}:${port}` + '/channel/messages/v2',
         {
           qs: {
-            token: token,
             messageId: messageId
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -492,9 +504,11 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
         `${url}:${port}` + '/message/edit/v1',
         {
           json: {
-            token: token,
             messageId: messageId,
             message: message
+          },
+          headers:{
+            token: token
           }
         }
   );
@@ -504,6 +518,20 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   return res.statusCode;
 };
 
+<<<<<<< HEAD
+export const requestMessageShare = (ogMessageId: string, channelId: number, message: string, dmId: number) => {
+  const res = request(
+    'PUT',
+        `${url}:${port}` + '/message/edit/v1',
+        {
+          json: {
+            ogMessageId: messageId,
+            message: message,
+            channelId: channelId,
+            dmId: dmId
+          },
+          headers:{
+=======
 export const requestSearch = (token: string, queryStr: string) => {
   const res = request(
     'GET',
@@ -513,6 +541,7 @@ export const requestSearch = (token: string, queryStr: string) => {
             queryStr: queryStr
           },
           headers: {
+>>>>>>> e1a00a45130b8823bda7e4e2af22f213130bb693
             token: token
           }
         }
@@ -521,6 +550,10 @@ export const requestSearch = (token: string, queryStr: string) => {
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
+<<<<<<< HEAD
+};
+
+=======
 }
 
 export const requestPwResetRequest = (email: string) => {
@@ -555,3 +588,4 @@ export const requestPwReset = (resetCode:string, newPassword: string) => {
   }
   return res.statusCode;
 }
+>>>>>>> e1a00a45130b8823bda7e4e2af22f213130bb693

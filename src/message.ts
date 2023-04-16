@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { Message, Channel, DM } from './interfaces';
+import HTTPError from 'http-errors';
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -11,18 +12,18 @@ import { Message, Channel, DM } from './interfaces';
 export function messageSendV1(token: string, channelId: number, message: string) {
   const data = getData();
   const user = data.tokens.find((u) => u.token === token);
-  if (!user) return { error: 'Token invalid' };
+  if (!user) throw HTTPError(403, 'token');
   const { uId } = user;
   // checks if channelId is valid
   // if not returns error
   const channel = data.channels.find((c) => c.channelId === channelId);
-  if (!channel) return { error: 'Invalid channelId' };
+  if (!channel) throw HTTPError(400, 'Invalid channelId')
   // checks for message lengths - between 1 and 1000 characters
-  if (message.length < 1) return { error: 'Message cannot be empty' };
+  if (message.length < 1) throw HTTPError(400, 'Message cannot be empty');
 
-  if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
+  if (message.length > 1000) throw HTTPError(400, 'Message is greater than 1000 characters');
 
-  if (!channel.allMembers.includes(uId)) return { error: 'User is not part of the channel' };
+  if (!channel.allMembers.includes(uId)) throw HTTPError(403, 'User is not part of the channel');
 
   const messageId = data.lastMessageId + 1;
   data.lastMessageId++;
@@ -55,8 +56,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
 
   // Error checking
   if (!user) {
-    return { error: 'Token invalid' };
-  }
+    throw HTTPError (404, 'token')
   // checks whether or not dmId is valid
   const uId = user.uId;
   if (!dm) {
@@ -88,6 +88,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
 
   return { messageId };
 }
+}
 /**
  * Given a message, update its text with new text.
  * If the new message is an empty string, the message is deleted.
@@ -101,7 +102,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
   const data = getData();
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (authUser === undefined) return { error: 'token' };
   const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
   if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
@@ -184,7 +185,7 @@ export function messageRemoveV1(token: string, messageId: number) {
   const user = data.tokens.find((u) => u.token === token);
   // checks if provided token is valid - checks if the user object exists
   if (!user) {
-    return { error: 'token is invalid' };
+    return { error: 'token' };
   }
 
   const { uId } = user;
@@ -243,4 +244,64 @@ export function messageRemoveV1(token: string, messageId: number) {
 
   setData(data);
   return {};
+}
+export function messageShareV1(token: string, ogMessageId: number, message: string, channelId: number, dmId: number): Error | object {
+  //const unhashedToken = token;
+  const data = getData();
+  //const hash = require('object-hash');
+  //token = hash({ string: token });
+  const indexUser = data.users.findIndex((u) => u.token === token);
+  if (indexUser < 0) throw HTTPError(403, 'Token invalid');
+  const authUserId = data.users[indexUser].authUserId;
+
+  const indexChannelToShare = data.channels.findIndex((c) => c.channelId === channelId);
+  const indexDmToShare = data.dms.findIndex((d) => d.dmId === dmId);
+  if (indexChannelToShare < 0 && indexDmToShare < 0) throw HTTPError(400, 'both channelId and dmId are invalid');
+
+  if (channelId !== -1 && dmId !== -1) throw HTTPError(400, 'neither channelId nor dmId are -1');
+
+  if (message.length > 1000) throw HTTPError(400, 'optional message is over 1000 chars');
+
+  let messageChannel;
+  let messageDm;
+
+  for (const channel of data.channels) {
+    messageChannel = channel.messages.find((m) => m.messageId === ogMessageId);
+    if (messageChannel) {
+      if (!channel.allMembers.find((o) => o.uId === authUserId)) {
+        throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      }
+    }
+  }
+
+  for (const dm of data.dms) {
+    messageDm = dm.messages.find(m => m.messageId === ogMessageId);
+    if (messageDm) {
+      if (!dm.allMembers.includes(authUserId)) {
+        throw HTTPError(400, 'ogMessageId does not refer to a valid message within a channel/DM that the authorised user has joined');
+      }
+    }
+  }
+
+  if (!messageChannel && !messageDm) throw HTTPError(400, 'message is not from a valid channel/DM');
+
+  if (dmId === -1) {
+    if (!data.channels[indexChannelToShare].allMembers.find((u) => u.uId === authUserId)) {
+      console.log('cat');
+      throw HTTPError(403, 'user is not in the DM/Channel being shared to');
+    }
+    const messageConcat = messageChannel.message + ' ' + message;
+    const sharedMessageId = messageSendV1(unhashedToken, channelId, messageConcat);
+    return { sharedMessageId: sharedMessageId.messageId };
+  }
+
+  if (channelId === -1) {
+    if (!data.dms[indexDmToShare].allMembers.includes(authUserId)) {
+      console.log('dog');
+      throw HTTPError(403, 'user is not in the DM/Channel being shared to');
+    }
+    const messageChannelConcat = messageDm.message + ' ' + message;
+    const sharedMessageId = messageSendDmV1(unhashedToken, dmId, messageChannelConcat);
+    return { sharedMessageId: sharedMessageId.messageId };
+  }
 }

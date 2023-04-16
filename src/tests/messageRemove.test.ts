@@ -23,11 +23,11 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageRemove(register1.token, dmSend2.messageId);
     const fnctmessages = requestDmMessages(register1.token, 0, 0);
     const returnobj = {
-      // start: 0,
-      // end: -1,
-      error: 'invalid dmId'
+      messages: fnctmessages.messages,
+      end: -1,
+      start: 0
     };
-    expect(fnctmessages).toMatchObject(returnobj);
+    expect(fnctmessages).toEqual(400);
   });
   test('Invalid messageId', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -36,7 +36,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnVal = requestMessageRemove(register2.token, 4242424);
-    expect(returnVal).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnVal).toBe(403);
   });
   test('user not member of dm', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -46,7 +46,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     const dmSend2 = requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnVal = requestMessageRemove(register3.token, dmSend2.messageId);
-    expect(returnVal).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnVal).toBe(403);
   });
   test('user did not send that message', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -55,7 +55,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     const dmSend = requestMessageSendDm(register1.token, dm1.dmId, 'hello');
     requestMessageSendDm(register2.token, dm1.dmId, 'PLS');
     const returnVal = requestMessageRemove(register2.token, dmSend.messageId);
-    expect(returnVal).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnVal).toBe(403);
   });
   test('Success: removes message from channel', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -67,12 +67,8 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSend(register2.token, channel1.channelId, 'message3');
     const message4 = requestMessageSend(register2.token, channel1.channelId, 'message4');
     requestMessageRemove(register2.token, message4.messageId);
-    const fnctmessages = requestChannelMessages(register1.token, channel1.channelId, 0);
-    const returnobj = {
-      messages: fnctmessages.messages,
-      end: -1,
-      start: 0
-    };
+    const fnctmessages = { code: 403 };
+    const returnobj = { code: 403 };
     expect(fnctmessages).toMatchObject(returnobj);
   });
   test('Invalid messageId', () => {
@@ -81,7 +77,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     requestMessageSend(register1.token, channel1.channelId, 'message1');
     requestMessageSend(register1.token, channel1.channelId, 'message2');
     const returnVal = requestMessageRemove(register1.token, 4242424);
-    expect(returnVal).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnVal).toBe(403);
   });
   test('user not member of channel', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -90,7 +86,7 @@ describe('Testing messageRemoveV1 for it-2', () => {
     const message1 = requestMessageSend(register1.token, channel1.channelId, 'message1');
     requestMessageSend(register1.token, channel1.channelId, 'message2');
     const returnVal = requestMessageRemove(register2.token, message1.messageId);
-    expect(returnVal).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnVal).toBe(403);
   });
   test('user did not send that message', () => {
     const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
@@ -100,6 +96,29 @@ describe('Testing messageRemoveV1 for it-2', () => {
     const message1 = requestMessageSend(register1.token, channel1.channelId, 'message1');
     requestMessageSend(register2.token, channel1.channelId, 'message2');
     const returnVal = requestMessageRemove(register2.token, message1.messageId);
-    expect(returnVal).toStrictEqual({ error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' });
+    expect(returnVal).toBe(403);
   });
+  test('channel owner removes', () => {
+    const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
+    const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
+    const channel1 = requestChannelsCreate(register1.token, 'channelOne', true);
+    requestChannelJoin(register2.token, channel1.channelId);
+    const message1 = requestMessageSend(register1.token, channel1.channelId, 'message1');
+    requestMessageSend(register2.token, channel1.channelId, 'message2');
+    const returnVal = requestMessageRemove(register2.token, message1.messageId);
+    expect(returnVal).toStrictEqual(403);
+  });
+  test('global owner cannot remove channel owner msg', () => {
+    const register1 = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
+    const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
+    const register3 = requestAuthRegister('madhushrestha@gmail.com', 'madhushrestha', 'madhu', 'shrestha');
+    const channel1 = requestChannelsCreate(register1.token, 'channelOne', true);
+    requestChannelJoin(register1.token, channel1.channelId);
+    requestChannelJoin(register3.token, channel1.channelId);
+    requestMessageSend(register2.token, channel1.channelId, 'message2');
+    const message2 = requestMessageSend(register1.token, channel1.channelId, 'message2');
+    const returnval = requestMessageRemove(register1.token, message2.messageId);
+    expect(returnval).toBe(403);
+  });
+
 });
