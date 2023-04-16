@@ -44,5 +44,5 @@ export function searchV1(token: string, queryStr: string) {
       }
     })
   })
-  return result;
+  return {result};
 }

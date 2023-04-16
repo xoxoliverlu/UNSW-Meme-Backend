@@ -14,6 +14,7 @@ import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from '
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
 import { searchV1 } from './search';
+import { pwResetReqeust } from './password';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
