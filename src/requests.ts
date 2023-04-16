@@ -501,3 +501,22 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   }
   return res.statusCode;
 };
+
+export const requestSearch = (token: string, queryStr: string) => {
+  const res = request(
+    'GET',
+        `${url}:${port}` + '/search/v1',
+        {
+          qs: {
+            queryStr: queryStr
+          },
+          headers: {
+            token: token
+          }
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}

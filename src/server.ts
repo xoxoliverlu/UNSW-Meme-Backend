@@ -1,4 +1,4 @@
-import express, { json, Request, Response } from 'express';
+import express, { json, query, Request, Response } from 'express';
 import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
@@ -13,6 +13,7 @@ import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1,
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
+import { searchV1 } from './search';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -209,7 +210,6 @@ app.post('/channel/leave/v2', (req: Request, res: Response, next) => {
   const token = req.header('token');
   const result = channelLeaveV2(token,channelId);
   const {error} = result;
-  console.log(error);
   if (error === 'token' || error === 'user to be remove is not a member of the channel'){
     res.statusCode = 403;
   }
@@ -284,3 +284,17 @@ app.get('/channel/messages/v2', (req: Request, res: Response, next) => {
   const start = parseInt(req.query.start as string);
   res.json(channelMessagesV1(token, channelId, start));
 });
+
+app.get('/search/v1',(req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const queryStr = req.query.queryStr as string;
+  const result = searchV1(token,queryStr);
+  const {error} = result;
+  if (error === 'token'){
+    res.statusCode = 403;
+  }
+  if (error === 'length'){
+    res.statusCode = 400;
+  }
+  res.json(result);
+})
