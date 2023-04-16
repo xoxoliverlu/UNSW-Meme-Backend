@@ -17,8 +17,18 @@ tests with coverage:
     - sleep 2
     - cat $SERVER_LOG
   coverage: '/All files\s*\|\s*(\d+(?:\.\d+)?)/'
+  only:
+    - master
+    - merge_requests
   artifacts:
     paths:
       - coverage/
     expose_as: Coverage Report
     expire_in: 1 week
+style
+  stage: lint
+  script:
+    - npm run lint
+  only:
+    - master
+    - merge_requests
