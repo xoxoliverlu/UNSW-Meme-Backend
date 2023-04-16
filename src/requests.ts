@@ -4,7 +4,7 @@ import { port, url } from './config.json';
 export const requestAuthLogin = (email: string, password: string) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/auth/login/v2',
+        `${url}:${port}` + '/auth/login/v3',
         {
           json: {
             email,
