@@ -24,8 +24,7 @@ type authUserId = {
 const generateToken = (uId: number): string => {
   const data = getData();
   // Generate unique token
-  const tokenNumber = uuidv4();
-  const tokenString = tokenNumber.toString();
+  const tokenString = uuidv4().toString();
   // Add to dataset
   data.tokens.push(
     {
@@ -165,8 +164,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Invalid email using validator package
   if (!validator.isEmail(email)) { throw HTTPError(400, 'Invalid Email'); }
   // Email already in use
-  const emailFound = data.users.find((item) => item.email === email);
-  if (emailFound) { throw HTTPError(400, 'Email already in use.'); }
+  if (data.users.find(item => item.email === email)) { throw HTTPError(400, 'Email already in use.'); }
   // Password length
   if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
@@ -182,8 +180,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   const permission = (newUserId === 1) ? 1 : 2;
 
   // Hash password
-  const salt = bcrypt.genSaltSync(saltRounds);
-  const passwordHash = bcrypt.hashSync(password, salt);
+  const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
   // Profile image
   const PORT: number = parseInt(process.env.PORT || config.port);
@@ -208,9 +205,6 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
     authUserId: newUser.uId,
   };
 };
-
-
-
 
 /**
   * Given a valid token for a user, logs them out by deactivating their token
