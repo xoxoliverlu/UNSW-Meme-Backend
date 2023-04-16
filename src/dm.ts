@@ -10,20 +10,24 @@ import { authRegisterV2 } from './auth';
  * @returns Object containing dmId
  */
 const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
+  console.log(`token : ${token}, uIds: ${uIds}`);
   const data = getData();
+
+  // Check for invalid and duplicate user IDs in uIds
+  const uniqueUserIds = new Set<number>();
+  console.log(data.users);
+  uIds.forEach((id) => {
+    const user = data.users.find((element) => element.uId === id);
+    console.log(uIds);
+    if (!user) throw HTTPError(400, "Invalid uId in uIds");
+    if (uniqueUserIds.has(id)) throw HTTPError(400, "Duplicate uId's in uIds");
+    uniqueUserIds.add(id);
+  });
 
   // Invalid token
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) throw HTTPError(403, "Invalid token");
 
-  // Check for invalid and duplicate user IDs in uIds
-  const uniqueUserIds = new Set<number>();
-  uIds.forEach((id) => {
-    const user = data.users.find((element) => element.uId === id);
-    if (!user) throw HTTPError(400, "Invalid uId in uIds");
-    if (uniqueUserIds.has(id)) throw HTTPError(400, "Duplicate uId's in uIds");
-    uniqueUserIds.add(id);
-  });
 
 
   // Increment lastDmId and create a new DM
