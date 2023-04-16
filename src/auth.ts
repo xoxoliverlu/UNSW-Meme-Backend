@@ -104,7 +104,6 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   // Check if email exists
   const user = data.users.find((item) => item.email === email);
   if (!user) { throw HTTPError(400, 'Email does not exist.'); }
-
   // Compare provided password with stored hashed password
   const isPasswordCorrect = bcrypt.compareSync(password, user.password);
   if (!isPasswordCorrect) { throw HTTPError(400, 'Incorrect password.'); }
