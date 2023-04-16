@@ -41,7 +41,6 @@ export function channelDetailsV2(token: string, channelId: number) {
   };
 }
 
-
 /**
  * Given an uId and a channelId, the function
  * adds the user to the channel if it is public.
@@ -184,7 +183,7 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
  * @returns {} - empty object on success
  * @returns {error: String} - error if user id and channelid are invalid
  */
-export function channelAddOwnerV1(
+export function channelAddOwnerV2(
   token: string,
   channelId: number,
   uId: number
@@ -194,7 +193,7 @@ export function channelAddOwnerV1(
   const user = data.tokens.find((item) => item.token === token);
 
   if (user === undefined) {
-    return { error: 'invalid token' };
+    return { error: 'token' };
   }
 
   const userInfo = data.users.find((element) => element.uId === user.uId);
@@ -240,7 +239,7 @@ export function channelAddOwnerV1(
  * @returns {} - empty object on success
  * @returns {error: String} - error if user id and channelid are invalid
  */
-export function channelRemoveOwnerV1(
+export function channelRemoveOwnerV2(
   token: string,
   channelId: number,
   uId: number
@@ -250,7 +249,7 @@ export function channelRemoveOwnerV1(
   const user = data.tokens.find((item) => item.token === token);
 
   if (user === undefined) {
-    return { error: 'invalid token' };
+    return { error: 'token' };
   }
 
   const userInfo = data.users.find((element) => element.uId === user.uId);
@@ -305,13 +304,13 @@ export function channelRemoveOwnerV1(
  * @returns {} - empty object on success
  * @returns {error: String} - error if token and channelid are invalid
  */
-export function channelLeaveV1(token: string, channelId: number) {
+export function channelLeaveV2(token: string, channelId: number) {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
   // valid token
   if (user === undefined) {
-    return { error: 'invalid token' };
+    return { error: 'token' };
   }
   const { uId: userId } = user;
   // valid channel

@@ -1,4 +1,3 @@
-import { channelRemoveOwnerV1 } from '../channel';
 import { requestAuthRegister, requestAuthLogin, requestChannelsCreate, requestChannelInvite, requestChannelAddOwner, requestChannelRemoveOwner, requestChannelDetails, requestClear } from '../requests';
 require('sync-request');
 
@@ -52,10 +51,10 @@ test('error token', () => {
   requestChannelAddOwner(token1, channelId, authUserId2);
 
   token2 += 'error';
-  const removeRes = requestChannelRemoveOwner(token2, channelId, authUserId1);
+  const res = requestChannelRemoveOwner(token2, channelId, authUserId1);
 
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+ 
+  expect(res).toEqual(403);
 });
 
 test('error userID', () => {
@@ -73,13 +72,13 @@ test('error userID', () => {
   requestChannelInvite(token1, channelId, authUserId2);
 
   requestChannelAddOwner(token1, channelId, authUserId2);
-  const removeRes = requestChannelRemoveOwner(
+  const res = requestChannelRemoveOwner(
     token2,
     channelId,
     authUserId1 + authUserId2
   );
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+
+  expect(res).toEqual(403);
 });
 
 test('error invalid channelID', () => {
@@ -97,13 +96,13 @@ test('error invalid channelID', () => {
   requestChannelInvite(token1, channelId, authUserId2);
 
   requestChannelAddOwner(token1, channelId, authUserId2);
-  const removeRes = requestChannelRemoveOwner(
+  const res = requestChannelRemoveOwner(
     token2,
     channelId + 1,
     authUserId1
   );
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+  
+  expect(res).toEqual(403);
 });
 
 test('error user not a part of channel ', () => {
@@ -118,10 +117,10 @@ test('error user not a part of channel ', () => {
 
   const { channelId } = channelCreateRes;
 
-  const removeRes = requestChannelRemoveOwner(token1, channelId, authUserId2);
+  const res = requestChannelRemoveOwner(token1, channelId, authUserId2);
 
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+ 
+  expect(res).toEqual(400);
 });
 
 test('error uId is not an owner ', () => {
@@ -137,9 +136,9 @@ test('error uId is not an owner ', () => {
   const { channelId } = channelCreateRes;
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const removeRes = requestChannelRemoveOwner(token1, channelId, authUserId2);
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+  const res = requestChannelRemoveOwner(token1, channelId, authUserId2);
+  
+  expect(res).toEqual(400);
 });
 
 test("error user doesn't have owner permission ", () => {
@@ -159,9 +158,9 @@ test("error user doesn't have owner permission ", () => {
   requestChannelInvite(token1, channelId, authUserId3);
 
   requestChannelAddOwner(token1, channelId, authUserId2);
-  const removeRes = requestChannelRemoveOwner(token3, channelId, authUserId1);
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+  const res = requestChannelRemoveOwner(token3, channelId, authUserId1);
+ 
+  expect(res).toEqual(403);
 });
 
 test('error uId is the only owner ', () => {
@@ -176,7 +175,7 @@ test('error uId is the only owner ', () => {
   const { channelId } = channelCreateRes;
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const removeRes = channelRemoveOwnerV1(token1, channelId, authUserId1);
-  const { error } = removeRes;
-  expect(error).toEqual(expect.any(String));
+  const res = requestChannelRemoveOwner(token1, channelId, authUserId1);
+
+  expect(res).toEqual(403);
 });

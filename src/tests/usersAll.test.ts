@@ -2,7 +2,7 @@ import {
   requestAuthRegister,
   requestUsersAll,
   requestClear,
-} from "../requests";
+} from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -12,59 +12,59 @@ afterAll(() => {
   requestClear();
 });
 
-test("Invalid token.", () => {
+test('Invalid token.', () => {
   const user1 = requestAuthRegister(
-    "fadyS@gmail.com",
-    "password",
-    "Fady",
-    "Sadek"
+    'fadyS@gmail.com',
+    'password',
+    'Fady',
+    'Sadek'
   );
   const usersAll = requestUsersAll(user1.token + 1);
   expect(usersAll).toEqual({ error: expect.any(String) });
 });
 
-test("Successful UsersAllV1 Test.", () => {
+test('Successful UsersAllV1 Test.', () => {
   const user1 = requestAuthRegister(
-    "fadyS@gmail.com",
-    "password",
-    "Fady",
-    "Sadek"
+    'fadyS@gmail.com',
+    'password',
+    'Fady',
+    'Sadek'
   );
   const user2 = requestAuthRegister(
-    "JohnP@gmail.com",
-    "123456",
-    "John",
-    "Paul"
+    'JohnP@gmail.com',
+    '123456',
+    'John',
+    'Paul'
   );
   const user3 = requestAuthRegister(
-    "SimonM@gmail.com",
-    "pass123",
-    "Simon",
-    "Minter"
+    'SimonM@gmail.com',
+    'pass123',
+    'Simon',
+    'Minter'
   );
   const usersAll = requestUsersAll(user1.token);
   expect(usersAll).toStrictEqual({
     users: [
       {
         uId: user1.authUserId,
-        email: "fadys@gmail.com",
-        nameFirst: "Fady",
-        nameLast: "Sadek",
-        handleStr: "fadysadek",
+        email: 'fadys@gmail.com',
+        nameFirst: 'Fady',
+        nameLast: 'Sadek',
+        handleStr: 'fadysadek',
       },
       {
         uId: user2.authUserId,
-        email: "johnp@gmail.com",
-        nameFirst: "John",
-        nameLast: "Paul",
-        handleStr: "johnpaul",
+        email: 'johnp@gmail.com',
+        nameFirst: 'John',
+        nameLast: 'Paul',
+        handleStr: 'johnpaul',
       },
       {
         uId: user3.authUserId,
-        email: "simonm@gmail.com",
-        nameFirst: "Simon",
-        nameLast: "Minter",
-        handleStr: "simonminter",
+        email: 'simonm@gmail.com',
+        nameFirst: 'Simon',
+        nameLast: 'Minter',
+        handleStr: 'simonminter',
       },
     ],
   });
