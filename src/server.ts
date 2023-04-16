@@ -47,14 +47,22 @@ const server = app.listen(PORT, HOST, () => {
 /****************
 *  Auth Routes  *
 ****************/
-app.post('/auth/register/v2', (req: Request, res: Response, next) => {
-  const { email, password, nameFirst, nameLast } = req.body;
-  res.json(authRegisterV2(email, password, nameFirst, nameLast));
+app.post('/auth/register/v3', (req: Request, res: Response, next) => {
+  try {
+    const { email, password, nameFirst, nameLast } = req.body;
+    res.json(authRegisterV2(email, password, nameFirst, nameLast));
+  } catch (err) {
+    next(err);
+  }
 });
 
-app.post('/auth/login/v2', (req: Request, res: Response, next) => {
-  const { email, password } = req.body;
-  res.json(authLoginV2(email, password));
+app.post('/auth/login/v3', (req: Request, res: Response, next) => {
+  try {
+    const { email, password } = req.body;
+    res.json(authLoginV2(email, password));
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response, next) => {
@@ -69,11 +77,11 @@ app.post('/channels/create/v3', (req: Request, res: Response, next) => {
   const { name, isPublic } = req.body;
   const token = req.header('token');
   const result = channelsCreateV3(token, name, isPublic);
-  const {error} = result;
-  if (error === 'user not found'){
+  const { error } = result;
+  if (error === 'user not found') {
     res.statusCode = 403;
   }
-  if (error === 'length'){
+  if (error === 'length') {
     res.statusCode = 400;
   }
   res.json(result);
@@ -82,8 +90,8 @@ app.post('/channels/create/v3', (req: Request, res: Response, next) => {
 app.get('/channels/list/v3', (req: Request, res: Response, next) => {
   const token = req.header('token');
   const result = channelsListV3(token);
-  const {error} = result;
-  if (error === 'token'){
+  const { error } = result;
+  if (error === 'token') {
     res.statusCode = 403;
   }
   res.json(result);
@@ -92,8 +100,8 @@ app.get('/channels/list/v3', (req: Request, res: Response, next) => {
 app.get('/channels/listall/v3', (req: Request, res: Response, next) => {
   const token = req.header('token');
   const result = channelsListAllV3(token);
-  const {error} = result;
-  if (error === 'token'){
+  const { error } = result;
+  if (error === 'token') {
     res.statusCode = 403;
   }
   res.json(result);
