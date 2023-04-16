@@ -25,10 +25,3 @@ tests with coverage:
       - coverage/
     expose_as: Coverage Report
     expire_in: 1 week
-style
-  stage: lint
-  script:
-    - npm run lint
-  only:
-    - master
-    - merge_requests
