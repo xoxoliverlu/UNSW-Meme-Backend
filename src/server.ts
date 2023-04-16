@@ -166,21 +166,7 @@ app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
   res.json(channelInviteV1(token, channelId, uId));
 });
  
-app.post('/channel/addowner/v2', (req: Request, res: Response, next) => {
-  const { channelId, uId } = req.body;
-  const token = req.header('token');
-  const result = channelAddOwnerV2(token, channelId, uId);
-  const {error} = result;
-  if (error === 'token' || error === 'This user does not have permission to add owners.'){
-    res.statusCode = 403;
-  }
-  if (
-    error === 'no channel found' ||
-    error === 'invalid uId' ||
-    error === 'user to be added is not a member of the channel' ||
-    error === 'user is already an owner'){
-    res.statusCode = 400;
-}
+
 app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
   try{
     const { channelId, uId } = req.body;
@@ -192,31 +178,15 @@ app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
 });
  
 app.post('/channel/removeowner/v2', (req: Request, res: Response, next) => {
-  const { channelId, uId } = req.body;
-  const token = req.header('token');
-  const result = channelRemoveOwnerV2(token,channelId,uId);
-  const {error} = result;
-  if (error === 'token' || error === 'This user does not have permission to add owners.'){
-    res.statusCode = 403;
-  }
-  if (
-    error === 'no channel found' ||
-    error === 'invalid uId' ||
-    error === 'user to be removed is not a member of the channel' ||
-    error === 'user is not an owner of this channel.' ||
-    error === 'user is the only owner of this channel.'){
-    res.statusCode = 400;
-}
-app.post('/channel/removeowner/v2', async (req: Request, res: Response, next) => {
-  try {
+  try{
     const { channelId, uId } = req.body;
     const token = req.header('token');
-    const result = await channelRemoveOwnerV2(token,channelId,uId);
-    res.json(result);
+    const result = channelRemoveOwnerV2(token,channelId,uId);
   } catch (e) {
-    next(e); 
+    next(e);
   }
 });
+
 
 app.post('/channel/leave/v2', async (req: Request, res: Response, next) => {
   try{
