@@ -4,17 +4,64 @@ import config from './config.json';
 import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
 import { v4 as uuidv4 } from 'uuid';
 
-// Return types
+const saltRounds = 10;
+
+// Return type(s)
 type authUserId = {
   token?: string;
   authUserId?: number;
   error?: string;
 };
-type tokenReturn = string;
-type handleReturn = string;
+
+/**
+ * Generates a unique token for the given user ID and stores it in the data object.
+ *
+ * @param {number} uId - The user ID for which the token should be generated.
+ * @returns {string} - The generated unique token.
+ */
+const generateToken = (uId: number): string => {
+  const data = getData();
+  // Generate unique token
+  const tokenString = uuidv4().toString();
+  // Add to dataset
+  data.tokens.push(
+    {
+      token: tokenString,
+      uId: uId
+    }
+  );
+  setData(data);
+  return tokenString;
+};
+
+/**
+ * Generates a unique handle for the given first and last name by converting
+ * the names to lowercase, removing non-alphanumeric characters, and appending
+ * a number if necessary.
+ *
+ * @param {string} - first name of the user
+ * @param {string} - last name of the user
+ *
+ * @param {string} nameFirst - The first name of the user.
+ * @param {string} nameLast - The last name of the user.
+ * @returns {string} - The generated unique handle.
+ */
+const generateHandle = (nameFirst: string, nameLast: string): string => {
+  const data = getData();
+  const baseHandle = (nameFirst + nameLast).toLowerCase().replace(/[^a-z0-9]/gi, '').slice(0, 20);
+
+  let newHandle = baseHandle;
+  let appendNumber = 0;
+
+  while (data.users.some(user => user.handleStr === newHandle)) {
+    newHandle = baseHandle + appendNumber;
+    appendNumber++;
+  }
+
+  return newHandle;
+};
 
 /**
   * Returns a unique authUserId value and token with a
@@ -117,8 +164,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Invalid email using validator package
   if (!validator.isEmail(email)) { throw HTTPError(400, 'Invalid Email'); }
   // Email already in use
-  const emailFound = data.users.find((item) => item.email === email);
-  if (emailFound) { throw HTTPError(400, 'Email already in use.'); }
+  if (data.users.find(item => item.email === email)) { throw HTTPError(400, 'Email already in use.'); }
   // Password length
   if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
@@ -134,8 +180,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   const permission = (newUserId === 1) ? 1 : 2;
 
   // Hash password
-  const salt = bcrypt.genSaltSync(saltRounds);
-  const passwordHash = bcrypt.hashSync(password, salt);
+  const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
 
   // Profile image
   const PORT: number = parseInt(process.env.PORT || config.port);
@@ -162,77 +207,6 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 };
 
 /**
- * Helper function - Generate a unique token for user with a valid userId.
- * Convert this token to a string and return
- *
- * @param {number} - authUserId of user
- *
- * @returns {string} - token unique to the user
- */
-const generateToken = (uId: number): tokenReturn => {
-  const data = getData();
-  // Generate unique token
-  const tokenNumber = uuidv4();
-  // Convert to string
-  const tokenString = tokenNumber.toString();
-  // Add to dataset
-  data.tokens.push(
-    {
-      token: tokenString,
-      uId: uId
-    }
-  );
-  setData(data);
-  return tokenString;
-};
-
-/**
- * Generate a unique handle string for user by converting
- * their name to lowercase and appending a digit if necessarry
- *
- * @param {string} - first name of the user
- * @param {string} - last name of the user
- *
- * @returns {string} - handleString unique to the user
- */
-const generateHandle = (nameFirst: string, nameLast: string): handleReturn => {
-  const data = getData();
-  // Create unique handle
-  const concatName = nameFirst.toLowerCase() + nameLast.toLowerCase();
-  // Replace alpha numeric characters
-  let alphaNumericStr = concatName.replace(/[^a-z0-9]/gi, '');
-  alphaNumericStr = alphaNumericStr.slice(0, 20);
-
-  // Check if someone already has this handle
-  let index = 0;
-  let counter = 0;
-  // the counter will increase every time the handlestr is different to an existing user's handlestr
-  // if the handlestr is the same, it resets to 0
-  // if loop is able to loop through all users with the handlestr being unique (counter = data.users.length), break loop
-  // then the handlestr is good to go
-  let appendNumber = -1;
-  // The number to append
-  let newHandle = alphaNumericStr;
-  while (true) {
-    // Check if looped through everything with no matches
-    if (counter === data.users.length) {
-      break;
-    }
-    // handleStr in use
-    if (data.users[index].handleStr === newHandle) {
-      counter = 0;
-      index = 0;
-      appendNumber++;
-      newHandle = alphaNumericStr + appendNumber;
-    } else {
-      counter++;
-      index++;
-    }
-  }
-  return newHandle;
-};
-
-/**
   * Given a valid token for a user, logs them out by deactivating their token
   *
   * @param {string} token - a string token unique to the user
@@ -245,11 +219,11 @@ const authLogoutV1 = (token: string) => {
   const data = getData();
   // Check for a valid token
   const auth = data.tokens.find(item => item.token === token);
-  if (auth === undefined) {
-    return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token. ');
   }
   // Delete token
-  data.tokens = data.tokens.filter((pair) => pair.token !== token);
+  data.tokens = data.tokens.filter((pair) => pair.token !== auth.token);
   setData(data);
   return {};
 };

@@ -64,9 +64,13 @@ app.post('/auth/login/v3', (req: Request, res: Response, next) => {
   }
 });
 
-app.post('/auth/logout/v1', (req: Request, res: Response, next) => {
-  const { token } = req.body;
-  res.json(authLogoutV1(token));
+app.post('/auth/logout/v2', (req: Request, res: Response, next) => {
+  try {
+    const token = req.headers.token as string;
+    res.json(authLogoutV1(token));
+  } catch (err) {
+    next(err);
+  }
 });
 
 /****************
@@ -248,7 +252,6 @@ app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
 ****************/
 app.post('/message/send/v1', (req: Request, res: Response, next) => {
   const { token, channelId, message } = req.body;
-  console.log('channelId passed in is :' + channelId);
   res.json(messageSendV1(token, channelId, message));
 });
 
