@@ -41,14 +41,17 @@ export const requestAuthRegister = (email: string, password: string, nameFirst: 
 export const requestAuthLogout = (token: string) => {
   const res3 = request(
     'POST',
-        `${url}:${port}` + '/auth/logout/v1',
+        `${url}:${port}` + '/auth/logout/v2',
         {
-          json: {
+          headers: {
             token
           }
         }
   );
-  return JSON.parse(res3.getBody() as string);
+  if (res3.statusCode === 200) {
+    return JSON.parse(res3.getBody() as string);
+  }
+  return res3.statusCode;
 };
 
 export const requestClear = () => {
