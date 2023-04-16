@@ -1,4 +1,5 @@
 import { getData, setData } from './dataStore';
+import HTTPError from 'http-errors';
 
 /**
  * Creates a new channel object and appends it to the channels section of the dataStore
@@ -13,21 +14,17 @@ import { getData, setData } from './dataStore';
 const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
   const data = getData();
   const user = data.tokens.find(item => item.token === token);
-  if (user === undefined) {
-    return { error: 'user not found' };
+  if (!user) {
+    throw HTTPError(403, 'Token invalid.');
   }
   const { uId: authUserId } = user;
   // Check that the length of name is more than 1 or less than 20 characters
   name = name.trim();
   if (name.length < 1) {
-    return {
-      error: 'length'
-    };
+    throw HTTPError(400, 'Length');
   }
   if (name.length > 20) {
-    return {
-      error: 'length'
-    };
+    throw HTTPError(400, 'Length');
   }
 
   // Assign channelId
@@ -62,8 +59,8 @@ const channelsListV3 = (token: string) => {
   const data = getData();
   // Check for valid token
   const user = data.tokens.find(item => item.token === token);
-  if (user === undefined) {
-    return { error: 'token' };
+  if (!user) {
+    throw HTTPError(403, 'Email does not exist.');
   }
   const { uId: authUserId } = user;
   const associatedChannels = [];
@@ -91,8 +88,8 @@ const channelsListAllV3 = (token: string) => {
   const data = getData();
   // Invalid token
   const user = data.tokens.find(item => item.token === token);
-  if (user === undefined) {
-    return { error: 'token' };
+  if (!user) {
+    throw HTTPError(403, 'Email does not exist.');
   }
 
   const result = data.channels.map(channel => {
