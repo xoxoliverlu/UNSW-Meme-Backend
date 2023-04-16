@@ -66,10 +66,12 @@ export const requestClear = () => {
 export const requestDmCreate = (token: string, uIds: number[]) => {
   const res5 = request(
     'POST',
-        `${url}:${port}` + '/dm/create/v1',
+        `${url}:${port}` + '/dm/create/v2',
         {
+          headers: {
+            token: token
+          },
           json: {
-            token,
             uIds
           }
         }
