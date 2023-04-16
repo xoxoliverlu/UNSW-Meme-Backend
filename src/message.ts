@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { Message, Channel, DM } from './interfaces';
+import HTTPError from 'http-errors';
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -11,7 +12,7 @@ import { Message, Channel, DM } from './interfaces';
 export function messageSendV1(token: string, channelId: number, message: string) {
   const data = getData();
   const user = data.tokens.find((u) => u.token === token);
-  if (!user) throw HTTPError(403, 'Token Invalid');
+  if (!user) throw HTTPError(403, 'token');
   const { uId } = user;
   // checks if channelId is valid
   // if not returns error
@@ -55,8 +56,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
 
   // Error checking
   if (!user) {
-    return { error: 'Token invalid' };
-  }
+    throw HTTPError (404, 'token')
   // checks whether or not dmId is valid
   const uId = user.uId;
   if (!dm) {
@@ -87,6 +87,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   setData(data);
 
   return { messageId };
+}
 }
 /**
  * Given a message, update its text with new text.
@@ -250,9 +251,7 @@ export function messageShareV1(token: string, ogMessageId: number, message: stri
   //const hash = require('object-hash');
   //token = hash({ string: token });
   const indexUser = data.users.findIndex((u) => u.token === token);
-  if (indexUser < 0) {
-    (403, 'Token invalid');
-  }
+  if (indexUser < 0) throw HTTPError(403, 'Token invalid');
   const authUserId = data.users[indexUser].authUserId;
 
   const indexChannelToShare = data.channels.findIndex((c) => c.channelId === channelId);

@@ -212,13 +212,38 @@ app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
   res.json(dmLeaveV1(token, dmId));
 });
 
+app.get('/dm/messages/v1', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  const dmId = parseInt(req.query.dmId as string);
+  const start = parseInt(req.query.start as string);
+  const result = dmMessagesV1(token, dmId, start);
+  const {error} = result; 
+  if(error === 'token' || 'user is not a member of the DM') {
+    res.statusCode = 403;
+  }
+  if (error === 'invalid dmId' || 'dmId in dmmessages') {
+    res.statusCode = 400;
+  }
+  res.json(result);
+
+});
+
 /****************
 *  Messages Routes  *
 ****************/
 app.post('/message/send/v1', (req: Request, res: Response, next) => {
-  const { token, channelId, message } = req.body;
-  console.log('channelId passed in is :' + channelId);
+  const { channelId, message } = req.body;
+  const token = req.header('token');
+  const result = messageSendV1(token, channelId, message);
   res.json(messageSendV1(token, channelId, message));
+  const {error} = result;
+  if (error === 'token' || 'User is not part of the channel') {
+    res.statusCode = 403;
+  }
+  if (error === 'Message cannot be empty' 
+  || 'Message is greater than 1000 characters') {
+    res.statusCode = 400;
+  }
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response, next) => {
@@ -267,9 +292,4 @@ app.delete('/message/remove/v1', (req: Request, res: Response, next) => {
   res.json(result);
 });
 
-app.get('/dm/messages/v1', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  const dmId = parseInt(req.query.dmId as string);
-  const start = parseInt(req.query.start as string);
-  res.json(dmMessagesV1(token, dmId, start));
-});
+

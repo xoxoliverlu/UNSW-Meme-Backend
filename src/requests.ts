@@ -412,9 +412,11 @@ export const requestMessageSend = (token: string, channelId: number, message: st
         `${url}:${port}` + '/message/send/v1',
         {
           json: {
-            token: token,
             channelId: channelId,
             message: message
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -430,9 +432,11 @@ export const requestDmMessages = (token: string, dmId: number, start: number) =>
         `${url}:${port}` + '/dm/messages/v1',
         {
           qs: {
-            token: token,
             dmId: dmId,
             start: start
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -448,9 +452,11 @@ export const requestMessageSendDm = (token: string, dmId: number, message: strin
         `${url}:${port}` + '/message/senddm/v1',
         {
           json: {
-            token: token,
             dmId: dmId,
             message: message
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -462,8 +468,8 @@ export const requestMessageSendDm = (token: string, dmId: number, message: strin
 
 export const requestMessageRemove = (token: string, messageId: number) => {
   const res = request(
-    'DELETE',
-        `${url}:${port}` + '/message/remove/v1',
+    'GET',
+        `${url}:${port}` + '/channel/messages/v2',
         {
           qs: {
             messageId: messageId
@@ -498,3 +504,26 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   }
   return res.statusCode;
 };
+
+export const requestMessageShare = (ogMessageId: string, channelId: number, message: string, dmId: number) => {
+  const res = request(
+    'PUT',
+        `${url}:${port}` + '/message/edit/v1',
+        {
+          json: {
+            ogMessageId: messageId,
+            message: message,
+            channelId: channelId,
+            dmId: dmId
+          },
+          headers:{
+            token: token
+          }
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
+

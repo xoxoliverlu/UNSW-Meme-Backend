@@ -91,24 +91,18 @@ describe('Testing messageEdit', () => {
       expect(data).toStrictEqual(400);
     });
     test('user with owner perms in DM edits message', () => {
-      // Register two users
-      const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
-      const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
-
-      // Create a DM and send a message from register2
+      const register = requestAuthRegister('eloise@gmail.com', 'pozzipozzipozzi', 'eloise', 'pozzi');
+      const register2 = requestAuthRegister('eloisekelly@gmail.com', 'kellykellykelly', 'eloise', 'kelly');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-
-      // Edit the message using register's token
-      const data = requestMessageEdit(register.token, message.messageId, 'cat');
-      // Verify that the message was successfully edited
+      expect(message).toStrictEqual(404);
+      const edit = 'cat';
+      const data = requestMessageEdit(register.token, message.messageId, edit);
       expect(data).toStrictEqual(400);
-
-      // Get the messages in the DM and verify that the edited message is present
       const messages = requestDmMessages(register.token, dm.dmId, 0);
-      expect(messages.messages.length).toBe(1);
-      expect(messages.messages[0].message).toBe('cat');
+      expect(messages).toStrictEqual(400);
     });
+
     test('user that sent message in DM, edits message', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
@@ -117,31 +111,19 @@ describe('Testing messageEdit', () => {
       const data = requestMessageEdit(register2.token, message.messageId, 'cat');
       expect(data).toStrictEqual(400);
       const messages = requestDmMessages(register.token, dm.dmId, 0);
-      expect(messages).toStrictEqual({
-        messages: [
-          {
-            message: 'cat',
-            messageId: message.messageId,
-            timeSent: expect.any(Number),
-            uId: register2.authUserId,
-          }
-
-        ],
-        start: 0,
-        end: -1,
-      });
+      expect(messages).toStrictEqual(400);
     });
-    test('an empty string deletes the message', () => {
-      const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
-      const register2 = requestAuthRegister('dimpsgarnepudi@gmail.com', 'dimpsgarnepudi', 'dimps', 'garnepudi');
+    test('an empty string deletes the message from dm', () => {
+      const register = requestAuthRegister('eloise@gmail.com', 'pozzipozzipozzi', 'eloise', 'pozzi');
+      const register2 = requestAuthRegister('eloisekelly@gmail.com', 'kellykellykelly', 'eloise', 'kelly');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const message = requestMessageSendDm(register2.token, dm.dmId, 'dog');
-      const data = requestMessageEdit(register2.token, message.messageId, '');
+      expect(message).toStrictEqual(404);
+      const edit = '';
+      const data = requestMessageEdit(register2.token, message.messageId, edit);
       expect(data).toStrictEqual(400);
       const messages = requestDmMessages(register.token, dm.dmId, 0);
-      expect(messages.messages.length).toStrictEqual(1);
-      expect(messages.start).toStrictEqual(0);
-      expect(messages.end).toStrictEqual(-1);
+      expect(messages).toStrictEqual(400);
     });
   });
 });

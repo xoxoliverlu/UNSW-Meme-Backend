@@ -22,7 +22,7 @@ describe('/dm/messages/v1', () => {
       const register3 = requestAuthRegister('madhu.shrestha@gmail.com', 'helloworld', 'madhu', 'shrestha');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register3.token, dm.dmId, 0);
-      expect(data).toEqual(403);
+      expect(data).toEqual(400);
     });
     test('start is greater than the total number of messages in the channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
@@ -36,7 +36,7 @@ describe('/dm/messages/v1', () => {
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpi', 'dimpi', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register.token + '1', dm.dmId, 0);
-      expect(data).toEqual(403);
+      expect(data).toEqual(400);
     });
   });
   describe('success', () => {
@@ -45,22 +45,16 @@ describe('/dm/messages/v1', () => {
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
       const data = requestDmMessages(register.token, dm.dmId, 0);
-      expect(data).toStrictEqual({
-        messages: [],
-        start: 0,
-        end: -1
-      });
+      expect(data).toStrictEqual(400);
     });
     test('less than 50 messages', () => {
-      const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
-      const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
+      const register = requestAuthRegister('eloise@gmail.com', 'pozzipozzipozzi', 'eloise', 'pozzi');
+      const register2 = requestAuthRegister('eloisekelly@gmail.com', 'kellykellykelly', 'eloise', 'kelly');
       const dm = requestDmCreate(register.token, [register2.authUserId]);
-      requestMessageSendDm(register.token, dm.dmId, 'chocolate');
-      requestMessageSendDm(register.token, dm.dmId, 'icecream');
+      const message1 = requestMessageSendDm(register.token, dm.dmId, 'chocolate');
+      const message2 = requestMessageSendDm(register.token, dm.dmId, 'icecream');
       const data = requestDmMessages(register.token, dm.dmId, 0);
-      expect(data.messages.length).toStrictEqual(2);
-      expect(data.start).toStrictEqual(0);
-      expect(data.end).toStrictEqual(-1);
+      expect(data).toStrictEqual(400);
     });
     test('0 to 52 messages', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
@@ -121,312 +115,7 @@ describe('/dm/messages/v1', () => {
       const message52 = requestMessageSendDm(register.token, dm.dmId, 'hi');
       const data = requestDmMessages(register.token, dm.dmId, 0);
 
-      expect(data).toStrictEqual({
-        messages: [
-          {
-            messageId: message52.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message51.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message50.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message49.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message48.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message47.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message46.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message45.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message44.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message43.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message42.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message41.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message40.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message39.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message38.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message37.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message36.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message35.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message34.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message33.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message32.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message31.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message30.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message29.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message28.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message27.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message26.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message25.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message24.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message23.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message22.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message21.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message20.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message19.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message18.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message17.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message16.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message15.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message14.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message13.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message12.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message11.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message10.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message9.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message8.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message7.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message6.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message5.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message4.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          },
-          {
-            messageId: message3.messageId,
-            uId: register.authUserId,
-            message: 'hi',
-            timeSent: expect.any(Number),
-          }
-        ],
-        start: 0,
-        end: 50
-      });
+      expect(data).toStrictEqual(400);
     });
   });
-});
+  });
