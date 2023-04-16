@@ -1,53 +1,48 @@
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
 import { memberObject } from './helper';
-
+import HTTPError from 'http-errors';
+import { authRegisterV2 } from './auth';
 /**
  * Creates a Dm channel
  * @param token - user identifier
  * @param uIds - array of users dm is directed to
- * @returns dmId
+ * @returns Object containing dmId
  */
-const dmCreateV1 = (token: string, uIds: number[]) => {
+const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
+  console.log(`token : ${token}, uIds: ${uIds}`);
   const data = getData();
-  // Error check: invalid uId in uIds
-  let userInfo;
-  for (const id of uIds) {
-    userInfo = data.users.find((element) => element.uId === id);
-    if (userInfo === undefined) return { error: 'Invalid uId' };
-  }
 
-  // Duplicate uId in uIds
-  const unique = Array.from(new Set(uIds));
-  if (uIds.length !== unique.length) {
-    return {
-      error: 'Duplicate uId in uIds'
-    };
-  }
+  // Check for invalid and duplicate user IDs in uIds
+  const uniqueUserIds = new Set<number>();
+  console.log(data.users);
+  uIds.forEach((id) => {
+    const user = data.users.find((element) => element.uId === id);
+    console.log(uIds);
+    if (!user) throw HTTPError(400, "Invalid uId in uIds");
+    if (uniqueUserIds.has(id)) throw HTTPError(400, "Duplicate uId's in uIds");
+    uniqueUserIds.add(id);
+  });
 
+  // Invalid token
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) throw HTTPError(403, "Invalid token");
 
-  // Create dmId
-  const newId = data.lastDmId + 1;
-  data.lastDmId = newId;
+
+
+  // Increment lastDmId and create a new DM
+  const newId = ++data.lastDmId;
+
   // Create name of dm
   // Create an array with ownerId and all uIds
-  const arrayAll = uIds.slice();
-  arrayAll.push(auth.uId);
+  const allUserIds = [...uIds, auth.uId];
 
-  // Convert to handelStr
-  const handleStrArr = [];
-  for (const id of arrayAll) {
-    for (const user of data.users) {
-      if (id === user.uId) {
-        handleStrArr.push(user.handleStr);
-      }
-    }
-  }
-  handleStrArr.sort();
-  // Add commas between all handle strings
-  const name = handleStrArr.join(', ');
+  // Create the name by sorting and joining user handles
+  const name = allUserIds
+    .map((id) => data.users.find((user) => user.uId === id).handleStr)
+    .sort()
+    .join(', ');
+
   const dm = {
     dmId: newId,
     name: name,
@@ -261,3 +256,23 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
 };
 
 export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 };
+
+// const user = authRegisterV2('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
+// const user2 = authRegisterV2('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
+// const user3 = authRegisterV2('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+// const uIds = [user2.authUserId, user3.authUserId];
+// const dm = dmCreateV1('Invalid Token', uIds);
+// console.log(dm);
+
+// const user = authRegisterV2('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
+// const user2 = authRegisterV2('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
+// const user3 = authRegisterV2('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+// const uIds = [user2.authUserId + 4, user3.authUserId];
+// const dm = dmCreateV1(user.token, uIds);
+// console.log(dm);
+// const uIds2 = [user2.authUserId, user2.authUserId, user3.authUserId];
+// const dm2 = dmCreateV1(user.token, uIds2);
+// console.log(dm2);
+// const uIds3 = [user2.authUserId, user3.authUserId];
+// const dm3 = dmCreateV1('Invalid Token', uIds3);
+// console.log(dm3);

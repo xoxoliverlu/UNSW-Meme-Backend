@@ -66,10 +66,12 @@ export const requestClear = () => {
 export const requestDmCreate = (token: string, uIds: number[]) => {
   const res5 = request(
     'POST',
-        `${url}:${port}` + '/dm/create/v1',
+        `${url}:${port}` + '/dm/create/v2',
         {
+          headers: {
+            token: token
+          },
           json: {
-            token,
             uIds
           }
         }
@@ -509,3 +511,55 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   }
   return res.statusCode;
 };
+
+export const requestSearch = (token: string, queryStr: string) => {
+  const res = request(
+    'GET',
+        `${url}:${port}` + '/search/v1',
+        {
+          qs: {
+            queryStr: queryStr
+          },
+          headers: {
+            token: token
+          }
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}
+
+export const requestPwResetRequest = (email: string) => {
+  const res = request(
+    'POST',
+        `${url}:${port}` + '/auth/passwordreset/request/v1',
+        {
+          json: {
+            email: email
+          },
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}
+
+export const requestPwReset = (resetCode:string, newPassword: string) => {
+  const res = request(
+    'POST',
+        `${url}:${port}` + '/auth/passwordreset/reset/v1',
+        {
+          json: {
+            resetCode,
+            newPassword,
+          },
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}

@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { memberObject } from './helper';
+import HTTPError from 'http-errors';
 /**
  * Given an uId and a channelId, the function
  * prints out basic information about the channel.
@@ -192,36 +193,36 @@ export function channelAddOwnerV2(
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
-  if (user === undefined) {
-    return { error: 'token' };
+  if (!user) {
+    throw HTTPError(403, 'Email does not exist.');
   }
 
   const userInfo = data.users.find((element) => element.uId === user.uId);
   // check for channel
   const channel = data.channels.find((item) => item.channelId === channelId);
-  if (channel === undefined) {
-    return { error: 'no channel found' };
+  if (!channel) {
+    throw HTTPError(400, 'Channel does not exist.');
   }
 
   // Valid uId
   const ownerAddedData = data.users.find((item) => item.uId === uId);
-  if (ownerAddedData === undefined) {
-    return { error: 'invalid uId' };
+  if (!ownerAddedData) {
+    throw HTTPError(400, 'user to be added does not exist.');
   }
 
   const { uId: ownerAdded } = ownerAddedData;
 
   if (!channel.allMembers.includes(ownerAdded)) {
-    return { error: 'user to be added is not a member of the channel' };
+    throw HTTPError(400, 'This user is not in this channel.');
   }
 
   if (channel.ownerMembers.includes(ownerAdded)) {
-    return { error: 'user is already an owner' };
+    throw HTTPError(400, 'This user is already an owner');
   }
 
   if (!channel.ownerMembers.includes(user.uId)) {
     if (userInfo.globalPerm === 2) {
-      return { error: 'This user does not have permission to add owners.' };
+      throw HTTPError(403, 'This user does not have permission.');
     }
   }
 
@@ -248,42 +249,42 @@ export function channelRemoveOwnerV2(
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
 
-  if (user === undefined) {
-    return { error: 'token' };
+  if (!user) {
+    throw HTTPError(403, 'Email does not exist.');
   }
 
   const userInfo = data.users.find((element) => element.uId === user.uId);
   // Channel error check
   const channel = data.channels.find((item) => item.channelId === channelId);
-  if (channel === undefined) {
-    return { error: 'no channel found' };
+  if (!channel) {
+    throw HTTPError(400, 'Channel does not exist.');
   }
 
   // Error checking
   const ownerRemovedData = data.users.find((item) => item.uId === uId);
-  if (ownerRemovedData === undefined) {
-    return { error: 'invalid uId' };
+  if (!ownerRemovedData) {
+    throw HTTPError(400, 'owner to be removed does not exist');
   }
   const { uId: ownerRemoved } = ownerRemovedData;
 
   if (!channel.allMembers.includes(ownerRemoved)) {
-    return { error: 'user to be removed is not a member of the channel' };
+    throw HTTPError(400, 'owner to be removed does not exist');
   }
 
   if (!channel.ownerMembers.includes(ownerRemoved)) {
-    return { error: 'user is not an owner of this channel.' };
+    throw HTTPError(400, 'owner is not part of channel');
   }
 
   if (
     channel.ownerMembers.includes(ownerRemoved) &&
     channel.ownerMembers.length === 1
   ) {
-    return { error: 'user is the only owner of this channel.' };
+    throw HTTPError(400, 'user is the only owner');
   }
 
   if (!channel.ownerMembers.includes(uId)) {
     if (userInfo.globalPerm === 2) {
-      return { error: 'This user does not have permission to remove owners.' };
+      throw HTTPError(403, 'user no permission');
     }
   }
 
@@ -309,18 +310,18 @@ export function channelLeaveV2(token: string, channelId: number) {
   const user = data.tokens.find((item) => item.token === token);
 
   // valid token
-  if (user === undefined) {
-    return { error: 'token' };
+  if (!user) {
+    throw HTTPError(403, 'Error token');
   }
   const { uId: userId } = user;
   // valid channel
   const channel = data.channels.find((item) => item.channelId === channelId);
-  if (channel === undefined) {
-    return { error: 'no channel found' };
+  if (!channel) {
+    throw HTTPError(400, 'no channel found');
   }
 
   if (!channel.allMembers.includes(userId)) {
-    return { error: 'user to be remove is not a member of the channel' };
+    throw HTTPError(403, 'user not part of channel');
   }
 
   const index = channel.ownerMembers.indexOf(userId);
