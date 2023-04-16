@@ -176,9 +176,9 @@ app.post('/channel/addowner/v2', (req: Request, res: Response, next) => {
     res.statusCode = 403;
   }
   if (
-    error === 'no channel found' || 
-    error === 'invalid uId' || 
-    error === 'user to be added is not a member of the channel' || 
+    error === 'no channel found' ||
+    error === 'invalid uId' ||
+    error === 'user to be added is not a member of the channel' ||
     error === 'user is already an owner'){
     res.statusCode = 400;
   }
@@ -194,9 +194,9 @@ app.post('/channel/removeowner/v2', (req: Request, res: Response, next) => {
     res.statusCode = 403;
   }
   if (
-    error === 'no channel found' || 
-    error === 'invalid uId' || 
-    error === 'user to be removed is not a member of the channel' || 
+    error === 'no channel found' ||
+    error === 'invalid uId' ||
+    error === 'user to be removed is not a member of the channel' ||
     error === 'user is not an owner of this channel.' ||
     error === 'user is the only owner of this channel.'){
     res.statusCode = 400;
@@ -221,9 +221,14 @@ app.post('/channel/leave/v2', (req: Request, res: Response, next) => {
 /****************
 *  DM Routes  *
 ****************/
-app.post('/dm/create/v1', (req: Request, res: Response, next) => {
-  const { token, uIds } = req.body;
-  res.json(dmCreateV1(token, uIds));
+app.post('/dm/create/v2', (req: Request, res: Response, next) => {
+  try {
+    const token = req.headers.token as string;
+    const { uIds } = req.body;
+    res.json(dmCreateV1(token, uIds));
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get('/dm/list/v1', (req: Request, res: Response, next) => {
