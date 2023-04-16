@@ -87,15 +87,12 @@ const authLoginV1 = (email: string, password: string): authUserId => {
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   // Iteration 1
   const register = authRegisterV1(email, password, nameFirst, nameLast);
-  if ('authUserId' in register) {
-    const token = generateToken(register.authUserId);
-    return {
-      token: token,
-      authUserId: register.authUserId,
-    };
-  }
-  // Return error
-  return register;
+  const token = generateToken(register.authUserId);
+  return {
+    token: token,
+    authUserId: register.authUserId,
+  };
+
 };
 
 /**
