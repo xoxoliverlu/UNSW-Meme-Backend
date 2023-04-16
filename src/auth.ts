@@ -1,5 +1,10 @@
 import { getData, setData } from './dataStore';
+import { Notif } from './interfaces';
+import config from './config.json';
 import validator from 'validator';
+import HTTPError from 'http-errors';
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 import { v4 as uuidv4 } from 'uuid';
 
 // Return types
@@ -10,6 +15,7 @@ type authUserId = {
 };
 type tokenReturn = string;
 type handleReturn = string;
+
 /**
   * Returns a unique authUserId value and token with a
   * given registerd user email and password
@@ -80,15 +86,11 @@ const authLoginV1 = (email: string, password: string): authUserId => {
 const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   // Iteration 1
   const register = authRegisterV1(email, password, nameFirst, nameLast);
-  if ('authUserId' in register) {
-    const token = generateToken(register.authUserId);
-    return {
-      token: token,
-      authUserId: register.authUserId,
-    };
-  }
-  // Return error
-  return register;
+  const token = generateToken(register.authUserId);
+  return {
+    token: token,
+    authUserId: register.authUserId,
+  };
 };
 
 /**
@@ -107,43 +109,24 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
 */
 const authRegisterV1 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const data = getData();
-  // Error checking
-  // Invalid email using validator package
+  // Conver email to lowercase
   email = email.toLowerCase();
-  if (!validator.isEmail(email)) {
-    return {
-      error: 'Invalid email',
-    };
-  }
-
-  // Email already in use
-  const emailFound = data.users.find((item) => item.email === email);
-  if (emailFound !== undefined) {
-    return { error: 'Email already in use' };
-  }
-
   // Eliminate white spaces in parameters
   password = password.trim();
   nameFirst = nameFirst.trim();
   nameLast = nameLast.trim();
 
+  // Error checking
+  // Invalid email using validator package
+  if (!validator.isEmail(email)) { throw HTTPError(400, 'Invalid Email'); }
+  // Email already in use
+  const emailFound = data.users.find((item) => item.email === email);
+  if (emailFound) { throw HTTPError(400, 'Email already in use.'); }
   // Password length
-  if (password.length < 6) {
-    return {
-      error: 'Password length less than 6 characters',
-    };
-  }
+  if (password.length < 6) { throw HTTPError(400, 'Password length less than 6 characters'); }
   // Length of name
-  if (nameFirst.length < 1 || nameLast.length < 1) {
-    return {
-      error: 'First name or last name is too short',
-    };
-  }
-  if (nameFirst.length > 50 || nameLast.length > 50) {
-    return {
-      error: 'First name or last name is too long',
-    };
-  }
+  if (nameFirst.length < 1 || nameLast.length < 1) { throw HTTPError(400, 'First name or last name is too short'); }
+  if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError(400, 'First name or last name is too long'); }
 
   // Generate handle
   const newHandle = generateHandle(nameFirst, nameLast);
@@ -153,15 +136,29 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Permissions !!!
   const permission = (newUserId === 1) ? 1 : 2;
 
+  let passwordHash = password;
+  // Hash password
+  bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
+    bcrypt.hash(password, salt, function(err: any, hash: any) {
+      passwordHash = hash;
+    });
+  });
+
+  // Profile image
+  const PORT: number = parseInt(process.env.PORT || config.port);
+  const HOST: string = process.env.IP || 'localhost';
+
   // Create new user Object
   const newUser = {
     uId: newUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
-    password: password,
+    password: passwordHash,
     handleStr: newHandle,
     globalPerm: permission,
+    notification: [] as Notif[],
+    profileImgUrl: `http://${HOST}:${PORT}/img/default.jpg`,
   };
   // Update data
   data.users.push(newUser);
@@ -182,7 +179,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
 const generateToken = (uId: number): tokenReturn => {
   const data = getData();
   // Generate unique token
-  const tokenNumber = uuidv4();  
+  const tokenNumber = uuidv4();
   // Convert to string
   const tokenString = tokenNumber.toString();
   // Add to dataset
@@ -265,3 +262,7 @@ const authLogoutV1 = (token: string) => {
 };
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };
+
+// const register1 = authRegisterV2('alice.smith@gmail.com', 'password', 'Alice', ' ');
+// const register2 = authRegisterV2('bob.langford@gmail.com', '123456', 'Bob', 'ABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyz');
+// console.log(register1);

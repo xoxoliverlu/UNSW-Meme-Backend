@@ -44,7 +44,6 @@ export interface DataStore {
     lastAuthUserId: number;
     lastChannelId: number;
     lastMessageId: number,
-    lastToken: number;
     dms: DM[],
     lastDmId: number,
 }
@@ -55,4 +54,10 @@ export interface Profile {
     nameLast: string;
     email: string;
     handleStr: string;
+}
+
+export interface Notif {
+    channelId: number;
+    dmId: number;
+    notificationMessage: string;
 }
