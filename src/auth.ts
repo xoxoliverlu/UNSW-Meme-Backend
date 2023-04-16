@@ -220,7 +220,7 @@ const authLogoutV1 = (token: string) => {
   // Check for a valid token
   const auth = data.tokens.find(item => item.token === token);
   if (!auth) {
-    throw HTTPError(403, "Invalid Token. ");
+    throw HTTPError(403, 'Invalid Token. ');
   }
   // Delete token
   data.tokens = data.tokens.filter((pair) => pair.token !== auth.token);
