@@ -252,17 +252,14 @@ const authLogoutV1 = (token: string) => {
   const data = getData();
   // Check for a valid token
   const auth = data.tokens.find(item => item.token === token);
-  if (auth === undefined) {
-    return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, "Invalid Token. ");
   }
   // Delete token
-  data.tokens = data.tokens.filter((pair) => pair.token !== token);
+  data.tokens = data.tokens.filter((pair) => pair.token !== auth.token);
   setData(data);
   return {};
 };
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };
 
-// const register1 = authRegisterV2('alice.smith@gmail.com', 'password', 'Alice', ' ');
-// const register2 = authRegisterV2('bob.langford@gmail.com', '123456', 'Bob', 'ABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyzABCDEFGhijklmnopqrstuvwxyz');
-// console.log(register1);
