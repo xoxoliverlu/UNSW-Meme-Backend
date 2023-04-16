@@ -43,8 +43,7 @@ export interface DataStore {
     tokens: TokenPair[];
     lastAuthUserId: number;
     lastChannelId: number;
-    lastMessageId: number,
-    lastToken: number;
+    lastMessageId: number, 
     dms: DM[],
     lastDmId: number,
 }
