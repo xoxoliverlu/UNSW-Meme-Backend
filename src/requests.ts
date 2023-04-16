@@ -22,7 +22,7 @@ export const requestAuthLogin = (email: string, password: string) => {
 export const requestAuthRegister = (email: string, password: string, nameFirst: string, nameLast: string) => {
   const res1 = request(
     'POST',
-        `${url}:${port}` + '/auth/register/v2',
+        `${url}:${port}` + '/auth/register/v3',
         {
           json: {
             email,

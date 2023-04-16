@@ -47,12 +47,16 @@ const server = app.listen(PORT, HOST, () => {
 *  Auth Routes  *
 ****************/
 app.post('/auth/register/v3', (req: Request, res: Response, next) => {
-  try {
-    const { email, password, nameFirst, nameLast } = req.body;
-    res.json(authRegisterV2(email, password, nameFirst, nameLast));
- } catch (err) {
-    next(err);
- }
+  
+  const { email, password, nameFirst, nameLast } = req.body;
+  res.json(authRegisterV2(email, password, nameFirst, nameLast));
+    
+//     try {
+//     const { email, password, nameFirst, nameLast } = req.body;
+//     res.json(authRegisterV2(email, password, nameFirst, nameLast));
+//  } catch (err) {
+//     next(err);
+//  }
 });
 
 app.post('/auth/login/v2', (req: Request, res: Response, next) => {
