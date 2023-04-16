@@ -4,7 +4,6 @@ import { PwReset } from "./interfaces";
 export const pwResetReqeust = (email: string) => {
   const data = getData();
   const nodemailer = require("nodemailer");
-  console.log("find user")
 
   const target = data.users.find(user => user.email === email);
 
@@ -46,6 +45,28 @@ export const pwResetReqeust = (email: string) => {
   data.tokens.filter(item => item.uId === target.uId).forEach(item => data.tokens.splice(data.tokens.indexOf(item),1));
   data.pwReset.push({uId: target.uId, code: resetCode});
 
+  setData(data);
+  return {};
+}
+
+export const pwReset = (resetCode: string, newPassword: string) => {
+  const data = getData();
+  let target = data.pwReset.find((item: PwReset) => item.code === resetCode);
+  if (!target){
+    return {error: 'invalid reset code'};
+  }
+  if (newPassword.length < 6){
+    return {error: 'length'};
+  }
+  console.log('finding user');
+  let index = data.users.findIndex(item => item.uId == target.uId);
+  const bcrypt = require('bcrypt');
+  const saltRounds = 10;
+  bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
+    bcrypt.hash(newPassword, salt, function(err:any , hash: any) {
+      data.users[index].password = hash;
+    });
+  });
   setData(data);
   return {};
 }

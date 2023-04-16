@@ -59,10 +59,10 @@ export interface Profile {
  
 export interface PwReset {
     uId: number;
-    code: string; 
+    code: string;
 }
 export interface Notif {
     channelId: number;
     dmId: number;
-    notificationMessage: string; 
+    notificationMessage: string;
 }

@@ -521,13 +521,30 @@ export const requestSearch = (token: string, queryStr: string) => {
   return res.statusCode;
 }
 
-export const reqeustPwReset = (email: string) => {
+export const requestPwResetRequest = (email: string) => {
   const res = request(
     'POST',
         `${url}:${port}` + '/auth/passwordreset/request/v1',
         {
           json: {
             email: email
+          },
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}
+
+export const requestPwReset = (resetCode:string, newPassword: string) => {
+  const res = request(
+    'POST',
+        `${url}:${port}` + '/auth/passwordreset/reset/v1',
+        {
+          json: {
+            resetCode,
+            newPassword,
           },
         }
   );

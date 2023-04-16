@@ -1,4 +1,4 @@
-import { requestClear, requestAuthRegister, reqeustPwReset, requestChannelsCreate } from "../requests";
+import { requestClear, requestAuthRegister, requestPwResetRequest, requestChannelsCreate } from "../requests";
 
 beforeEach(() => {
     requestClear();
@@ -9,9 +9,9 @@ afterAll(() => {
 });
 
 
-test("successful reset request", () => {
+test("successful reset", () => {
     const {token} = requestAuthRegister('otonnokoo713@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-    reqeustPwReset('otonnokoo713@gmail.com');
+    requestPwResetRequest('otonnokoo713@gmail.com');
     const res = requestChannelsCreate(token, "errorToken", true)
     expect(res).toBe(403);
 })
