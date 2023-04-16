@@ -4,7 +4,7 @@ import { port, url } from './config.json';
 export const requestAuthLogin = (email: string, password: string) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/auth/login/v2',
+        `${url}:${port}` + '/auth/login/v3',
         {
           json: {
             email,
@@ -22,7 +22,7 @@ export const requestAuthLogin = (email: string, password: string) => {
 export const requestAuthRegister = (email: string, password: string, nameFirst: string, nameLast: string) => {
   const res1 = request(
     'POST',
-        `${url}:${port}` + '/auth/register/v2',
+        `${url}:${port}` + '/auth/register/v3',
         {
           json: {
             email,
@@ -41,14 +41,17 @@ export const requestAuthRegister = (email: string, password: string, nameFirst: 
 export const requestAuthLogout = (token: string) => {
   const res3 = request(
     'POST',
-        `${url}:${port}` + '/auth/logout/v1',
+        `${url}:${port}` + '/auth/logout/v2',
         {
-          json: {
+          headers: {
             token
           }
         }
   );
-  return JSON.parse(res3.getBody() as string);
+  if (res3.statusCode === 200) {
+    return JSON.parse(res3.getBody() as string);
+  }
+  return res3.statusCode;
 };
 
 export const requestClear = () => {
@@ -63,10 +66,12 @@ export const requestClear = () => {
 export const requestDmCreate = (token: string, uIds: number[]) => {
   const res5 = request(
     'POST',
-        `${url}:${port}` + '/dm/create/v1',
+        `${url}:${port}` + '/dm/create/v2',
         {
+          headers: {
+            token: token
+          },
           json: {
-            token,
             uIds
           }
         }
@@ -80,12 +85,14 @@ export const requestDmCreate = (token: string, uIds: number[]) => {
 export const requestChannelsCreate = (token: string, name: string, isPublic: boolean) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channels/create/v2',
+        `${url}:${port}` + '/channels/create/v3',
         {
           json: {
-            token: token,
             name: name,
             isPublic: isPublic
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -98,9 +105,9 @@ export const requestChannelsCreate = (token: string, name: string, isPublic: boo
 export const requestChannelsList = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channels/list/v2',
+        `${url}:${port}` + '/channels/list/v3',
         {
-          qs: {
+          headers: {
             token: token,
           }
         }
@@ -114,9 +121,9 @@ export const requestChannelsList = (token: string) => {
 export const requestChannelsListAll = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channels/listall/v2',
+        `${url}:${port}` + '/channels/listall/v3',
         {
-          qs: {
+          headers: {
             token: token,
           }
         }
@@ -249,12 +256,14 @@ export const requestUserProfileSetHandle = (token: string, handleStr: string) =>
 export const requestChannelAddOwner = (token: string, channelId: number, uId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/addowner/v1',
+        `${url}:${port}` + '/channel/addowner/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             uId: uId
+          },
+          headers:{
+            token: token
           }
         }
   );
@@ -287,12 +296,14 @@ export const requestChannelInvite = (token: string, channelId: number, uId: numb
 export const requestChannelRemoveOwner = (token: string, channelId: number, uId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/removeowner/v1',
+        `${url}:${port}` + '/channel/removeowner/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             uId: uId
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -305,11 +316,13 @@ export const requestChannelRemoveOwner = (token: string, channelId: number, uId:
 export const requestChannelLeave = (token: string, channelId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/leave/v1',
+        `${url}:${port}` + '/channel/leave/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
+          },
+          headers: {
+            token: token,
           }
         }
   );
@@ -505,6 +518,7 @@ export const requestMessageEdit = (token: string, messageId: number, message: st
   return res.statusCode;
 };
 
+<<<<<<< HEAD
 export const requestMessageShare = (ogMessageId: string, channelId: number, message: string, dmId: number) => {
   const res = request(
     'PUT',
@@ -517,6 +531,17 @@ export const requestMessageShare = (ogMessageId: string, channelId: number, mess
             dmId: dmId
           },
           headers:{
+=======
+export const requestSearch = (token: string, queryStr: string) => {
+  const res = request(
+    'GET',
+        `${url}:${port}` + '/search/v1',
+        {
+          qs: {
+            queryStr: queryStr
+          },
+          headers: {
+>>>>>>> e1a00a45130b8823bda7e4e2af22f213130bb693
             token: token
           }
         }
@@ -525,5 +550,42 @@ export const requestMessageShare = (ogMessageId: string, channelId: number, mess
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
+<<<<<<< HEAD
 };
 
+=======
+}
+
+export const requestPwResetRequest = (email: string) => {
+  const res = request(
+    'POST',
+        `${url}:${port}` + '/auth/passwordreset/request/v1',
+        {
+          json: {
+            email: email
+          },
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}
+
+export const requestPwReset = (resetCode:string, newPassword: string) => {
+  const res = request(
+    'POST',
+        `${url}:${port}` + '/auth/passwordreset/reset/v1',
+        {
+          json: {
+            resetCode,
+            newPassword,
+          },
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}
+>>>>>>> e1a00a45130b8823bda7e4e2af22f213130bb693

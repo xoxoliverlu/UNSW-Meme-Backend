@@ -38,13 +38,13 @@ export interface DM {
 }
 
 export interface DataStore {
+    pwReset: any;
     users: User[];
     channels: Channel[];
     tokens: TokenPair[];
     lastAuthUserId: number;
     lastChannelId: number;
     lastMessageId: number,
-    lastToken: number;
     dms: DM[],
     lastDmId: number,
 }
@@ -55,4 +55,14 @@ export interface Profile {
     nameLast: string;
     email: string;
     handleStr: string;
+}
+ 
+export interface PwReset {
+    uId: number;
+    code: string;
+}
+export interface Notif {
+    channelId: number;
+    dmId: number;
+    notificationMessage: string;
 }

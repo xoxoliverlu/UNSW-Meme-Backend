@@ -1,4 +1,5 @@
 import { getData, setData } from './dataStore';
+import HTTPError from 'http-errors';
 
 /**
  * Creates a new channel object and appends it to the channels section of the dataStore
@@ -10,24 +11,20 @@ import { getData, setData } from './dataStore';
  * @returns {object} - containing channelId
  * @returns {object} - error if name or token is invalid
  */
-const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
+const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
   const data = getData();
   const user = data.tokens.find(item => item.token === token);
-  if (user === undefined) {
-    return { error: 'user not found' };
+  if (!user) {
+    throw HTTPError(403, 'Token invalid.');
   }
   const { uId: authUserId } = user;
   // Check that the length of name is more than 1 or less than 20 characters
   name = name.trim();
   if (name.length < 1) {
-    return {
-      error: 'name length needs to be greater than 1'
-    };
+    throw HTTPError(400, 'Length');
   }
   if (name.length > 20) {
-    return {
-      error: 'name length needs ot be greater than 20'
-    };
+    throw HTTPError(400, 'Length');
   }
 
   // Assign channelId
@@ -58,12 +55,12 @@ const channelsCreateV2 = (token: string, name: string, isPublic: boolean) => {
  * @returns {object} - error if token is invalid.
  * @returns {object} - list of all channels user is a part of.
  */
-const channelsListV2 = (token: string) => {
+const channelsListV3 = (token: string) => {
   const data = getData();
   // Check for valid token
   const user = data.tokens.find(item => item.token === token);
-  if (user === undefined) {
-    return { error: 'user not found' };
+  if (!user) {
+    throw HTTPError(403, 'Email does not exist.');
   }
   const { uId: authUserId } = user;
   const associatedChannels = [];
@@ -87,12 +84,12 @@ const channelsListV2 = (token: string) => {
  * @returns {object} - error if token is invalid.
  * @returns {object} - list of all channels.
  */
-const channelsListAllV2 = (token: string) => {
+const channelsListAllV3 = (token: string) => {
   const data = getData();
   // Invalid token
   const user = data.tokens.find(item => item.token === token);
-  if (user === undefined) {
-    return { error: 'error' };
+  if (!user) {
+    throw HTTPError(403, 'Email does not exist.');
   }
 
   const result = data.channels.map(channel => {
@@ -104,4 +101,4 @@ const channelsListAllV2 = (token: string) => {
   };
 };
 
-export { channelsListAllV2, channelsListV2, channelsCreateV2 };
+export { channelsListAllV3, channelsListV3, channelsCreateV3 };

@@ -40,7 +40,6 @@ test('error token', () => {
   let { token } = loginRes;
   token += 'errorToken';
 
-  const channelsListRes = requestChannelsList(token);
-  const { error } = channelsListRes;
-  expect(error).toEqual(expect.any(String));
+  const res = requestChannelsList(token);
+  expect(res).toEqual(403);
 });
