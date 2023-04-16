@@ -41,7 +41,6 @@ export function channelDetailsV2(token: string, channelId: number) {
   };
 }
 
-
 /**
  * Given an uId and a channelId, the function
  * adds the user to the channel if it is public.
