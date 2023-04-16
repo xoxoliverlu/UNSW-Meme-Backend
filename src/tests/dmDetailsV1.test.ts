@@ -47,8 +47,8 @@ test('success channel details', () => {
         nameFirst: 'Oliver',
         nameLast: 'Lu',
       },
-    ],
-    );
+    ]
+  );
 });
 
 test('error invalid dm id', () => {
