@@ -57,10 +57,10 @@ app.post('/auth/register/v3', (req: Request, res: Response, next) => {
   }
 });
 
-app.post('/auth/login/v3', (req: Request, res: Response, next) => {
+app.post('/auth/login/v3', async (req: Request, res: Response, next) => {
   try {
     const { email, password } = req.body;
-    res.json(authLoginV2(email, password));
+    res.json(await authLoginV2(email, password));
   } catch (err) {
     next(err);
   }
@@ -78,38 +78,35 @@ app.post('/auth/logout/v2', (req: Request, res: Response, next) => {
 /****************
 *  Channels Routes  *
 ****************/
-app.post('/channels/create/v3', (req: Request, res: Response, next) => {
-  const { name, isPublic } = req.body;
-  const token = req.header('token');
-  const result = channelsCreateV3(token, name, isPublic);
-  const { error } = result;
-  if (error === 'user not found') {
-    res.statusCode = 403;
+app.post('/channels/create/v3', async (req: Request, res: Response, next) => {
+  try {
+    const { name, isPublic } = req.body;
+    const token = req.header('token');
+    const result = channelsCreateV3(token, name, isPublic);
+    res.json(result);
+  } catch (e) {
+    next(e);
   }
-  if (error === 'length') {
-    res.statusCode = 400;
-  }
-  res.json(result);
 });
 
-app.get('/channels/list/v3', (req: Request, res: Response, next) => {
-  const token = req.header('token');
-  const result = channelsListV3(token);
-  const { error } = result;
-  if (error === 'token') {
-    res.statusCode = 403;
+app.get('/channels/list/v3', async (req: Request, res: Response, next) => {
+  try{
+    const token = req.header('token');
+    const result = channelsListV3(token);
+    res.json(result);
+  } catch (e) {
+    next(e);
   }
-  res.json(result);
 });
 
-app.get('/channels/listall/v3', (req: Request, res: Response, next) => {
-  const token = req.header('token');
-  const result = channelsListAllV3(token);
-  const { error } = result;
-  if (error === 'token') {
-    res.statusCode = 403;
+app.get('/channels/listall/v3', async (req: Request, res: Response, next) => {
+  try{
+    const token = req.header('token');
+    const result = channelsListAllV3(token);
+    res.json(result);
+  } catch (e){
+    next(e)
   }
-  res.json(result);
 });
 /*****************
 *  Other Routes
@@ -169,55 +166,36 @@ app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
   res.json(channelInviteV1(token, channelId, uId));
 });
 
-app.post('/channel/addowner/v2', (req: Request, res: Response, next) => {
-  const { channelId, uId } = req.body;
-  const token = req.header('token');
-  const result = channelAddOwnerV2(token, channelId, uId);
-  const {error} = result;
-  if (error === 'token' || error === 'This user does not have permission to add owners.'){
-    res.statusCode = 403;
+app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
+  try{
+    const { channelId, uId } = req.body;
+    const token = req.header('token');
+    res.json(channelAddOwnerV2(token, channelId, uId));
+  } catch(e){
+    next(e);
   }
-  if (
-    error === 'no channel found' || 
-    error === 'invalid uId' || 
-    error === 'user to be added is not a member of the channel' || 
-    error === 'user is already an owner'){
-    res.statusCode = 400;
-  }
-  res.json(result);
 });
 
-app.post('/channel/removeowner/v2', (req: Request, res: Response, next) => {
-  const { channelId, uId } = req.body;
-  const token = req.header('token');
-  const result = channelRemoveOwnerV2(token,channelId,uId);
-  const {error} = result;
-  if (error === 'token' || error === 'This user does not have permission to add owners.'){
-    res.statusCode = 403;
+app.post('/channel/removeowner/v2', async (req: Request, res: Response, next) => {
+  try {
+    const { channelId, uId } = req.body;
+    const token = req.header('token');
+    const result = await channelRemoveOwnerV2(token,channelId,uId);
+    res.json(result);
+  } catch (e) {
+    next(e);
   }
-  if (
-    error === 'no channel found' || 
-    error === 'invalid uId' || 
-    error === 'user to be removed is not a member of the channel' || 
-    error === 'user is not an owner of this channel.' ||
-    error === 'user is the only owner of this channel.'){
-    res.statusCode = 400;
-  }
-  res.json(result);
 });
 
-app.post('/channel/leave/v2', (req: Request, res: Response, next) => {
-  const { channelId } = req.body;
-  const token = req.header('token');
-  const result = channelLeaveV2(token,channelId);
-  const {error} = result;
-  if (error === 'token' || error === 'user to be remove is not a member of the channel'){
-    res.statusCode = 403;
+app.post('/channel/leave/v2', async (req: Request, res: Response, next) => {
+  try{
+    const { channelId } = req.body;
+    const token = req.header('token');
+    const result = channelLeaveV2(token,channelId);
+    res.json(result);
+  } catch(e) {
+    next(e);
   }
-  if (error === 'no channel found'){
-    res.statusCode = 400;
-  }
-  res.json(result);
 });
 /****************
 *  DM Routes  *

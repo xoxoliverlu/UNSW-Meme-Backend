@@ -51,7 +51,7 @@ test('error token', () => {
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+  const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
   let { token: token1 } = loginRes;
   const { authUserId: authUserId2 } = loginRes2;
 
@@ -76,7 +76,7 @@ test('error userID', () => {
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+  const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
   const { token: token1 } = loginRes;
   const { authUserId: authUserId2 } = loginRes2;
 
@@ -100,7 +100,7 @@ test('error invalid channelID', () => {
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+  const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
   const { token: token1 } = loginRes;
   const { authUserId: authUserId2 } = loginRes2;
 
@@ -124,7 +124,7 @@ test('error user not a part of channel ', () => {
   requestAuthRegister('oliverwluu@gmail.com', 'cl3cl3vul44', 'Oliver', 'Lu');
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
+  const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
   const { token: token1 } = loginRes;
   const { authUserId: authUserId2 } = loginRes2;
 
@@ -166,8 +166,8 @@ test("error user doesn't have owner permission ", () => {
   requestAuthRegister('oliverwluuu@gmail.com', 'cl3cl3vul444', 'Oliver', 'Lu');
 
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
-  const loginRes2 = requestAuthLogin('olivrewluu@gmail.com', 'cl3cl3vul44');
-  const loginRes3 = requestAuthLogin('olivrewluuu@gmail.com', 'cl3cl3vul444');
+  const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
+  const loginRes3 = requestAuthLogin('oliverwluuu@gmail.com', 'cl3cl3vul444');
 
   const { token: token1 } = loginRes;
   const { token: token2, authUserId: authUserId2 } = loginRes2;
