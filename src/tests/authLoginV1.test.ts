@@ -38,7 +38,7 @@ describe('Auth Login Valid inputs', () => {
 describe('Invalid inputs', () => {
   test('Email does not belong to a user', () => {
     requestAuthRegister('alice.smith@gmail.com', '123456', 'Alice', 'Smith');
-    const login1 = requestAuthLogin('bob.langford@gmail.com', '123456')
+    const login1 = requestAuthLogin('bob.langford@gmail.com', '123456');
     expect(login1).toStrictEqual(400);
   });
   test('Incorrect password', () => {

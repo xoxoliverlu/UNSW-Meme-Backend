@@ -31,7 +31,7 @@ type handleReturn = string;
 const authLoginV2 = (email: string, password: string): authUserId => {
   // Iteration 1
   const login = authLoginV1(email, password);
-  //Iteration 2 + 3
+  // Iteration 2 + 3
   const token = generateToken(login.authUserId);
   return {
     token: token,
@@ -62,7 +62,7 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   const isPasswordCorrect = bcrypt.compareSync(password, user.password);
   if (!isPasswordCorrect) { throw HTTPError(400, 'Incorrect password.'); }
 
-  return {authUserId: user.uId};
+  return { authUserId: user.uId };
 };
 
 /**
@@ -253,7 +253,6 @@ const authLogoutV1 = (token: string) => {
   setData(data);
   return {};
 };
-
 
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };
