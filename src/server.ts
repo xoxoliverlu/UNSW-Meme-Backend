@@ -177,11 +177,12 @@ app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
   }
 });
  
-app.post('/channel/removeowner/v2', (req: Request, res: Response, next) => {
+app.post('/channel/removeowner/v2', async (req: Request, res: Response, next) => {
   try{
     const { channelId, uId } = req.body;
     const token = req.header('token');
     const result = channelRemoveOwnerV2(token,channelId,uId);
+    res.json(result);
   } catch (e) {
     next(e);
   }
