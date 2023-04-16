@@ -79,16 +79,12 @@ const generateHandle = (nameFirst: string, nameLast: string): string => {
 const authLoginV2 = (email: string, password: string): authUserId => {
   // Iteration 1
   const login = authLoginV1(email, password);
-  // Iteration 2
-  if ('authUserId' in login) {
-    const token = generateToken(login.authUserId);
-    return {
-      token: token,
-      authUserId: login.authUserId
-    };
-  }
-  // Return error
-  return login;
+  // Iteration 2 + 3
+  const token = generateToken(login.authUserId);
+  return {
+    token: token,
+    authUserId: login.authUserId
+  };
 };
 /**
   * Returns a unique authUserId value with a
@@ -106,14 +102,15 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   // Error checking
   // change email to lowercase
   email = email.toLowerCase();
-  const authUserId = data.users.find((item) => item.email === email && item.password === password);
-  // Error check
-  if (authUserId !== undefined) {
-    return { authUserId: authUserId.uId };
-  }
-  return {
-    error: 'Invalid email or password',
-  };
+  // Check if email exists
+  const user = data.users.find((item) => item.email === email);
+  if (!user) { throw HTTPError(400, 'Email does not exist.'); }
+
+  // Compare provided password with stored hashed password
+  const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+  if (!isPasswordCorrect) { throw HTTPError(400, 'Incorrect password.'); }
+
+  return { authUserId: user.uId };
 };
 
 /**
@@ -184,13 +181,9 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   // Permissions !!!
   const permission = (newUserId === 1) ? 1 : 2;
 
-  let passwordHash = password;
   // Hash password
-  bcrypt.genSalt(saltRounds, function(err: any, salt: any) {
-    bcrypt.hash(password, salt, function(err: any, hash: any) {
-      passwordHash = hash;
-    });
-  });
+  const salt = bcrypt.genSaltSync(saltRounds);
+  const passwordHash = bcrypt.hashSync(password, salt);
 
   // Profile image
   const PORT: number = parseInt(process.env.PORT || config.port);
@@ -240,5 +233,6 @@ const authLogoutV1 = (token: string) => {
   setData(data);
   return {};
 };
+
 // Export all functions
 export { authRegisterV2, authLoginV2, authLogoutV1 };

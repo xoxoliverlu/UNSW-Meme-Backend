@@ -55,9 +55,13 @@ app.post('/auth/register/v3', (req: Request, res: Response, next) => {
   }
 });
 
-app.post('/auth/login/v2', (req: Request, res: Response, next) => {
-  const { email, password } = req.body;
-  res.json(authLoginV2(email, password));
+app.post('/auth/login/v3', (req: Request, res: Response, next) => {
+  try {
+    const { email, password } = req.body;
+    res.json(authLoginV2(email, password));
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.post('/auth/logout/v2', (req: Request, res: Response, next) => {
