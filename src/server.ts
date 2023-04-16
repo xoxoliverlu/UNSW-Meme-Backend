@@ -8,7 +8,7 @@ import errorHandler from 'middleware-http-errors';
 import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
-import { channelDetailsV2, channelJoinV2, channelAddOwnerV1, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1, channelMessagesV1 } from './channel';
+import { channelDetailsV2, channelJoinV2, channelAddOwnerV2, channelInviteV1, channelLeaveV1, channelRemoveOwnerV1, channelMessagesV1 } from './channel';
 import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
@@ -163,9 +163,22 @@ app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
   res.json(channelInviteV1(token, channelId, uId));
 });
 
-app.post('/channel/addowner/v1', (req: Request, res: Response, next) => {
-  const { token, channelId, uId } = req.body;
-  res.json(channelAddOwnerV1(token, channelId, uId));
+app.post('/channel/addowner/v2', (req: Request, res: Response, next) => {
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  const result = channelAddOwnerV2(token, channelId, uId);
+  const {error} = result;
+  if (error === 'token' || error === 'This user does not have permission to add owners.'){
+    res.statusCode = 403;
+  }
+  if (
+    error === 'no channel found' || 
+    error === 'invalid uId' || 
+    error === 'user to be added is not a member of the channel' || 
+    error === 'user is already an owner'){
+    res.statusCode = 400;
+  }
+  res.json(result);
 });
 
 app.post('/channel/removeowner/v1', (req: Request, res: Response, next) => {

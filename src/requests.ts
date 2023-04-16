@@ -251,12 +251,14 @@ export const requestUserProfileSetHandle = (token: string, handleStr: string) =>
 export const requestChannelAddOwner = (token: string, channelId: number, uId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/addowner/v1',
+        `${url}:${port}` + '/channel/addowner/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             uId: uId
+          },
+          headers:{
+            token: token
           }
         }
   );

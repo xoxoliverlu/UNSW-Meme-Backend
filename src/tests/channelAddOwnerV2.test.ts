@@ -62,14 +62,13 @@ test('error token', () => {
   requestChannelInvite(token1, channelId, authUserId2);
 
   token1 += 'error';
-  const channelAddOwneRes = requestChannelAddOwner(
+  const res = requestChannelAddOwner(
     token1,
     channelId,
     authUserId2
   );
 
-  const { error } = channelAddOwneRes;
-  expect(error).toEqual(expect.any(String));
+  expect(res).toEqual(403);
 });
 
 test('error userID', () => {
@@ -87,13 +86,13 @@ test('error userID', () => {
 
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const channelAddOwneRes = requestChannelAddOwner(
+  const res = requestChannelAddOwner(
     token1,
     channelId,
     authUserId2 + 200
   );
-  const { error } = channelAddOwneRes;
-  expect(error).toEqual(expect.any(String));
+
+  expect(res).toEqual(400);
 });
 
 test('error invalid channelID', () => {
@@ -111,13 +110,13 @@ test('error invalid channelID', () => {
 
   requestChannelInvite(token1, channelId, authUserId2);
 
-  const channelAddOwneRes = requestChannelAddOwner(
+  const res = requestChannelAddOwner(
     token1,
     channelId + 1,
     authUserId2
   );
-  const { error } = channelAddOwneRes;
-  expect(error).toEqual(expect.any(String));
+
+  expect(res).toEqual(400);
 });
 
 test('error user not a part of channel ', () => {
@@ -133,13 +132,13 @@ test('error user not a part of channel ', () => {
 
   const { channelId } = channelCreateRes;
 
-  const channelAddOwneRes = requestChannelAddOwner(
+  const res = requestChannelAddOwner(
     token1,
     channelId,
     authUserId2
   );
-  const { error } = channelAddOwneRes;
-  expect(error).toEqual(expect.any(String));
+
+  expect(res).toEqual(400);
 });
 
 test('error uId is already an owner ', () => {
@@ -152,13 +151,13 @@ test('error uId is already an owner ', () => {
 
   const { channelId } = channelCreateRes;
 
-  const channelAddOwneRes = requestChannelAddOwner(
+  const res = requestChannelAddOwner(
     token1,
     channelId,
     authUserId1
   );
-  const { error } = channelAddOwneRes;
-  expect(error).toEqual(expect.any(String));
+  
+  expect(res).toEqual(400);
 });
 
 test("error user doesn't have owner permission ", () => {
@@ -179,12 +178,12 @@ test("error user doesn't have owner permission ", () => {
   requestChannelInvite(token1, channelId, authUserId2);
   requestChannelInvite(token1, channelId, authUserId3);
 
-  const channelAddOwneRes = requestChannelAddOwner(
+  const res = requestChannelAddOwner(
     token2,
     channelId,
     authUserId3
   );
 
-  const { error } = channelAddOwneRes;
-  expect(error).toEqual(expect.any(String));
+
+  expect(res).toEqual(403);
 });
