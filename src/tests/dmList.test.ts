@@ -7,7 +7,7 @@ beforeEach(() => {
 afterAll(() => {
   requestClear();
 });
-describe('Valid inputs fordm/list/v1', () => {
+describe('Valid inputs for dm/list/v1', () => {
   test('Valid return', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const user1 = requestAuthRegister('akanksha.Sood816@gmail.com', 'samplePass', 'akanksha', 'Sood');
@@ -64,6 +64,6 @@ describe('Valid inputs fordm/list/v1', () => {
 describe('Invalid inputs', () => {
   test('Invalid token', () => {
     const invalid = requestDmList('invalid token');
-    expect(invalid).toStrictEqual({ error: expect.any(String) });
+    expect(invalid).toStrictEqual(403);
   });
 });
