@@ -1,5 +1,5 @@
-import { getData } from './dataStore';
-import { userProfileV2 } from './users';
+import { getData  } from './dataStore';
+import { userProfileV3 } from './users';
 
 export function validUserId(id: number) {
   const data = getData();
@@ -23,7 +23,7 @@ export function validUserId(id: number) {
 export function memberObject(token: string, users: number[]) {
   const result = [];
   for (const userId of users) {
-    const user = userProfileV2(token, userId);
+    const user = userProfileV3(token, userId);
     result.push({
       uId: user.user.uId,
       nameFirst: user.user.nameFirst,
