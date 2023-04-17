@@ -333,10 +333,10 @@ export const requestChannelLeave = (token: string, channelId: number) => {
 export const requestDmList = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/dm/list/v1',
+        `${url}:${port}` + '/dm/list/v2',
         {
-          qs: {
-            token
+          headers: {
+            token: token
           }
         }
   );

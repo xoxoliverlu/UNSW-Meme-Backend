@@ -24,8 +24,6 @@ const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) throw HTTPError(403, "Invalid token");
 
-
-
   // Increment lastDmId and create a new DM
   const newId = ++data.lastDmId;
 
@@ -67,19 +65,13 @@ const dmListV1 = (token: string) => {
   const dms = [];
 
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) throw HTTPError(403, "Invalid token");
 
-  for (const dm of data.dms) {
-    // check if user is owner / member of a dm
-    if (auth.uId === dm.ownerId || dm.uIds.includes(auth.uId)) {
-      dms.push({
-        dmId: dm.dmId,
-        name: dm.name,
-      });
-    }
-  }
+  const dms = data.dms
+    .filter((dm) => auth.uId === dm.ownerId || dm.uIds.includes(auth.uId))
+    .map(({ dmId, name }) => ({ dmId, name }));
 
-  return { dms: dms };
+  return { dms };
 };
 /**
  * For a valid token and valid dmId, removes user from

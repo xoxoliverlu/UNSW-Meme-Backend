@@ -212,9 +212,13 @@ app.post('/dm/create/v2', (req: Request, res: Response, next) => {
   }
 });
 
-app.get('/dm/list/v1', (req: Request, res: Response, next) => {
-  const token = req.query.token;
-  res.json(dmListV1(token));
+app.get('/dm/list/v2', (req: Request, res: Response, next) => {
+  try {
+    const token = req.headers.token as string;
+    res.json(dmListV1(token));
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.delete('/dm/remove/v2', (req: Request, res: Response, next) => {
