@@ -1,5 +1,7 @@
 import { requestAuthRegister, requestChannelsCreate, requestClear, requestChannelDetails } from '../requests';
 
+require('sync-request');
+
 beforeEach(() => {
   requestClear();
 });
@@ -14,16 +16,16 @@ describe('Invalid input tests.', () => {
     const authId = register.token;
     const newChannel = requestChannelsCreate(authId, 'Channel1', false);
     const channelId = newChannel.channelId;
-    const channelDetails = requestChannelDetails(authId, channelId + 1);
-    expect(channelDetails).toEqual({ error: expect.any(String) });
+    const res = requestChannelDetails(authId, channelId + 1);
+    expect(res).toEqual(400);
   });
   test('Invalid Token.', () => {
     const register = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
     const authId = register.token;
     const newChannel = requestChannelsCreate(authId, 'Channel1', false);
     const channelId = newChannel.channelId;
-    const channelDetails = requestChannelDetails(authId + 1, channelId);
-    expect(channelDetails).toEqual({ error: expect.any(String) });
+    const res = requestChannelDetails(authId + 1, channelId);
+    expect(res).toEqual(403);
   });
   test('Unauthorised authUserId.', () => {
     const registerValid = requestAuthRegister('fadyS@gmail.com', 'password', 'Fady', 'Sadek');
@@ -32,8 +34,8 @@ describe('Invalid input tests.', () => {
     const authInvalid = registerInvalid.token;
     const newChannel = requestChannelsCreate(authValid, 'Channel1', false);
     const channelId = newChannel.channelId;
-    const channelDetails = requestChannelDetails(authInvalid, channelId);
-    expect(channelDetails).toEqual({ error: expect.any(String) });
+    const res = requestChannelDetails(authInvalid, channelId);
+    expect(res).toEqual(403);
   });
 });
 
