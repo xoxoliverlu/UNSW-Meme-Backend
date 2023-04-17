@@ -210,12 +210,14 @@ export const requestUsersAll = (token: string) => {
 export const requestUserProfileSetName = (token: string, nameFirst: string, nameLast: string) => {
   const res = request(
     'PUT',
-        `${url}:${port}` + '/user/profile/setname/v1',
+        `${url}:${port}` + '/user/profile/setname/v2',
         {
           json: {
-            token: token,
             nameFirst: nameFirst,
             nameLast: nameLast,
+          },
+          headers: {
+            token: token
           }
         }
   );

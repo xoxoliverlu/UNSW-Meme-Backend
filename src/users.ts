@@ -88,7 +88,7 @@ export function usersAllV2(token: string) {
  *
  * @returns {} - no return if no errors.
  */
-export function userProfileSetNameV1(
+export function userProfileSetNameV2(
   token: string,
   nameFirst: string,
   nameLast: string
@@ -96,7 +96,9 @@ export function userProfileSetNameV1(
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
 
   const userInfo = data.users.find((element) => element.uId === auth.uId);
   // Checks the length of nameFirst and nameLast.
@@ -104,14 +106,10 @@ export function userProfileSetNameV1(
   nameLast = nameLast.trim();
 
   if (nameFirst.length < 1 || nameLast.length < 1) {
-    return {
-      error: 'First name or last name is too short',
-    };
+    throw HTTPError(400, 'First name or last name is too short')
   }
   if (nameFirst.length > 50 || nameLast.length > 50) {
-    return {
-      error: 'First name or last name is too long',
-    };
+    throw HTTPError(400, 'First name or last name is too long')
   }
 
   userInfo.nameFirst = nameFirst;
