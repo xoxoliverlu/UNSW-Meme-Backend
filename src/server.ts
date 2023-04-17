@@ -162,39 +162,8 @@ app.post('/channel/join/v2', (req: Request, res: Response, next) => {
 });
 
 app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
-  const { channelId, uId } = req.body;
-  const token = req.header('token');
-  const result = channelInviteV1(token, channelId, uId);
-  const {error} = result;
-  if (error === 'token' || error === 'authUserId is not in the channel') {
-    res.statusCode = 403;
-  }
-  if (
-    error === 'channelId is not valid' ||
-    error === 'uId is not valid' ||
-    error === 'uId is already in channel'
-    
-  )
-  {
-    res.statusCode = 400;
-  }
-  res.json(result);
-});
-
-app.get('/channel/messages/v2', (req: Request, res: Response, next) => {
-  const token = req.header('token');
-  const channelId = parseInt(req.query.channelId as string);
-  const start = parseInt(req.query.start as string);
-  const result = channelMessagesV1(token, channelId, start);
-  const {error} = result;
-  if (error === 'token' || 'the user is not a member of the channel'
-  || error === 'channelId does not refer to a valid channel' ) {
-    res.statusCode = 403;
-  }
-  if (error === 'start parameter is greater than the total number of messages' ) {
-    res.statusCode = 400;
-  }
-  res.json(result);
+  const { token, channelId, uId } = req.body;
+  res.json(channelInviteV1(token, channelId, uId));
 });
  
 
@@ -230,8 +199,6 @@ app.post('/channel/leave/v2', async (req: Request, res: Response, next) => {
     next(e);
   }
 });
-
-
 /****************
 *  DM Routes  *
 ****************/
@@ -266,42 +233,12 @@ app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
   res.json(dmLeaveV1(token, dmId));
 });
 
-app.get('/dm/messages/v1', (req: Request, res: Response, next) => {
-  const token = req.header('token');
-  const dmId = parseInt(req.query.dmId as string);
-  const start = parseInt(req.query.start as string);
-  const result = dmMessagesV1(token, dmId, start);
-  const {error} = result; 
-  if(error === 'token' || 'user is not a member of the DM') {
-    res.statusCode = 403;
-  }
-  if (error === 'invalid dmId' || 'dmId in dmmessages') {
-    res.statusCode = 400;
-  }
-  res.json(result);
-
-});
-
 /****************
 *  Messages Routes  *
 ****************/
 app.post('/message/send/v1', (req: Request, res: Response, next) => {
-<<<<<<< HEAD
-  const { channelId, message } = req.body;
-  const token = req.header('token');
-  const result = messageSendV1(token, channelId, message);
-=======
   const { token, channelId, message } = req.body;
->>>>>>> e1a00a45130b8823bda7e4e2af22f213130bb693
   res.json(messageSendV1(token, channelId, message));
-  const {error} = result;
-  if (error === 'token' || 'User is not part of the channel') {
-    res.statusCode = 403;
-  }
-  if (error === 'Message cannot be empty' 
-  || 'Message is greater than 1000 characters') {
-    res.statusCode = 400;
-  }
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response, next) => {
@@ -310,49 +247,16 @@ app.post('/message/senddm/v1', (req: Request, res: Response, next) => {
 });
 
 app.put('/message/edit/v1', (req: Request, res: Response, next) => {
-  const { messageId, message } = req.body;
-  const token = req.header('token');
-  const result = messageEditV1(token, messageId, message);
-  const {error} = result;
-  if ( error ===  'message was not sent by this user, and user does not have owner permissions') {
-    res.statusCode = 403;
-  } 
-  if (error === 'token' || 'message id is invalid' || 'Message is greater than 1000 characters') {
-    res.statusCode = 400;
-  }
-  res.json(result);
+  const { token, messageId, message } = req.body;
+  res.json(messageEditV1(token, messageId, message));
 });
-app.post('/message/share/v1', (req: Request, res: Response, next) => {
-  const { ogmessageId, message, channelId, dmId } = req.body;
-  const token = req.header('token');
-  const result = messageShareV1(token, messageId, message);
-  const {error} = result;
-  if ( error ===  'message was not sent by this user, and user does not have owner permissions') {
-    res.statusCode = 403;
-  } 
-  if (error === 'token' || 'message id is invalid' || 'Message is greater than 1000 characters') {
-    res.statusCode = 400;
-  }
-  res.json(result);
-});
+
 app.delete('/message/remove/v1', (req: Request, res: Response, next) => {
-  const token = req.header('token');
+  const token = req.query.token as string;
   const messageId = parseInt(req.query.messageId as string);
-  const result = messageRemoveV1(token, messageId);
-  const {error} = result;
-  if (error === 'token' || 'user did not send this message' ) {
-    res.statusCode = 403;
-  }
-  if (error === 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' ||
-  'This user does not have permission to delete this message.' || 'This user does not have permission to delete this message.') {
-    res.statusCode = 400;
-  }
-  res.json(result);
+  res.json(messageRemoveV1(token, messageId));
 });
 
-<<<<<<< HEAD
-
-=======
 app.get('/dm/messages/v1', (req: Request, res: Response, next) => {
   const token = req.query.token as string;
   const dmId = parseInt(req.query.dmId as string);
@@ -407,4 +311,3 @@ app.post('/auth/passwordreset/reset/v1',(req: Request, res: Response, next) => {
 
   res.json(result);
 })
->>>>>>> e1a00a45130b8823bda7e4e2af22f213130bb693
