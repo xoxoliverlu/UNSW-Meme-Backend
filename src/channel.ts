@@ -60,25 +60,31 @@ export function channelDetailsV3(token: string, channelId: number) {
  *
  * @returns {} - returns nothing if there is no errors.
  */
-export function channelJoinV2(token: string, channelId: number) {
+export function channelJoinV3(token: string, channelId: number) {
   const data = getData();
   // Checks if the token and userId is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   const authUserId = auth.uId;
   const userDetail = data.users.find((element) => element.uId === authUserId);
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
-  if (channel === undefined) return { error: 'Invalid channelId' };
+  if (!channel) {
+    throw HTTPError(400, 'Invalid channelId.');
+  }
   // checks if the channel is public
   if (channel.isPublic === false) {
     // check authuser permissions
     if (userDetail.globalPerm === 2) {
-      return { error: 'Channel is private and authUser is not a global owner' };
+      throw HTTPError(403, 'Channel is private and authUser is not a global owner');
     }
   }
   // checks if the user is already a member of the channel
-  if (channel.allMembers.includes(authUserId)) return { error: 'User is already a member' };
+  if (channel.allMembers.includes(authUserId)) {
+    throw HTTPError(400, 'User is already a member');
+  }
   // Add member to channel
   channel.allMembers.push(authUserId);
   setData(data);
