@@ -172,29 +172,30 @@ export function userProfileSetEmailV2(token: string, email: string) {
  *
  * @returns {} - no return if no errors.
  */
-export function userProfileSetHandleV1(token: string, handleStr: string) {
+export function userProfileSetHandleV2(token: string, handleStr: string) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
-
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   const userInfo = data.users.find((element) => element.uId === auth.uId);
   handleStr = handleStr.trim();
   // Checks if the old and new handleStr are the same, if true then exits the function.
   if (handleStr === userInfo.handleStr) return {};
   // Checks the length of the handleStr.
   if (handleStr.length < 3 || handleStr.length > 20) {
-    return { error: 'Length must be between 3 and 20 characters' };
+    throw HTTPError(400, 'Length must be between 3 and 20 characters');
   }
   // Checks if the handleStr contains only alphanumeric characters
   const isAlphaNumeric = (str: string) => /^[a-z0-9]+$/gi.test(str);
   if (!isAlphaNumeric(handleStr)) {
-    return { error: 'handleStr must only contain alphanumeric values' };
+    throw HTTPError(400, 'handleStr must only contain alphanumeric values');
   }
   // Checks if the handleStr is already in use.
   for (const user of data.users) {
     if (user.handleStr === handleStr) {
-      return { error: 'handleStr already in use.' };
+      throw HTTPError(400, 'handleStr already in use.');
     }
   }
 

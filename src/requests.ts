@@ -249,11 +249,13 @@ export const requestUserProfileSetEmail = (token: string, email: string) => {
 export const requestUserProfileSetHandle = (token: string, handleStr: string) => {
   const res = request(
     'PUT',
-        `${url}:${port}` + '/user/profile/sethandle/v1',
+        `${url}:${port}` + '/user/profile/sethandle/v2',
         {
           json: {
-            token: token,
             handleStr: handleStr,
+          },
+          headers: {
+            token: token
           }
         }
   );
