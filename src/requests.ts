@@ -154,11 +154,13 @@ export const requestChannelDetails = (token: string, channelId: number) => {
 export const requestChannelJoin = (token: string, channelId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/channel/join/v2',
+        `${url}:${port}` + '/channel/join/v3',
         {
           json: {
-            token: token,
-            channelId: channelId,
+            channelId: channelId
+          },
+          headers: {
+            token: token
           }
         }
   );
