@@ -574,3 +574,23 @@ export const requestPwReset = (resetCode:string, newPassword: string) => {
   }
   return res.statusCode;
 }
+
+export const requestAdminUserPermissionChange = (token: string, uId: number, permissionId: number) => {
+  const res = request(
+    'POST',
+        `${url}:${port}` + '/admin/userpermission/change/v1',
+        {
+          json: {
+            uId: uId,
+            permissionId: permissionId
+          },
+          headers: {
+            token: token
+          }
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+};
