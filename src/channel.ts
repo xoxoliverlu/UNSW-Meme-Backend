@@ -17,19 +17,23 @@ import HTTPError from 'http-errors';
  * @returns {array} - List of owner members of the channel.
  * @returns {array} - List of all members of the channel.
  */
-export function channelDetailsV2(token: string, channelId: number) {
+export function channelDetailsV3(token: string, channelId: number) {
   const data = getData();
-  // Checks if the token and userId is valid.
+  // Checks if the token is valid.
   const auth = data.tokens.find(item => item.token === token);
-  if (auth === undefined) {
-    return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
   }
   const authUserId = auth.uId;
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
-  if (channel === undefined) return { error: 'Invalid channelId' };
+  if (!channel) {
+    throw HTTPError(400, 'Invalid channelId.');
+  }
   // Checks if the user is a member of the channel.
-  if (!channel.allMembers.includes(authUserId)) return { error: 'User is not a member of the channel' };
+  if (!channel.allMembers.includes(authUserId)) {
+    throw HTTPError(403, 'User is not a member of the channel.');
+  } 
   // Creates arrays using the helper function.
   const owners = memberObject(token, channel.ownerMembers);
   const members = memberObject(token, channel.allMembers);

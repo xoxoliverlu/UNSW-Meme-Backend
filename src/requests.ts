@@ -137,11 +137,13 @@ export const requestChannelsListAll = (token: string) => {
 export const requestChannelDetails = (token: string, channelId: number) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channel/details/v2',
+        `${url}:${port}` + '/channel/details/v3',
         {
           qs: {
-            token: token,
-            channelId: channelId,
+            channelId: channelId
+          },
+          headers: {
+            token: token
           }
         }
   );
