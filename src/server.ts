@@ -375,4 +375,4 @@ app.post('/admin/userpermission/change/v1',(req: Request, res: Response, next) =
   } catch(e){
     next(e);
   }
-})
+});

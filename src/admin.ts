@@ -1,6 +1,25 @@
 import { getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
 
+/**
+ * Given a valid token and uId and permissionId, changes
+ * the users permissions in the system.
+ *
+ * @param {string} token - token of current user.
+ * @param {number} uId - uId of the user to change.
+ * @param {number} permissionId - 1 for owner 2 for user.
+ * ...
+ *
+ * @returns {object}  - error if token is invalid,
+ *                    - error if uId is invalid,
+ *                    - error if permissionId is invalid,
+ *                    - error if token is invalid,
+ *                    - error if auth is not a global owner,
+ *                    - error if the last owner is demoting himself,
+ *                    - error if the user's permissionsId is the same as permissionId,
+ *
+ * @returns {} - nil return if no errors.
+ */
 export function adminUserPermissionChangeV1(token: string, uId: number, permissionId: number) {
   const data = getData();
   // Checks if the token is valid.

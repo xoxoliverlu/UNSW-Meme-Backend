@@ -593,4 +593,4 @@ export const requestAdminUserPermissionChange = (token: string, uId: number, per
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-};
+}; 
