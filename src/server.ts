@@ -9,7 +9,7 @@ import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
 import { channelDetailsV3, channelJoinV3, channelAddOwnerV2, channelInviteV1, channelLeaveV2, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
-import { userProfileV2, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
+import { userProfileV3, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
@@ -122,10 +122,14 @@ process.on('SIGINT', () => {
 /****************
 *  User Routes  *
 ****************/
-app.get('/user/profile/v2', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  const uId = parseInt(req.query.uId);
-  res.json(userProfileV2(token, uId));
+app.get('/user/profile/v3', (req: Request, res: Response, next) => {
+  try {
+    const token = req.header('token');
+    const uId = parseInt(req.query.uId as string);
+    res.json(userProfileV3(token, uId));
+  } catch(e){
+    next(e);
+  }
 });
 
 app.get('/users/all/v1', (req: Request, res: Response, next) => {
