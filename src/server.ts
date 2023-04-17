@@ -165,7 +165,7 @@ app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
   const { token, channelId, uId } = req.body;
   res.json(channelInviteV1(token, channelId, uId));
 });
- 
+
 
 app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
   try{
@@ -173,10 +173,10 @@ app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
     const token = req.header('token');
     res.json(channelAddOwnerV2(token, channelId, uId));
   } catch(e){
-    next(e); 
+    next(e);
   }
 });
- 
+
 app.post('/channel/removeowner/v2', async (req: Request, res: Response, next) => {
   try{
     const { channelId, uId } = req.body;
@@ -212,9 +212,13 @@ app.post('/dm/create/v2', (req: Request, res: Response, next) => {
   }
 });
 
-app.get('/dm/list/v1', (req: Request, res: Response, next) => {
-  const token = req.query.token;
-  res.json(dmListV1(token));
+app.get('/dm/list/v2', (req: Request, res: Response, next) => {
+  try {
+    const token = req.headers.token as string;
+    res.json(dmListV1(token));
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.delete('/dm/remove/v1', (req: Request, res: Response, next) => {
