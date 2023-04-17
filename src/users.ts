@@ -132,20 +132,25 @@ export function userProfileSetNameV2(
  *
  * @returns {} - no return if no errors.
  */
-export function userProfileSetEmailV1(token: string, email: string) {
+export function userProfileSetEmailV2(token: string, email: string) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
-
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   const userInfo = data.users.find((element) => element.uId === auth.uId);
   // Checks if the email is valid using validator.
   email = email.toLowerCase();
   if (email === userInfo.email) return {};
-  if (!validator.isEmail(email)) return { error: 'Invalid email' };
+  if (!validator.isEmail(email)) {
+    throw HTTPError(400, 'Invalid Email');
+  }
   // checks if the email is already in use.
   for (const user of data.users) {
-    if (user.email === email) return { error: 'Email already in use' };
+    if (user.email === email) {
+      throw HTTPError(400, 'Email is already in use.');
+    }
   }
 
   userInfo.email = email;

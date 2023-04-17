@@ -230,11 +230,13 @@ export const requestUserProfileSetName = (token: string, nameFirst: string, name
 export const requestUserProfileSetEmail = (token: string, email: string) => {
   const res = request(
     'PUT',
-        `${url}:${port}` + '/user/profile/setemail/v1',
+        `${url}:${port}` + '/user/profile/setemail/v2',
         {
           json: {
-            token: token,
             email: email,
+          },
+          headers: {
+            token: token
           }
         }
   );
