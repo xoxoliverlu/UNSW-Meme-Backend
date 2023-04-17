@@ -10,15 +10,12 @@ import { authRegisterV2 } from './auth';
  * @returns Object containing dmId
  */
 const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
-  console.log(`token : ${token}, uIds: ${uIds}`);
   const data = getData();
 
   // Check for invalid and duplicate user IDs in uIds
   const uniqueUserIds = new Set<number>();
-  console.log(data.users);
   uIds.forEach((id) => {
     const user = data.users.find((element) => element.uId === id);
-    console.log(uIds);
     if (!user) throw HTTPError(400, "Invalid uId in uIds");
     if (uniqueUserIds.has(id)) throw HTTPError(400, "Duplicate uId's in uIds");
     uniqueUserIds.add(id);
@@ -88,9 +85,9 @@ const dmListV1 = (token: string) => {
 /**
  * For a valid token and valid dmId, removes user from
  * given dm
- * @param {token} - the user making the call
- * @param {dmId} - dmId to be removed from
- * @returns {}
+ * @param {string} token - the user making the call
+ * @param {number} dmId- dmId to be removed from
+ * @returns {void}
 */
 const dmRemoveV1 = (token: string, dmId: number) => {
   // Error check
@@ -98,16 +95,13 @@ const dmRemoveV1 = (token: string, dmId: number) => {
   const data = getData();
   // check if token passed in is valid
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) throw HTTPError(403, "Invalid Token");
 
   // check if dmId passed in is valid
   const validDmId = data.dms.find((item) => item.dmId === dmId);
-  if (validDmId === undefined) return { error: 'Invalid dmId' };
-  const isOwner = data.dms.find((item) => item.ownerId === auth.uId);
-  if (isOwner === undefined) {
-    return { error: 'User is no longer in the channel or not the owner' };
-  }
-  // remove dm from dataStore
+  if (!validDmId) throw HTTPError(400, "Invalid dmId");
+  // Check if user is original creator
+  if (validDmId.ownerId !== auth.uId) throw HTTPError(403, "User is not the original creator or is no longer in the channel");
   data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
   setData(data);
 
@@ -206,7 +200,6 @@ const dmLeaveV1 = (token: string, dmId: number) => {
 
 const dmMessagesV1 = (token: string, dmId: number, start: number) => {
   const data = getData();
-  console.log('dmId in dmmessges:' + dmId);
   const dm = data.dms.find((d) => d.dmId === dmId);
   // searches for dm with the Id
   if (!dm) return { error: 'invalid dmId' };
@@ -248,7 +241,6 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
         message: m.message,
         timeSent: m.timeSent
       }));
-  console.log('dm: ' + dm.messages);
   setData(data);
   return { messages, end, start };
 };
@@ -274,3 +266,9 @@ export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 
 // const uIds3 = [user2.authUserId, user3.authUserId];
 // const dm3 = dmCreateV1('Invalid Token', uIds3);
 // console.log(dm3);
+
+// const user = authRegisterV2('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+// const user1 = authRegisterV2('akanksha.sood816@gmail.com', 'samplePass', 'akanksha', 'sood');
+// const dm = dmCreateV1(user.token, [user1.authUserId]);
+// const dm1 = dmCreateV1(user1.token, []);
+// const remove = dmRemoveV1(user.token, dm.dmId);
