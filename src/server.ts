@@ -9,7 +9,7 @@ import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
 import { channelDetailsV3, channelJoinV3, channelAddOwnerV2, channelInviteV1, channelLeaveV2, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
-import { userProfileV3, usersAllV2, userProfileSetNameV2, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
+import { userProfileV3, usersAllV2, userProfileSetNameV2, userProfileSetEmailV2, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
@@ -151,9 +151,14 @@ app.put('/user/profile/setname/v2', (req: Request, res: Response, next) => {
   }
 });
 
-app.put('/user/profile/setemail/v1', (req: Request, res: Response, next) => {
-  const { token, email } = req.body;
-  res.json(userProfileSetEmailV1(token, email));
+app.put('/user/profile/setemail/v2', (req: Request, res: Response, next) => {
+  try {
+    const token = req.header('token');
+    const { email } = req.body;
+    res.json(userProfileSetEmailV2(token, email));
+  }catch(e){
+    next(e);
+  }
 });
 
 app.put('/user/profile/sethandle/v1', (req: Request, res: Response, next) => {
