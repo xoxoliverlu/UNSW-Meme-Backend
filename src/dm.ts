@@ -115,17 +115,15 @@ const dmRemoveV1 = (token: string, dmId: number) => {
 };
 
 /**
-* Given a DM with ID dmId that the authorised user is a member of,
-* provide basic details about the DM.
-*
-* @param {token} string - random string used to identify specific user session
-* @param {dmId} number - number associated to the specific dm group
-* @returns {name} - string listing names of all participants in the dm. Names are separated
-*                   by a comma and space.
-* @returns {members} - Array of objects, where each object contains types of user. User is an
-                     object containing uId, email, nameFirst, nameLast, handleStr
-*
-*/
+ * Given a dm with dmID that the authorised user is a member of
+ * return detail of that dm
+ * @param {token}  - token of current user
+ * @param {dmId} number - chanel being inspected
+ * ...
+ *
+ * @returns {name, member} - object with name and member properties
+ * @returns {error: String} - error if token and dmId are invalid
+ */
 const dmDetailsV1 = (token: string, dmId: number) => {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
@@ -214,7 +212,7 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
   if (!dm) return { error: 'invalid dmId' };
   // checks if the token is valid
   const user = data.tokens.find((u) => u.token === token);
-  if (!user) return { error: 'token' };
+  if (!user) return { error: 'token is invalid' };
   const { uId } = user;
   // checks whether authenticated user is member of the DM
   // user is not a member of the DM

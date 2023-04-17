@@ -36,13 +36,13 @@ describe('Testing channelInvite for it-2', () => {
     const user3 = requestAuthRegister('madhushrestha@gmail.com', 'madhu123', 'madhu', 'shrestha');
     const channel = requestChannelsCreate(user2.token, 'jayjaychannel', false);
     const invite = requestChannelInvite('DHAJSHDKHAKD', channel.channelId, user3.authUserId);
-    expect(invite).toBe(403);
+    expect(invite).toStrictEqual({ error: 'token is invalid' });
   });
   test('Inviting to an Invalid Channel', () => {
     const user2 = requestAuthRegister('jay@ad.unsw.edu.au', 'jayjay123', 'jay', 'jay');
     const user3 = requestAuthRegister('madhushrestha@gmail.com', 'madhu123', 'madhu', 'shrestha');
     const invite = requestChannelInvite(user2.token, -1, user3.authUserId);
-    expect(invite).toBe(400);
+    expect(invite).toStrictEqual({ error: 'channelId is not valid' });
   });
   test('authUserId is not in the channel', () => {
     const user1 = requestAuthRegister('dimpi@ad.unsw.edu.au', 'dimpi123', 'dimpi', 'garnepudi');
@@ -51,7 +51,7 @@ describe('Testing channelInvite for it-2', () => {
     const channel = requestChannelsCreate(user2.token, 'jayjaychannel', false);
     requestChannelsCreate(user3.token, 'channel3', true);
     const invite = requestChannelInvite(user3.token, channel.channelId, user1.authUserId);
-    expect(invite).toBe(403);
+    expect(invite).toStrictEqual({ error: 'authUserId is not in the channel' });
   });
   test('user is already in channel', () => {
     const user2 = requestAuthRegister('jay@ad.unsw.edu.au', 'jayjay123', 'jay', 'jay');
@@ -59,6 +59,6 @@ describe('Testing channelInvite for it-2', () => {
     const channel = requestChannelsCreate(user2.token, 'jayjaychannel', false);
     requestChannelInvite(user2.token, channel.channelId, user3.authUserId);
     const invite1 = requestChannelInvite(user2.token, channel.channelId, user3.authUserId);
-    expect(invite1).toBe(400);
+    expect(invite1).toStrictEqual({ error: 'uId is already in channel' });
   });
 });
