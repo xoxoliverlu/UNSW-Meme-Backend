@@ -349,11 +349,13 @@ export const requestDmList = (token: string) => {
 export const requestDmRemove = (token: string, dmId: number) => {
   const res = request(
     'DELETE',
-    `${url}:${port}` + '/dm/remove/v1',
+    `${url}:${port}` + '/dm/remove/v2',
     {
       qs: {
-        token,
         dmId,
+      },
+      headers: {
+        token: token
       }
     }
   );
