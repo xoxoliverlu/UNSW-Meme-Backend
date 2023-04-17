@@ -61,7 +61,7 @@ test('error invalid dm id', () => {
   const { token: token1 } = loginRes;
   const { authUserId: authUserId2 } = loginRes2;
 
-  const { dmId } = dmCreateV1(token1, [authUserId2]);
+  const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token1, dmId + 1);
   const { error } = dmDetailsRes;
