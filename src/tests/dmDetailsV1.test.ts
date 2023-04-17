@@ -1,4 +1,3 @@
-import { dmCreateV1 } from '../dm';
 import {
   requestClear,
   requestAuthRegister,
@@ -23,25 +22,21 @@ test('success channel details', () => {
   const loginRes = requestAuthLogin('oliverwlu@gmail.com', 'cl3cl3vul4');
   const loginRes2 = requestAuthLogin('oliverwluu@gmail.com', 'cl3cl3vul44');
 
-  const { token: token1, authUserId: authUserId1 } = loginRes;
-  const { authUserId: authUserId2 } = loginRes2;
+  const dm = requestDmCreate(loginRes.token, [loginRes2.authUserId]);
+  const dmDetailsRes = requestDmDetails(loginRes.token, dm.dmId);
 
-  const { dmId } = requestDmCreate(token1, [authUserId2]);
-  const dmDetailsRes = requestDmDetails(token1, dmId);
-  const { name, members } = dmDetailsRes;
-
-  expect(name).toEqual(expect.any(String));
-  expect(members).toEqual(
+  expect(dmDetailsRes.name).toEqual(expect.any(String));
+  expect(dmDetailsRes.members).toEqual(
     [
       {
-        uId: authUserId2,
+        uId: loginRes2.authUserId,
         email: 'oliverwluu@gmail.com',
         handleStr: 'oliverlu0',
         nameFirst: 'Oliver',
         nameLast: 'Lu',
       },
       {
-        uId: authUserId1,
+        uId: loginRes.authUserId,
         email: 'oliverwlu@gmail.com',
         handleStr: 'oliverlu',
         nameFirst: 'Oliver',
@@ -64,8 +59,7 @@ test('error invalid dm id', () => {
   const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token1, dmId + 1);
-  const { error } = dmDetailsRes;
-  expect(error).toEqual(expect.any(String));
+  expect(dmDetailsRes).toEqual(400);
 });
 
 test('error auth user not member of dm', () => {
@@ -84,8 +78,7 @@ test('error auth user not member of dm', () => {
   const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token3, dmId);
-  const { error } = dmDetailsRes;
-  expect(error).toEqual(expect.any(String));
+  expect(dmDetailsRes).toEqual(403);
 });
 
 test('error invalid token', () => {
@@ -101,7 +94,5 @@ test('error invalid token', () => {
   const { dmId } = requestDmCreate(token1, [authUserId2]);
 
   const dmDetailsRes = requestDmDetails(token1 + 'error', dmId);
-
-  const { error } = dmDetailsRes;
-  expect(error).toEqual(expect.any(String));
+  expect(dmDetailsRes).toEqual(403);
 });

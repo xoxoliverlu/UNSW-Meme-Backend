@@ -1,3 +1,5 @@
+
+
 import express, { json, query, Request, Response } from 'express';
 import { echo } from './echo';
 import morgan from 'morgan';
@@ -11,7 +13,7 @@ import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels'
 import { channelDetailsV3, channelJoinV3, channelAddOwnerV2, channelInviteV1, channelLeaveV2, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
 import { userProfileV3, usersAllV2, userProfileSetNameV2, userProfileSetEmailV2, userProfileSetHandleV2 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
-import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
+import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV2, dmLeaveV2, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
 import { searchV1 } from './search';
 import { pwResetReqeust, pwReset } from './password';
@@ -262,17 +264,25 @@ app.delete('/dm/remove/v2', (req: Request, res: Response, next) => {
     next(err);
   }
 });
-app.get('/dm/details/v1', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  const dmId = parseInt(req.query.dmId as string);
-  res.json(dmDetailsV1(token, dmId));
+app.get('/dm/details/v2', (req: Request, res: Response, next) => {
+  try {
+    const token = req.header('token');
+    const dmId = parseInt(req.query.dmId as string);
+    res.json(dmDetailsV2(token, dmId));
+  }catch(e){
+    next(e);
+  }
 });
 
-app.post('/dm/leave/v1', (req: Request, res: Response, next) => {
-  const { token, dmId } = req.body;
-  res.json(dmLeaveV1(token, dmId));
+app.post('/dm/leave/v2', (req: Request, res: Response, next) => {
+  try{
+    const { dmId } = req.body;
+    const token = req.header('token');
+    res.json(dmLeaveV2(token, dmId));
+  }catch(e){
+    next(e);
+  }
 });
-
 /****************
 *  Messages Routes  *
 ****************/

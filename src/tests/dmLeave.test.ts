@@ -1,5 +1,7 @@
 import { requestAuthRegister, requestClear, requestDmCreate, requestDmLeave, requestDmDetails } from '../requests';
 
+require('sync-request');
+
 beforeEach(() => {
   requestClear();
 });
@@ -16,7 +18,7 @@ describe('Invalid input tests', () => {
     const uIds = [user2.authUserId, user3.authUserId];
     const dm = requestDmCreate(user1.token, uIds);
     const dmLeave = requestDmLeave('badToken', dm.dmId);
-    expect(dmLeave).toEqual({ error: expect.any(String) });
+    expect(dmLeave).toEqual(403);
   });
   test('Invalid dmId', () => {
     const user1 = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
@@ -25,7 +27,7 @@ describe('Invalid input tests', () => {
     const uIds = [user2.authUserId, user3.authUserId];
     const dm = requestDmCreate(user1.token, uIds);
     const dmLeave = requestDmLeave(user1.token, dm.dmId + 1);
-    expect(dmLeave).toEqual({ error: expect.any(String) });
+    expect(dmLeave).toEqual(400);
   });
   test('User is not a member of the dm', () => {
     const user1 = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
@@ -34,7 +36,7 @@ describe('Invalid input tests', () => {
     const uIds = [user2.authUserId];
     const dm = requestDmCreate(user1.token, uIds);
     const dmLeave = requestDmLeave(user3.token, dm.dmId);
-    expect(dmLeave).toEqual({ error: expect.any(String) });
+    expect(dmLeave).toEqual(403);
   });
 });
 

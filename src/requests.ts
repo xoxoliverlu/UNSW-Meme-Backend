@@ -1,3 +1,4 @@
+
 const request = require('sync-request');
 import { port, url } from './config.json';
 
@@ -380,11 +381,13 @@ export const requestDmRemove = (token: string, dmId: number) => {
 export const requestDmDetails = (token: string, dmId: number) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/dm/details/v1',
+        `${url}:${port}` + '/dm/details/v2',
         {
           qs: {
-            token: token,
             dmId: dmId
+          },
+          headers: {
+            token: token
           }
         }
   );
@@ -397,11 +400,13 @@ export const requestDmDetails = (token: string, dmId: number) => {
 export const requestDmLeave = (token: string, dmId: number) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/dm/leave/v1',
+        `${url}:${port}` + '/dm/leave/v2',
         {
           json: {
-            token: token,
             dmId: dmId,
+          },
+          headers: {
+            token: token
           }
         }
   );

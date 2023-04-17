@@ -1,3 +1,4 @@
+
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
 import { memberObject } from './helper';
@@ -109,22 +110,21 @@ const dmRemoveV1 = (token: string, dmId: number) => {
  * @returns {name, member} - object with name and member properties
  * @returns {error: String} - error if token and dmId are invalid
  */
-const dmDetailsV1 = (token: string, dmId: number) => {
+const dmDetailsV2 = (token: string, dmId: number) => {
   const data = getData();
   const user = data.tokens.find((item) => item.token === token);
-
-  if (user === undefined) {
-    return { error: 'invalid token' };
+  if (!user) {
+    throw HTTPError(403, 'Invalid Token.');
   }
-  const { uId } = user;
+  const uId = user.uId;
 
   const dm = data.dms.find(item => item.dmId === dmId);
   if (!dm) {
-    return { error: 'invalid dm id' };
+    throw HTTPError(400, 'Invalid DM.');
   }
 
   if (!dm.uIds.includes(uId) && dm.ownerId !== uId) {
-    return { error: 'This user is not a part of the dm' };
+    throw HTTPError(403, 'This user is not a part of the dm');
   }
 
   const membersUIds = dm.uIds.slice();
@@ -150,14 +150,18 @@ const dmDetailsV1 = (token: string, dmId: number) => {
  *
  * @returns {} - no return if no errors.
  */
-const dmLeaveV1 = (token: string, dmId: number) => {
+const dmLeaveV2 = (token: string, dmId: number) => {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   // Checks if the dmId is valid.
   const dm = data.dms.find((element) => element.dmId === dmId);
-  if (dm === undefined) return { error: 'Invalid dmId' };
+  if (!dm) {
+    throw HTTPError(400, 'Invalid dmId.');
+  }
   // Checks if user is the owner.
   if (auth.uId === dm.ownerId) {
     // Since the owner isn't in the members array, setting
@@ -168,7 +172,9 @@ const dmLeaveV1 = (token: string, dmId: number) => {
   }
   // Checks if the user is a member of the dm.
   const user = data.users.find((element) => element.uId === auth.uId);
-  if (!dm.uIds.includes(user.uId)) return { error: 'User is already not a member' };
+  if (!dm.uIds.includes(user.uId)) {
+    throw HTTPError(403, 'User is already not a member');
+  }
   // Removes the user from the members array.
   const index = dm.uIds.indexOf(user.uId);
   if (index > -1) { dm.uIds.splice(index, 1); }
@@ -236,5 +242,4 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
   return { messages, end, start };
 };
 
-export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 };
-
+export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV2, dmLeaveV2, dmMessagesV1 };
