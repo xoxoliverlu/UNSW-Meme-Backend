@@ -2,7 +2,6 @@ import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
 import { memberObject } from './helper';
 import HTTPError from 'http-errors';
-import { authRegisterV2 } from './auth';
 /**
  * Creates a Dm channel
  * @param token - user identifier
@@ -247,28 +246,3 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
 
 export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 };
 
-// const user = authRegisterV2('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
-// const user2 = authRegisterV2('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
-// const user3 = authRegisterV2('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-// const uIds = [user2.authUserId, user3.authUserId];
-// const dm = dmCreateV1('Invalid Token', uIds);
-// console.log(dm);
-
-// const user = authRegisterV2('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
-// const user2 = authRegisterV2('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
-// const user3 = authRegisterV2('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-// const uIds = [user2.authUserId + 4, user3.authUserId];
-// const dm = dmCreateV1(user.token, uIds);
-// console.log(dm);
-// const uIds2 = [user2.authUserId, user2.authUserId, user3.authUserId];
-// const dm2 = dmCreateV1(user.token, uIds2);
-// console.log(dm2);
-// const uIds3 = [user2.authUserId, user3.authUserId];
-// const dm3 = dmCreateV1('Invalid Token', uIds3);
-// console.log(dm3);
-
-// const user = authRegisterV2('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-// const user1 = authRegisterV2('akanksha.sood816@gmail.com', 'samplePass', 'akanksha', 'sood');
-// const dm = dmCreateV1(user.token, [user1.authUserId]);
-// const dm1 = dmCreateV1(user1.token, []);
-// const remove = dmRemoveV1(user.token, dm.dmId);

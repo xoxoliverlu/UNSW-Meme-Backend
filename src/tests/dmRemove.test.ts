@@ -49,7 +49,6 @@ describe('Valid inputs for dmRemove', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const user1 = requestAuthRegister('akanksha.sood816@gmail.com', 'samplePass', 'akanksha', 'sood');
     const dm = requestDmCreate(user.token, [user1.authUserId]);
-    console.log(dm);
     const dm1 = requestDmCreate(user1.token, []);
     const remove = requestDmRemove(user.token, dm.dmId);
     expect(remove).toStrictEqual({});
