@@ -17,6 +17,7 @@ import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV2, dmLeaveV2, dmMessagesV1 
 import { fileLoadData } from './dataStore';
 import { searchV1 } from './search';
 import { pwResetReqeust, pwReset } from './password';
+import { adminUserPermissionChangeV1 } from './admin';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -361,3 +362,17 @@ app.post('/auth/passwordreset/reset/v1',(req: Request, res: Response, next) => {
 
   res.json(result);
 })
+
+/****************
+* admin Routes  *
+****************/
+
+app.post('/admin/userpermission/change/v1',(req: Request, res: Response, next) => {
+  try {
+    const token = req.header('token');
+    const { uId, permissionId } = req.body;
+    res.json(adminUserPermissionChangeV1(token, uId, permissionId));
+  } catch(e){
+    next(e);
+  }
+});
