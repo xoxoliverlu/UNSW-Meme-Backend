@@ -63,3 +63,4 @@ test('Successful permission change.', () => {
   const channelJoin = requestChannelJoin(registerUser.token, channel.channelId);
   expect(channelJoin).toEqual({});
 });
+ 
