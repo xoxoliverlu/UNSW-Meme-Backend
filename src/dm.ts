@@ -150,14 +150,18 @@ const dmDetailsV2 = (token: string, dmId: number) => {
  *
  * @returns {} - no return if no errors.
  */
-const dmLeaveV1 = (token: string, dmId: number) => {
+const dmLeaveV2 = (token: string, dmId: number) => {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   // Checks if the dmId is valid.
   const dm = data.dms.find((element) => element.dmId === dmId);
-  if (dm === undefined) return { error: 'Invalid dmId' };
+  if (!dm) {
+    throw HTTPError(400, 'Invalid dmId.');
+  }
   // Checks if user is the owner.
   if (auth.uId === dm.ownerId) {
     // Since the owner isn't in the members array, setting
@@ -168,7 +172,9 @@ const dmLeaveV1 = (token: string, dmId: number) => {
   }
   // Checks if the user is a member of the dm.
   const user = data.users.find((element) => element.uId === auth.uId);
-  if (!dm.uIds.includes(user.uId)) return { error: 'User is already not a member' };
+  if (!dm.uIds.includes(user.uId)) {
+    throw HTTPError(403, 'User is already not a member');
+  }
   // Removes the user from the members array.
   const index = dm.uIds.indexOf(user.uId);
   if (index > -1) { dm.uIds.splice(index, 1); }
@@ -236,4 +242,4 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
   return { messages, end, start };
 };
 
-export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV2, dmLeaveV1, dmMessagesV1 };
+export { dmCreateV1, dmRemoveV1, dmListV1, dmDetailsV2, dmLeaveV2, dmMessagesV1 };
