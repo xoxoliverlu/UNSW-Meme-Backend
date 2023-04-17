@@ -4,6 +4,8 @@ import {
   requestClear,
 } from '../requests';
 
+require('sync-request');
+
 beforeEach(() => {
   requestClear();
 });
@@ -20,7 +22,7 @@ test('Invalid token.', () => {
     'Sadek'
   );
   const usersAll = requestUsersAll(user1.token + 1);
-  expect(usersAll).toEqual({ error: expect.any(String) });
+  expect(usersAll).toEqual(403);
 });
 
 test('Successful UsersAllV1 Test.', () => {

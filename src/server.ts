@@ -9,7 +9,7 @@ import { authRegisterV2, authLoginV2, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
 import { channelDetailsV3, channelJoinV3, channelAddOwnerV2, channelInviteV1, channelLeaveV2, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
-import { userProfileV3, usersAllV1, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
+import { userProfileV3, usersAllV2, userProfileSetNameV1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV1, dmLeaveV1, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
@@ -132,9 +132,9 @@ app.get('/user/profile/v3', (req: Request, res: Response, next) => {
   }
 });
 
-app.get('/users/all/v1', (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  res.json(usersAllV1(token));
+app.get('/users/all/v2', (req: Request, res: Response, next) => {
+  const token = req.header('token');
+  res.json(usersAllV2(token));
 });
 
 app.put('/user/profile/setname/v1', (req: Request, res: Response, next) => {
