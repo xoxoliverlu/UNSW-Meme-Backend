@@ -1,6 +1,7 @@
 import { getData, setData } from './dataStore';
 import validator from 'validator';
 import { Profile } from './interfaces';
+import HTTPError from 'http-errors';
 
 /**
  * Given a valid token and a uId, displays basic information about the user.
@@ -17,14 +18,18 @@ import { Profile } from './interfaces';
  * @returns {string} - email of the user.
  * @returns {string} - handle string of the user.
  */
-export function userProfileV2(token: string, uId: number) {
+export function userProfileV3(token: string, uId: number) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   // Checks if the uId is valid.
   const userInfo = data.users.find((element) => element.uId === uId);
-  if (userInfo === undefined) return { error: 'Invalid uId' };
+  if (!userInfo) {
+    throw HTTPError(400, 'Invalid uId.');
+  }
 
   return {
     user: {

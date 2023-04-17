@@ -175,11 +175,13 @@ export const requestChannelJoin = (token: string, channelId: number) => {
 export const requestUserProfile = (token: string, uId: number) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/user/profile/v2',
+        `${url}:${port}` + '/user/profile/v3',
         {
           qs: {
-            token: token,
-            uId: uId,
+            uId: uId
+          },
+          headers: {
+            token: token
           }
         }
   );
