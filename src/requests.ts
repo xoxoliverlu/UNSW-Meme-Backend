@@ -194,10 +194,10 @@ export const requestUserProfile = (token: string, uId: number) => {
 export const requestUsersAll = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/users/all/v1',
+        `${url}:${port}` + '/users/all/v2',
         {
-          qs: {
-            token: token,
+          headers: {
+            token: token
           }
         }
   );

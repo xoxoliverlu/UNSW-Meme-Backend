@@ -52,11 +52,13 @@ export function userProfileV3(token: string, uId: number) {
  *
  * @returns {array} users - returns array of user objects
  */
-export function usersAllV1(token: string) {
+export function usersAllV2(token: string) {
   const data = getData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
-  if (auth === undefined) return { error: 'Invalid token' };
+  if (!auth) {
+    throw HTTPError(403, 'Invalid Token.');
+  }
   // Create an array of user objects.
   const resultUsers = data.users.map((user) => {
     return {
