@@ -46,7 +46,8 @@ const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
   setData(data);
   // add stat data
   let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
-  data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()})
+  data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()});
+  data.channelsExistStat.push({numChannelsExist: data.channels.length, timeStamp: Date.now()});
   setData(data);
   
   return {

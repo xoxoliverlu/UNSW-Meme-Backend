@@ -69,3 +69,19 @@ export function countUserMessages(uId: number): number{
   })
   return totalMsgSent;
 }
+
+export function countMessages(): number{
+  const data = getData();
+  let totalMsg = 0;
+  data.channels.forEach((channel) => {
+    channel.messages.forEach(message => {
+      totalMsg++;
+    })
+  })
+  data.dms.forEach((dm) => {
+    dm.messages.forEach(message => {
+      totalMsg++;
+    })
+  })
+  return totalMsg;
+}
