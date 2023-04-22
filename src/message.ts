@@ -59,25 +59,19 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   const data = getData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
+  const {uId} = user;
 
-  // Error checking
-  if (!user) {
-    return { error: 'Token invalid' };
-  }
-  // checks whether or not dmId is valid
-  const uId = user.uId;
   if (!dm) {
-    return { error: 'dmId does not refer to a valid DM' };
+    throw HTTPError(400, 'dmId is invalid');
   }
-  // message length
-  if (message.length > 1000) {
-    return { error: 'length of message is greater than 1000 characters' };
-  } else if (message.length < 1) {
-    return { error: 'length of message is less than 1 character' };
+  if (!user) {
+    throw HTTPError(403, 'Invalid Token');
   }
-  // checks whether the dm uId and the ownerId is equal to uId
-  if (!dm.uIds.includes(uId) && dm.ownerId !== uId) {
-    return { error: 'this user is not part of the dm' };
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, 'message length is invalid');
+  }
+  if (dm && !dm.uIds.includes(uId) && dm.ownerId !== uId) {
+    throw HTTPError(403, 'dmId is valid but token is not in DM');
   }
 
   const messageId = data.lastMessageId + 1;

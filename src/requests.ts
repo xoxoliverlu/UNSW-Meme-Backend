@@ -475,12 +475,14 @@ export const requestDmMessages = (token: string, dmId: number, start: number) =>
 export const requestMessageSendDm = (token: string, dmId: number, message: string) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/message/senddm/v1',
+        `${url}:${port}` + '/message/senddm/v2',
         {
           json: {
-            token: token,
             dmId: dmId,
             message: message
+          },
+          headers: {
+            token
           }
         }
   );
