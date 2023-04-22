@@ -598,3 +598,19 @@ export const requestAdminUserPermissionChange = (token: string, uId: number, per
   }
   return res.statusCode;
 }; 
+
+export const requestUserStats = (token: string) => {
+  const res = request(
+    'GET',
+        `${url}:${port}` + 'user/stats/v1',
+        {
+          headers: {
+            token: token
+          }
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}; 
