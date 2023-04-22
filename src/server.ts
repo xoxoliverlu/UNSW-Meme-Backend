@@ -12,7 +12,7 @@ import { clearV1 } from './other';
 import { channelsCreateV3, channelsListAllV3, channelsListV3 } from './channels';
 import { channelDetailsV3, channelJoinV3, channelAddOwnerV2, channelInviteV1, channelLeaveV2, channelRemoveOwnerV2, channelMessagesV1 } from './channel';
 import { userProfileV3, usersAllV2, userProfileSetNameV2, userProfileSetEmailV2, userProfileSetHandleV2 } from './users';
-import { messageSendV1, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
+import { messageSendV2, messageSendDmV1, messageEditV1, messageRemoveV1 } from './message';
 import { dmCreateV1, dmListV1, dmRemoveV1, dmDetailsV2, dmLeaveV2, dmMessagesV1 } from './dm';
 import { fileLoadData } from './dataStore';
 import { searchV1 } from './search';
@@ -287,11 +287,12 @@ app.post('/dm/leave/v2', (req: Request, res: Response, next) => {
 /****************
 *  Messages Routes  *
 ****************/
-app.post('/message/send/v1', (req: Request, res: Response, next) => {
-  const { token, channelId, message } = req.body;
-  res.json(messageSendV1(token, channelId, message));
-});
+app.post('/message/send/v2', (req: Request, res: Response) => {
+  const { channelId, message } = req.body;
+  const token = req.header('token');
 
+  res.json(messageSendV2(token, channelId, message));
+});
 app.post('/message/senddm/v1', (req: Request, res: Response, next) => {
   const { token, dmId, message } = req.body;
   res.json(messageSendDmV1(token, dmId, message));

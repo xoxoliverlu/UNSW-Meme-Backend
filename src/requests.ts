@@ -437,12 +437,14 @@ export const requestChannelMessages = (token: string, channelId: number, start: 
 export const requestMessageSend = (token: string, channelId: number, message: string) => {
   const res = request(
     'POST',
-        `${url}:${port}` + '/message/send/v1',
+        `${url}:${port}` + '/message/send/v2',
         {
           json: {
-            token: token,
             channelId: channelId,
             message: message
+          },
+          headers: {
+            token
           }
         }
   );

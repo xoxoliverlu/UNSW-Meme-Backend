@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { Message, Channel, DM } from './interfaces';
+import HTTPError from 'http-errors';
 /**
  * Send a message from the authorised user to the channel specified by channelId.
  * @param token - string: user identifier
@@ -8,21 +9,27 @@ import { Message, Channel, DM } from './interfaces';
  * @returns messageId - the message identifier
  */
 
-export function messageSendV1(token: string, channelId: number, message: string) {
+export function messageSendV2(token: string, channelId: number, message: string) {
   const data = getData();
+
   const user = data.tokens.find((u) => u.token === token);
-  if (!user) return { error: 'Token invalid' };
+  if (!user) {
+    throw HTTPError(403, 'Invalid Token');
+  }
   const { uId } = user;
-  // checks if channelId is valid
-  // if not returns error
+
   const channel = data.channels.find((c) => c.channelId === channelId);
-  if (!channel) return { error: 'Invalid channelId' };
-  // checks for message lengths - between 1 and 1000 characters
-  if (message.length < 1) return { error: 'Message cannot be empty' };
+  if (!channel) {
+    throw HTTPError(400, 'channelId is invalid');
+  }
 
-  if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
 
-  if (!channel.allMembers.includes(uId)) return { error: 'User is not part of the channel' };
+  if (message.length < 1 || message.length > 1000) {
+    throw HTTPError(400, 'message length is invalid');
+  }
+  if (channel !== undefined && !channel.allMembers.includes(uId)) {
+    throw HTTPError(403, 'token is not a member of channel');
+  }
 
   const messageId = data.lastMessageId + 1;
   data.lastMessageId++;
