@@ -28,8 +28,20 @@ app.use(cors());
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
 
+// connect app to mongodb
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/test')
+  .then(() => {
+    console.log("mongodb successfully connected")
+  })
+  .catch((err: any) => {
+    console.log(err);
+  })
+
 const PORT: number = parseInt(process.env.PORT || config.port);
 const HOST: string = process.env.IP || 'localhost';
+
+
 
 // Example get request
 app.get('/echo', (req: Request, res: Response, next) => {
