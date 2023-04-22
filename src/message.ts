@@ -55,11 +55,11 @@ export function messageSendV2(token: string, channelId: number, message: string)
  * @returns messageId - message identifier
  */
 
-export function messageSendDmV1(token: string, dmId: number, message: string) {
+export function messageSendDmV2(token: string, dmId: number, message: string) {
   const data = getData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
-  const {uId} = user;
+
 
   if (!dm) {
     throw HTTPError(400, 'dmId is invalid');
@@ -70,7 +70,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   if (message.length < 1 || message.length > 1000) {
     throw HTTPError(400, 'message length is invalid');
   }
-  if (dm && !dm.uIds.includes(uId) && dm.ownerId !== uId) {
+  if (dm && !dm.uIds.includes(user.uId) && dm.ownerId !== user.uId) {
     throw HTTPError(403, 'dmId is valid but token is not in DM');
   }
 
@@ -80,7 +80,7 @@ export function messageSendDmV1(token: string, dmId: number, message: string) {
   // newMessage output
   const newMessage = {
     messageId: messageId,
-    uId: uId,
+    uId: user.uId,
     message: message,
     timeSent: Math.floor(Date.now() / 1000)
   };
