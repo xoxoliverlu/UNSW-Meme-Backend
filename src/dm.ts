@@ -1,7 +1,7 @@
 
 import { getData, setData } from './dataStore';
 import { Message } from './interfaces';
-import { memberObject } from './helper';
+import { countUserDms, memberObject } from './helper';
 import HTTPError from 'http-errors';
 /**
  * Creates a Dm channel
@@ -48,6 +48,10 @@ const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
 
   data.dms.push(dm);
   setData(data);
+  // set Stat Data
+  let statIndex = data.dmStats.findIndex(item => item.uId === auth.uId);
+  data.dmStats[statIndex].stat.push({numDmsJoined:countUserDms(auth.uId), timeStamp: Date.now()});
+  setData(data);
 
   return {
     dmId: newId,
@@ -63,7 +67,6 @@ const dmListV1 = (token: string) => {
   // check if token passed in is valid
   // Invalid token
   const data = getData();
-  const dms = [];
 
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) throw HTTPError(403, "Invalid token");

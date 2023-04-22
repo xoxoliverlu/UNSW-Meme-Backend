@@ -47,6 +47,9 @@ export interface DataStore {
     lastMessageId: number,
     dms: DM[],
     lastDmId: number,
+    channelStats: ChannelStat[],
+    dmStats: DmStat[],
+    messageStats: MessageStat[],
 }
 
 export interface Profile {
@@ -65,4 +68,34 @@ export interface Notif {
     channelId: number;
     dmId: number;
     notificationMessage: string;
+}
+
+interface channelStat {
+    numChannelsJoined: number;
+    timeStamp: number;
+}
+
+export interface ChannelStat {
+    uId: number;
+    stat: channelStat[];
+}
+
+interface dmStat {
+    numDmsJoined: number;
+    timeStamp: number;
+}
+
+export interface DmStat {
+    uId: number;
+    stat: dmStat[];
+}
+
+interface messageStat {
+    numMessagesSent: number;
+    timeStamp: number;
+}
+
+export interface MessageStat {
+    uId: number;
+    stat: messageStat[];
 }

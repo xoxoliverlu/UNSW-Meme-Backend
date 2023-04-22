@@ -36,3 +36,36 @@ export function memberObject(token: string, users: number[]) {
 }
 
 
+export function countUserChannels(uId: number): number{
+  const data = getData();
+  return data.channels.filter((channel) =>
+    channel.allMembers.includes(uId)
+  ).length;
+}
+
+export function countUserDms(uId: number): number{
+  const data = getData();
+  return data.dms.filter(
+    (dm) => dm.uIds.includes(uId) || dm.ownerId === uId
+  ).length;
+}
+
+export function countUserMessages(uId: number): number{
+  const data = getData();
+  let totalMsgSent = 0;
+  data.channels.forEach((channel) => {
+    channel.messages.forEach(message => {
+      if (message.uId === uId){
+        totalMsgSent++;
+      }
+    })
+  })
+  data.dms.forEach((dm) => {
+    dm.messages.forEach(message => {
+      if (message.uId === uId){
+        totalMsgSent++;
+      }
+    })
+  })
+  return totalMsgSent;
+}

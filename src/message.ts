@@ -1,4 +1,5 @@
 import { getData, setData } from './dataStore';
+import { countUserMessages } from './helper';
 import { Message, Channel, DM } from './interfaces';
 import HTTPError from 'http-errors';
 /**
@@ -43,7 +44,10 @@ export function messageSendV2(token: string, channelId: number, message: string)
   channel.messages.push(newMessage);
 
   setData(data);
-
+  let statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
+  data.messageStats[statIndex].stat.push({numMessagesSent: countUserMessages(user.uId),timeStamp:Date.now()})
+  setData(data);
+  
   return { messageId };
 }
 
@@ -86,7 +90,9 @@ export function messageSendDmV2(token: string, dmId: number, message: string) {
   };
   dm.messages.push(newMessage);
   setData(data);
-
+  let statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
+  data.messageStats[statIndex].stat.push({numMessagesSent: countUserMessages(user.uId),timeStamp:Date.now()})
+  setData(data);
   return { messageId };
 }
 /**

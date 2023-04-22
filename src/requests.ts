@@ -602,7 +602,7 @@ export const requestAdminUserPermissionChange = (token: string, uId: number, per
 export const requestUserStats = (token: string) => {
   const res = request(
     'GET',
-        `${url}:${port}` + 'user/stats/v1',
+        `${url}:${port}` + '/user/stats/v1',
         {
           headers: {
             token: token
