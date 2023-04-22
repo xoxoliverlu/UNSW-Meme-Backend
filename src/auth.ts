@@ -199,6 +199,9 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   };
   // Update data
   data.users.push(newUser);
+  data.channelStats.push({uId: newUserId, stat:[{numChannelsJoined: 0, timeStamp: Date.now()}]});
+  data.dmStats.push({uId: newUserId, stat:[{numDmsJoined: 0, timeStamp: Date.now()}]});
+  data.messageStats.push({uId: newUserId, stat:[{numMessagesSent: 0, timeStamp: Date.now()}]});
   setData(data);
   return {
     authUserId: newUser.uId,

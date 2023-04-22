@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
+import { countUserChannels } from './helper';
 
 /**
  * Creates a new channel object and appends it to the channels section of the dataStore
@@ -41,7 +42,13 @@ const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
     ownerMembers: [authUserId],
   });
 
+
   setData(data);
+  // add stat data
+  let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
+  data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()})
+  setData(data);
+  
   return {
     channelId: Id
   };

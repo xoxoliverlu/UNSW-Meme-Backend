@@ -1,5 +1,5 @@
 import { setData } from './dataStore';
-import { User, Channel, TokenPair, DM, PwReset } from './interfaces';
+import { User, Channel, TokenPair, DM, PwReset, ChannelStat, DmStat, MessageStat } from './interfaces';
 type clearReturn = Record<string, never>;
 
 const clearV1 = (): clearReturn => {
@@ -13,7 +13,10 @@ const clearV1 = (): clearReturn => {
     tokens: [] as TokenPair[],
     dms: [] as DM[],
     lastDmId: 0,
-    pwReset: [] as PwReset[]
+    pwReset: [] as PwReset[],
+    channelStats: [] as ChannelStat[],
+    dmStats: [] as DmStat[],
+    messageStats: [] as MessageStat[],
   };
   setData(data);
   return {};

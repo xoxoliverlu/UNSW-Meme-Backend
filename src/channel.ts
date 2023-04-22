@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { memberObject } from './helper';
+import { countUserChannels } from './helper';
 import HTTPError from 'http-errors';
 /**
  * Given an uId and a channelId, the function
@@ -88,7 +89,9 @@ export function channelJoinV3(token: string, channelId: number) {
   // Add member to channel
   channel.allMembers.push(authUserId);
   setData(data);
-
+  let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
+  data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()})
+  setData(data);
   return {};
 }
 /**
