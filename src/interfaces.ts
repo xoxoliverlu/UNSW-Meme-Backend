@@ -50,6 +50,9 @@ export interface DataStore {
     channelStats: ChannelStat[],
     dmStats: DmStat[],
     messageStats: MessageStat[],
+    channelsExistStat: ChannelsExistStat[],
+    dmsExistStat: DmsExistStat[],
+    msgsExistStat: msgsExistStat[],
 }
 
 export interface Profile {
@@ -98,4 +101,29 @@ interface messageStat {
 export interface MessageStat {
     uId: number;
     stat: messageStat[];
+}
+
+interface messageStat {
+    numMessagesSent: number;
+    timeStamp: number;
+}
+
+export interface MessageStat {
+    uId: number;
+    stat: messageStat[];
+}
+
+export interface ChannelsExistStat {
+    numChannelsExist: number;
+    timeStamp: number;
+}
+
+export interface DmsExistStat {
+    numDmsExist: number;
+    timeStamp: number;
+}
+
+export interface msgsExistStat {
+    numMessagesExist: number;
+    timeStamp: number;
 }

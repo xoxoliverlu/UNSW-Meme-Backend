@@ -18,7 +18,7 @@ import { fileLoadData } from './dataStore';
 import { searchV1 } from './search';
 import { pwResetReqeust, pwReset } from './password';
 import { adminUserPermissionChangeV1 } from './admin';
-import { userStatsV1 } from './stats';
+import { usersStatsV1, userStatsV1 } from './stats';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -389,6 +389,15 @@ app.get('/user/stats/v1',(req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     res.json(userStatsV1(token));
+  } catch(e){
+    next(e);
+  }
+});
+
+app.get('/users/stats/v1',(req: Request, res: Response, next) => {
+  try {
+    const token = req.header('token');
+    res.json(usersStatsV1(token));
   } catch(e){
     next(e);
   }

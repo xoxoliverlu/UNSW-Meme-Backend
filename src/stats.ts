@@ -15,10 +15,10 @@ export function userStatsV1(token: string) {
   let totalMsgs = 0;
 
   data.channels.forEach((channel) => {
-   totalMsgs += channel.messages.length;
+    totalMsgs += channel.messages.length;
   });
   data.dms.forEach((dm) => {
-   totalMsgs += dm.messages.length;
+    totalMsgs += dm.messages.length;
   });
 
   const channelsUserJoined = data.channels.filter((channel) =>
@@ -30,28 +30,67 @@ export function userStatsV1(token: string) {
 
   let totalMsgSent = 0;
   data.channels.forEach((channel) => {
-    channel.messages.forEach(message => {
-      if (message.uId === uId){
+    channel.messages.forEach((message) => {
+      if (message.uId === uId) {
         totalMsgSent++;
       }
-    })
-  })
+    });
+  });
   data.dms.forEach((dm) => {
-    dm.messages.forEach(message => {
-      if (message.uId === uId){
+    dm.messages.forEach((message) => {
+      if (message.uId === uId) {
         totalMsgSent++;
       }
-    })
-  })
+    });
+  });
 
-  let involvementRate =  (channelsUserJoined + dmsUserJoined + totalMsgSent) / (totalChannels + totalDms + totalMsgs) ;
+  let involvementRate =
+    (channelsUserJoined + dmsUserJoined + totalMsgSent) /
+    (totalChannels + totalDms + totalMsgs);
   if (involvementRate > 1) {
     involvementRate = 1;
   }
   return {
-    channelsJoined : data.channelStats.find(user => user.uId === uId).stat,
-    dmsJoined : data.dmStats.find(user => user.uId === uId).stat,
-    messagesSent: data.messageStats.find(user => user.uId === uId).stat,
-    involvementRate: (channelsUserJoined + dmsUserJoined + totalMsgSent) / (totalChannels + totalDms + totalMsgs) 
+    userStats: {
+      channelsJoined: data.channelStats.find((user) => user.uId === uId).stat,
+      dmsJoined: data.dmStats.find((user) => user.uId === uId).stat,
+      messagesSent: data.messageStats.find((user) => user.uId === uId).stat,
+      involvementRate,
+    },
+  };
+}
+
+export function usersStatsV1(token: string) {
+  const data = getData();
+  // Checks if the token is valid.
+  const auth = data.tokens.find((item) => item.token === token);
+  if (!auth) {
+    throw HTTPError(403, "Invalid Token.");
   }
+  const { uId } = auth;
+
+  const totalUsers = data.users.length;
+  let numUsersActive = 0;
+  data.users.forEach((user) => {
+    if (
+      data.channels.find((channel) => channel.allMembers.includes(uId)) ||
+      data.dms.find((dm) => dm.ownerId === uId) ||
+      data.dms.find((dm) => dm.uIds.includes(uId))
+    ) {
+      numUsersActive++;
+    }
+  });
+
+  let utilizationRate = numUsersActive / totalUsers;
+  if (utilizationRate > 1) {
+    utilizationRate = 1;
+  }
+  return {
+    workspaceStats: {
+      channelsExist: data.channelsExistStat,
+      dmsExist: data.dmsExistStat,
+      messagesExist: data.msgsExistStat,
+      utilizationRate,
+    },
+  };
 }

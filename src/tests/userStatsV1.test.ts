@@ -12,7 +12,7 @@ describe('Successful', () => {
   test('Successful Case', () => {
     const register = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
     const register2 = requestAuthRegister('oilverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-    const userStats1 =requestUserStats(register2.token);
+    const {userStats: userStats1} =requestUserStats(register2.token);
     expect(userStats1).toHaveProperty('channelsJoined');
     expect(userStats1).toHaveProperty('dmsJoined');
     expect(userStats1).toHaveProperty('messagesSent');
@@ -24,7 +24,7 @@ describe('Successful', () => {
     const {dmId} = requestDmCreate(register.token,[register2.authUserId]);
     requestMessageSend(register.token, channel.channelId, 'cat');
     requestMessageSendDm(register2.token,dmId, "Hello");
-    const userStats = requestUserStats(register.token);
+    const {userStats} = requestUserStats(register.token);
     expect(userStats).toHaveProperty('channelsJoined');
     expect(userStats).toHaveProperty('dmsJoined');
     expect(userStats).toHaveProperty('messagesSent');

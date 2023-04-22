@@ -51,6 +51,7 @@ const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
   // set Stat Data
   let statIndex = data.dmStats.findIndex(item => item.uId === auth.uId);
   data.dmStats[statIndex].stat.push({numDmsJoined:countUserDms(auth.uId), timeStamp: Date.now()});
+  data.dmsExistStat.push({numDmsExist: data.dms.length, timeStamp: Date.now()});
   setData(data);
 
   return {
@@ -100,6 +101,8 @@ const dmRemoveV1 = (token: string, dmId: number) => {
   data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
   setData(data);
 
+  data.dmsExistStat.push({numDmsExist: data.dms.length, timeStamp: Date.now()});
+  setData(data);
   return {};
 };
 

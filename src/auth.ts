@@ -202,6 +202,11 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   data.channelStats.push({uId: newUserId, stat:[{numChannelsJoined: 0, timeStamp: Date.now()}]});
   data.dmStats.push({uId: newUserId, stat:[{numDmsJoined: 0, timeStamp: Date.now()}]});
   data.messageStats.push({uId: newUserId, stat:[{numMessagesSent: 0, timeStamp: Date.now()}]});
+  if(data.users.length === 1){
+    data.channelsExistStat.push({numChannelsExist: 0, timeStamp: Date.now()});
+    data.dmsExistStat.push({numDmsExist: 0, timeStamp: Date.now()});
+    data.msgsExistStat.push({numMessagesExist: 0, timeStamp: Date.now()});
+  }
   setData(data);
   return {
     authUserId: newUser.uId,

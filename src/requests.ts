@@ -614,3 +614,20 @@ export const requestUserStats = (token: string) => {
   }
   return res.statusCode;
 }; 
+
+
+export const requestUsersStats = (token: string) => {
+  const res = request(
+    'GET',
+        `${url}:${port}` + '/users/stats/v1',
+        {
+          headers: {
+            token: token
+          }
+        }
+  );
+  if (res.statusCode === 200) {
+    return JSON.parse(res.getBody() as string);
+  }
+  return res.statusCode;
+}; 
