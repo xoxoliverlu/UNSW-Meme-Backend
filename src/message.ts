@@ -110,10 +110,14 @@ export async function messageEditV1 (token: string, messageId: number, message: 
   const data = await dbGetData();
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (!authUser) {
+    throw HTTPError(403,'Invalid Token');
+  }
   const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
-  if (message.length > 1000) return { error: 'Message is greater than 1000 characters' };
+  if (message.length > 1000) {
+    throw HTTPError(400, 'Invalid Length');
+  }
 
   // Create variables
   let chosenMessage: Message;
@@ -136,7 +140,9 @@ export async function messageEditV1 (token: string, messageId: number, message: 
     }
   }
 
-  if (!chosenMessage) return { error: 'message id is invalid' };
+  if (!chosenMessage) {
+    throw HTTPError(400, 'Invalid Message');
+  }
 
   // checks whether authenticated user is either the sender of the message
   // or a member of the conversation's owner memver
@@ -162,7 +168,7 @@ export async function messageEditV1 (token: string, messageId: number, message: 
   }
 
   if (!validToEdit) {
-    return { error: 'message was not sent by this user, and user does not have owner permissions' };
+    throw HTTPError(403,'No permission to edit');
   }
 
   // checking if the messages to be edited exists in a DM
@@ -193,7 +199,7 @@ export async function messageRemoveV1(token: string, messageId: number) {
   const user = data.tokens.find((u) => u.token === token);
   // checks if provided token is valid - checks if the user object exists
   if (!user) {
-    return { error: 'token is invalid' };
+    throw HTTPError(403,'Invalid Token');
   }
 
   const { uId } = user;
@@ -210,13 +216,13 @@ export async function messageRemoveV1(token: string, messageId: number) {
     channelMsg = channel.messages.findIndex((message) => message.messageId === messageId);
     if (channelMsg !== -1) {
       if (channel.messages[channelMsg].uId !== uId) {
-        return { error: 'This user did not send this message.' };
+        throw HTTPError(403, 'No permission');
       }
     }
 
     const channelPermission = channel.ownerMembers.includes(uId);
     if (!channelPermission) {
-      return { error: 'This user does not have permission to delete this message.' };
+      throw HTTPError(403,'No permission');
     }
     if (channelMsg && channelPermission) {
       channel.messages.splice(channelMsg, 1);
@@ -234,20 +240,20 @@ export async function messageRemoveV1(token: string, messageId: number) {
     const dmPermission = dm.ownerId === uId;
     if (dmMsg !== -1) {
       if (dm.messages[dmMsg].uId !== uId) {
-        return { error: 'This user did not send this message.' };
+        throw HTTPError(403, 'No permission');
       }
     }
     // if channelMsg and dMsg variables are still null - messageId does not refer
     // to a valid message within a channel/DM
     if (!dmPermission) {
-      return { error: 'This user does not have permission to delete this message.' };
+      throw HTTPError(403, 'No permission');
     }
     if (dmMsg && dmPermission) {
       dm.messages.splice(dmMsg, 1);
     }
   });
   if (!dmMsg || !channelMsg) {
-    return { error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' };
+    throw HTTPError(400, 'invalid message id');
   }
 
   await data.save();

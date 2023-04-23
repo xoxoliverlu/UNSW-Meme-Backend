@@ -320,18 +320,19 @@ app.post('/message/senddm/v2', async (req: Request, res: Response, next) => {
   }
 });
 
-app.put('/message/edit/v1', async (req: Request, res: Response, next) => {
+app.put('/message/edit/v2', async (req: Request, res: Response, next) => {
   try {
-    const { token, messageId, message } = req.body;
+    const token = req.header('token');
+    const {  messageId, message } = req.body;
     res.json(await messageEditV1(token, messageId, message));
   } catch (error) {
     next(error);
   }
 });
 
-app.delete('/message/remove/v1', async (req: Request, res: Response, next) => {
+app.delete('/message/remove/v2', async (req: Request, res: Response, next) => {
   try {
-    const token = req.query.token as string;
+    const token = req.header('token');
     const messageId = parseInt(req.query.messageId as string);
     res.json(await messageRemoveV1(token, messageId));
   } catch (error) {
@@ -352,7 +353,7 @@ app.get('/dm/messages/v1', async (req: Request, res: Response, next) => {
 
 app.get('/channel/messages/v3', async (req: Request, res: Response, next) => {
   try {
-    const token = req.query.token as string;
+    const token = req.header('token');
     const channelId = parseInt(req.query.channelId as string);
     const start = parseInt(req.query.start as string);
     res.json(await channelMessagesV1(token, channelId, start));
