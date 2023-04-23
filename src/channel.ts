@@ -152,20 +152,24 @@ export async function channelMessagesV1(token: string, channelId: number, start:
   const data = await dbGetData();
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (!authUser) {
+    throw HTTPError(403, "Invalid Token");
+  }
   const authUserId = authUser.uId;
   // Check for valid channelId
   const channel = data.channels.find((c) => c.channelId === channelId);
-  if (!channel) return { error: 'channelId is not valid' };
+  if (!channel) {
+    throw HTTPError(400, "Invalid Channel Id");
+  }
 
-  if (!channel.allMembers.includes(authUserId)) return { error: 'user is not a member in the channel' };
+  if (!channel.allMembers.includes(authUserId)) {
+    throw HTTPError(403, "User is not a member of the channel");
+  }
 
   const numberOfMessages = channel.messages.length;
 
   if (start > numberOfMessages) {
-    return {
-      error: 'start parameter is greater than the total number of messages'
-    };
+    throw HTTPError(400, "Start is invalid");
   }
 
   let end: number;

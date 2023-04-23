@@ -284,7 +284,7 @@ app.get('/dm/details/v2', async (req: Request, res: Response, next) => {
     const token = req.header('token');
     const dmId = parseInt(req.query.dmId as string);
     res.json(await dmDetailsV2(token, dmId));
-  }catch(e){
+  } catch(e){
     next(e);
   }
 });
@@ -350,11 +350,15 @@ app.get('/dm/messages/v1', async (req: Request, res: Response, next) => {
   }
 });
 
-app.get('/channel/messages/v2', async (req: Request, res: Response, next) => {
-  const token = req.query.token as string;
-  const channelId = parseInt(req.query.channelId as string);
-  const start = parseInt(req.query.start as string);
-  res.json(await channelMessagesV1(token, channelId, start));
+app.get('/channel/messages/v3', async (req: Request, res: Response, next) => {
+  try {
+    const token = req.query.token as string;
+    const channelId = parseInt(req.query.channelId as string);
+    const start = parseInt(req.query.start as string);
+    res.json(await channelMessagesV1(token, channelId, start));
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get('/search/v1', async (req: Request, res: Response, next) => {

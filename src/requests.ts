@@ -419,7 +419,7 @@ export const requestDmLeave = (token: string, dmId: number) => {
 export const requestChannelMessages = (token: string, channelId: number, start: number) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channel/messages/v2',
+        `${url}:${port}` + '/channel/messages/v3',
         {
           qs: {
             token: token,
