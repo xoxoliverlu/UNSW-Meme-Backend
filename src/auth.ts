@@ -101,7 +101,7 @@ const authLoginV2 = async (email: string, password: string) => {
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
-const authLoginV1 = async (email: string, password: string): authUserId => {
+const authLoginV1 = async (email: string, password: string)=> {
   // const data = getData();
   // Error checking
   // change email to lowercase
@@ -132,7 +132,7 @@ const authLoginV1 = async (email: string, password: string): authUserId => {
   * @returns {object} - Invalid parameters from authRegisterV1
 */
 
-const authRegisterV2 = async (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
+const authRegisterV2 = async (email: string, password: string, nameFirst: string, nameLast: string) => {
   // Iteration 1
   const register = await authRegisterV1(email, password, nameFirst, nameLast);
   const token = await generateToken(register.authUserId);
@@ -160,7 +160,7 @@ const authRegisterV2 = async (email: string, password: string, nameFirst: string
   * @returns {object} - error if email is invaid or already exists, password is too short,
   *                     or there is invalid length for firstName or lastName
 */
-const authRegisterV1 = async (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
+const authRegisterV1 = async (email: string, password: string, nameFirst: string, nameLast: string) => {
   const data = await dbGetData();
   // Conver email to lowercase
   email = email.toLowerCase();
