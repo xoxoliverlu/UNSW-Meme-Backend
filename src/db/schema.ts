@@ -13,8 +13,8 @@ export const messageSchema = new Schema<Message>({
 const channelSchema = new Schema<Channel>({
     channelId: Number,
     name: String,
-    ownerMembers: Number,
-    allMembers: Number,
+    ownerMembers: [Number],
+    allMembers: [Number],
     messages: [messageSchema],
 })
 

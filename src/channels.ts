@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
 import { countUserChannels } from './helper';
 
@@ -12,8 +12,8 @@ import { countUserChannels } from './helper';
  * @returns {object} - containing channelId
  * @returns {object} - error if name or token is invalid
  */
-const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
-  const data = getData();
+const channelsCreateV3 = async (token: string, name: string, isPublic: boolean) => {
+  const data = await dbGetData();
   const user = data.tokens.find(item => item.token === token);
   if (!user) {
     throw HTTPError(403, 'Token invalid.');
@@ -43,12 +43,12 @@ const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
   });
 
 
-  setData(data);
+  await data.save();
   // add stat data
   let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
   data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()});
   data.channelsExistStat.push({numChannelsExist: data.channels.length, timeStamp: Date.now()});
-  setData(data);
+  await data.save();
   
   return {
     channelId: Id
@@ -63,8 +63,8 @@ const channelsCreateV3 = (token: string, name: string, isPublic: boolean) => {
  * @returns {object} - error if token is invalid.
  * @returns {object} - list of all channels user is a part of.
  */
-const channelsListV3 = (token: string) => {
-  const data = getData();
+const channelsListV3 = async (token: string) => {
+  const data = await dbGetData();
   // Check for valid token
   const user = data.tokens.find(item => item.token === token);
   if (!user) {
@@ -92,8 +92,8 @@ const channelsListV3 = (token: string) => {
  * @returns {object} - error if token is invalid.
  * @returns {object} - list of all channels.
  */
-const channelsListAllV3 = (token: string) => {
-  const data = getData();
+const channelsListAllV3 = async (token: string) => {
+  const data = await dbGetData();
   // Invalid token
   const user = data.tokens.find(item => item.token === token);
   if (!user) {

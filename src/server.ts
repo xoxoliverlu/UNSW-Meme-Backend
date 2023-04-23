@@ -99,7 +99,7 @@ app.post('/channels/create/v3', async (req: Request, res: Response, next) => {
   try {
     const { name, isPublic } = req.body;
     const token = req.header('token');
-    const result = channelsCreateV3(token, name, isPublic);
+    const result = await channelsCreateV3(token, name, isPublic);
     res.json(result);
   } catch (e) {
     next(e);
@@ -109,7 +109,7 @@ app.post('/channels/create/v3', async (req: Request, res: Response, next) => {
 app.get('/channels/list/v3', async (req: Request, res: Response, next) => {
   try{
     const token = req.header('token');
-    const result = channelsListV3(token);
+    const result = await channelsListV3(token);
     res.json(result);
   } catch (e) {
     next(e);
@@ -119,7 +119,7 @@ app.get('/channels/list/v3', async (req: Request, res: Response, next) => {
 app.get('/channels/listall/v3', async (req: Request, res: Response, next) => {
   try{
     const token = req.header('token');
-    const result = channelsListAllV3(token);
+    const result = await channelsListAllV3(token);
     res.json(result);
   } catch (e){
     next(e)
