@@ -251,49 +251,49 @@ app.post('/channel/leave/v2', async (req: Request, res: Response, next) => {
 /****************
 *  DM Routes  *
 ****************/
-app.post('/dm/create/v2', (req: Request, res: Response, next) => {
+app.post('/dm/create/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.headers.token as string;
     const { uIds } = req.body;
-    res.json(dmCreateV1(token, uIds));
+    res.json(await dmCreateV1(token, uIds));
   } catch (err) {
     next(err);
   }
 });
 
-app.get('/dm/list/v2', (req: Request, res: Response, next) => {
+app.get('/dm/list/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.headers.token as string;
-    res.json(dmListV1(token));
+    res.json(await dmListV1(token));
   } catch (err) {
     next(err);
   }
 });
 
-app.delete('/dm/remove/v2', (req: Request, res: Response, next) => {
+app.delete('/dm/remove/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.headers.token as string;
     const dmId = parseInt(req.query.dmId as string);
-    res.json(dmRemoveV1(token, dmId));
+    res.json(await dmRemoveV1(token, dmId));
   } catch (err) {
     next(err);
   }
 });
-app.get('/dm/details/v2', (req: Request, res: Response, next) => {
+app.get('/dm/details/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     const dmId = parseInt(req.query.dmId as string);
-    res.json(dmDetailsV2(token, dmId));
+    res.json(await dmDetailsV2(token, dmId));
   }catch(e){
     next(e);
   }
 });
 
-app.post('/dm/leave/v2', (req: Request, res: Response, next) => {
+app.post('/dm/leave/v2', async (req: Request, res: Response, next) => {
   try{
     const { dmId } = req.body;
     const token = req.header('token');
-    res.json(dmLeaveV2(token, dmId));
+    res.json(await dmLeaveV2(token, dmId));
   }catch(e){
     next(e);
   }

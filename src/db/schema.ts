@@ -37,7 +37,7 @@ export const userSchema = new Schema<User>({
 const dmSchema = new Schema<DM>({
     dmId: Number,
     name: String,
-    ownerId: String,
+    ownerId: Number,
     uIds: [Number],
     messages: [messageSchema],
 })

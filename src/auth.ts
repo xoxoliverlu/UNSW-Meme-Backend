@@ -22,8 +22,8 @@ type authUserId = {
  * @param {number} uId - The user ID for which the token should be generated.
  * @returns {string} - The generated unique token.
  */
-const generateToken = (uId: number): string => {
-  const data = getData();
+const generateToken = async (uId: number) => {
+  const data = await dbGetData();
   // Generate unique token
   const tokenString = uuidv4().toString();
   // Add to dataset
@@ -49,8 +49,8 @@ const generateToken = (uId: number): string => {
  * @param {string} nameLast - The last name of the user.
  * @returns {string} - The generated unique handle.
  */
-const generateHandle = (nameFirst: string, nameLast: string): string => {
-  const data = getData();
+const generateHandle = async (nameFirst: string, nameLast: string) => {
+  const data = await dbGetData();
   const baseHandle = (nameFirst + nameLast).toLowerCase().replace(/[^a-z0-9]/gi, '').slice(0, 20);
 
   let newHandle = baseHandle;
@@ -80,7 +80,7 @@ const authLoginV2 = async (email: string, password: string) => {
   // Iteration 1
   const login = await authLoginV1(email, password);
   // Iteration 2 + 3
-  const token = generateToken(login.authUserId);
+  const token = await generateToken(login.authUserId);
 
   const data = await dbGetData();
   data.tokens.push({token: token, uId: login.authUserId})
@@ -135,7 +135,7 @@ const authLoginV1 = async (email: string, password: string): authUserId => {
 const authRegisterV2 = async (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   // Iteration 1
   const register = await authRegisterV1(email, password, nameFirst, nameLast);
-  const token = generateToken(register.authUserId);
+  const token = await generateToken(register.authUserId);
 
   const data = await dbGetData();
   data.tokens.push({token: token, uId: register.authUserId})
@@ -181,7 +181,7 @@ const authRegisterV1 = async (email: string, password: string, nameFirst: string
   if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError(400, 'First name or last name is too long'); }
 
   // Generate handle
-  const newHandle = generateHandle(nameFirst, nameLast);
+  const newHandle = await generateHandle(nameFirst, nameLast);
   // Generate userID
   const newUserId = data.lastAuthUserId + 1;
   data.lastAuthUserId = newUserId;
