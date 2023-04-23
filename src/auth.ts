@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import { Notif } from './interfaces';
 import config from './config.json';
 import validator from 'validator';
@@ -76,11 +76,15 @@ const generateHandle = (nameFirst: string, nameLast: string): string => {
   * @return {string} = a unique string as the token
   * @returns {object} - error if email or password is invalid
 */
-const authLoginV2 = (email: string, password: string): authUserId => {
+const authLoginV2 = async (email: string, password: string) => {
   // Iteration 1
-  const login = authLoginV1(email, password);
+  const login = await authLoginV1(email, password);
   // Iteration 2 + 3
   const token = generateToken(login.authUserId);
+
+  const data = await dbGetData();
+  data.tokens.push({token: token, uId: login.authUserId})
+  await data.save();
   return {
     token: token,
     authUserId: login.authUserId
@@ -97,10 +101,11 @@ const authLoginV2 = (email: string, password: string): authUserId => {
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
-const authLoginV1 = (email: string, password: string): authUserId => {
-  const data = getData();
+const authLoginV1 = async (email: string, password: string): authUserId => {
+  // const data = getData();
   // Error checking
   // change email to lowercase
+  const data = await dbGetData();
   email = email.toLowerCase();
   // Check if email exists
   const user = data.users.find((item) => item.email === email);
@@ -131,6 +136,10 @@ const authRegisterV2 = async (email: string, password: string, nameFirst: string
   // Iteration 1
   const register = await authRegisterV1(email, password, nameFirst, nameLast);
   const token = generateToken(register.authUserId);
+
+  const data = await dbGetData();
+  data.tokens.push({token: token, uId: register.authUserId})
+  await data.save();
   return {
     token: token,
     authUserId: register.authUserId,
@@ -152,7 +161,7 @@ const authRegisterV2 = async (email: string, password: string, nameFirst: string
   *                     or there is invalid length for firstName or lastName
 */
 const authRegisterV1 = async (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
-  const data = getData();
+  const data = await dbGetData();
   // Conver email to lowercase
   email = email.toLowerCase();
   // Eliminate white spaces in parameters
@@ -208,22 +217,8 @@ const authRegisterV1 = async (email: string, password: string, nameFirst: string
     data.dmsExistStat.push({numDmsExist: 0, timeStamp: Date.now()});
     data.msgsExistStat.push({numMessagesExist: 0, timeStamp: Date.now()});
   }
-  setData(data);
 
-  const newUserDb = new UserM({
-    uId: newUserId,
-    nameFirst: nameFirst,
-    nameLast: nameLast,
-    email: email,
-    password: passwordHash,
-    handleStr: newHandle,
-    globalPerm: permission,
-    notification: [] as Notif[],
-    profileImgUrl: `http://${HOST}:${PORT}/img/default.jpg`,
-  });
-  const dataStore = (await DataStoreM.findOne({}))
-  dataStore.users.push(newUserDb);
-  await dataStore.save();
+  await data.save();
   return {
     authUserId: newUser.uId,
   };
@@ -238,16 +233,17 @@ const authRegisterV1 = async (email: string, password: string, nameFirst: string
   * @returns {object} - empty object when the token is successfully deleted
   * @returns {object} - error if the token is not valid
 */
-const authLogoutV1 = (token: string) => {
-  const data = getData();
+const authLogoutV1 = async (token: string) => {
+  const data = await dbGetData();
   // Check for a valid token
   const auth = data.tokens.find(item => item.token === token);
+  console.log(data);
   if (!auth) {
     throw HTTPError(403, 'Invalid Token. ');
   }
   // Delete token
   data.tokens = data.tokens.filter((pair) => pair.token !== auth.token);
-  setData(data);
+  data.save();
   return {};
 };
 

@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import validator from 'validator';
 import { Profile } from './interfaces';
 import HTTPError from 'http-errors';
@@ -18,8 +18,8 @@ import HTTPError from 'http-errors';
  * @returns {string} - email of the user.
  * @returns {string} - handle string of the user.
  */
-export function userProfileV3(token: string, uId: number) {
-  const data = getData();
+export async function userProfileV3(token: string, uId: number) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {

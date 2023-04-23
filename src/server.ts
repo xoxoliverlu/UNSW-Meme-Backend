@@ -83,10 +83,10 @@ app.post('/auth/login/v3', async (req: Request, res: Response, next) => {
   }
 });
 
-app.post('/auth/logout/v2', (req: Request, res: Response, next) => {
+app.post('/auth/logout/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.headers.token as string;
-    res.json(authLogoutV1(token));
+    res.json(await authLogoutV1(token));
   } catch (err) {
     next(err);
   }
@@ -139,11 +139,11 @@ process.on('SIGINT', () => {
 /****************
 *  User Routes  *
 ****************/
-app.get('/user/profile/v3', (req: Request, res: Response, next) => {
+app.get('/user/profile/v3', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     const uId = parseInt(req.query.uId as string);
-    res.json(userProfileV3(token, uId));
+    res.json(await userProfileV3(token, uId));
   } catch(e){
     next(e);
   }

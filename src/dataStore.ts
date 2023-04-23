@@ -71,4 +71,8 @@ export async function fileLoadData() {
   }
 }
 
+export async function dbGetData(){
+  return await DataStoreM.findOne({});
+}
+
 export { getData, setData };
