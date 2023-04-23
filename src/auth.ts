@@ -5,6 +5,7 @@ import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
 import { v4 as uuidv4 } from 'uuid';
+import { DataStoreM, UserM } from './db/models';
 
 const saltRounds = 10;
 
@@ -126,9 +127,9 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   * @returns {object} - Invalid parameters from authRegisterV1
 */
 
-const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
+const authRegisterV2 = async (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   // Iteration 1
-  const register = authRegisterV1(email, password, nameFirst, nameLast);
+  const register = await authRegisterV1(email, password, nameFirst, nameLast);
   const token = generateToken(register.authUserId);
   return {
     token: token,
@@ -150,7 +151,7 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
   * @returns {object} - error if email is invaid or already exists, password is too short,
   *                     or there is invalid length for firstName or lastName
 */
-const authRegisterV1 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
+const authRegisterV1 = async (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
   const data = getData();
   // Conver email to lowercase
   email = email.toLowerCase();
@@ -208,6 +209,21 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
     data.msgsExistStat.push({numMessagesExist: 0, timeStamp: Date.now()});
   }
   setData(data);
+
+  const newUserDb = new UserM({
+    uId: newUserId,
+    nameFirst: nameFirst,
+    nameLast: nameLast,
+    email: email,
+    password: passwordHash,
+    handleStr: newHandle,
+    globalPerm: permission,
+    notification: [] as Notif[],
+    profileImgUrl: `http://${HOST}:${PORT}/img/default.jpg`,
+  });
+  const dataStore = (await DataStoreM.findOne({}))
+  dataStore.users.push(newUserDb);
+  await dataStore.save();
   return {
     authUserId: newUser.uId,
   };

@@ -30,13 +30,14 @@ app.use(morgan('dev'));
 
 // connect app to mongodb
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/test')
+const connection = mongoose.connect('mongodb://127.0.0.1:27017/test')
   .then(() => {
     console.log("mongodb successfully connected")
   })
   .catch((err: any) => {
     console.log(err);
   })
+
 
 const PORT: number = parseInt(process.env.PORT || config.port);
 const HOST: string = process.env.IP || 'localhost';
@@ -64,10 +65,10 @@ const server = app.listen(PORT, HOST, () => {
 /****************
 *  Auth Routes  *
 ****************/
-app.post('/auth/register/v3', (req: Request, res: Response, next) => {
+app.post('/auth/register/v3', async (req: Request, res: Response, next) => {
   try {
     const { email, password, nameFirst, nameLast } = req.body;
-    res.json(authRegisterV2(email, password, nameFirst, nameLast));
+    res.json(await authRegisterV2(email, password, nameFirst, nameLast));
   } catch (err) {
     next(err);
   }
@@ -127,8 +128,8 @@ app.get('/channels/listall/v3', async (req: Request, res: Response, next) => {
 /*****************
 *  Other Routes
 *****************/
-app.delete('/clear/v1', (req: Request, res: Response, next) => {
-  clearV1();
+app.delete('/clear/v1', async (req: Request, res: Response, next) => {
+  await clearV1();
   res.json({});
 });
 // For coverage, handle Ctrl+C gracefully
