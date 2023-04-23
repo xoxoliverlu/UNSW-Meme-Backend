@@ -52,8 +52,8 @@ export async function userProfileV3(token: string, uId: number) {
  *
  * @returns {array} users - returns array of user objects
  */
-export function usersAllV2(token: string) {
-  const data = getData();
+export async function usersAllV2(token: string) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -88,12 +88,12 @@ export function usersAllV2(token: string) {
  *
  * @returns {} - no return if no errors.
  */
-export function userProfileSetNameV2(
+export async function userProfileSetNameV2(
   token: string,
   nameFirst: string,
   nameLast: string
 ) {
-  const data = getData();
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -114,7 +114,7 @@ export function userProfileSetNameV2(
 
   userInfo.nameFirst = nameFirst;
   userInfo.nameLast = nameLast;
-  setData(data);
+  data.save();
 
   return {};
 }
@@ -132,8 +132,8 @@ export function userProfileSetNameV2(
  *
  * @returns {} - no return if no errors.
  */
-export function userProfileSetEmailV2(token: string, email: string) {
-  const data = getData();
+export async function userProfileSetEmailV2(token: string, email: string) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -154,7 +154,7 @@ export function userProfileSetEmailV2(token: string, email: string) {
   }
 
   userInfo.email = email;
-  setData(data);
+  await data.save();
 
   return {};
 }
@@ -172,8 +172,8 @@ export function userProfileSetEmailV2(token: string, email: string) {
  *
  * @returns {} - no return if no errors.
  */
-export function userProfileSetHandleV2(token: string, handleStr: string) {
-  const data = getData();
+export async function userProfileSetHandleV2(token: string, handleStr: string) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -200,7 +200,7 @@ export function userProfileSetHandleV2(token: string, handleStr: string) {
   }
 
   userInfo.handleStr = handleStr;
-  setData(data);
+  data.save();
 
   return {};
 }

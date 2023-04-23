@@ -1,6 +1,7 @@
 import { channel } from "diagnostics_channel";
-import { getData } from "./dataStore";
+import { dbGetData, getData } from "./dataStore";
 import { Message } from "./interfaces";
+import HTTPError from 'http-errors';
 /**
  * Given a query substring, returns a collection of messages in all of the channels/DMs
  * that the user has joined that contain the query (case-insensitive). There is no expected order for these messages.
@@ -11,18 +12,18 @@ import { Message } from "./interfaces";
  * @returns {} - empty object on success
  * @returns {error: String} - error if token and channelid are invalid
  */
-export function searchV1(token: string, queryStr: string) {
-  const data = getData();
+export async function searchV1(token: string, queryStr: string) {
+  const data = await dbGetData();
   const user = data.tokens.find((item) => item.token === token);
 
   // valid token
-  if (user === undefined) {
-    return { error: "token" };
+  if (!user) {
+    throw HTTPError(403,"Invalid Token");
   }
   const {uId} = user;
   // qreryStr Length
   if (queryStr.length < 1 || queryStr.length > 1000){
-    return { error: 'length'};
+    throw HTTPError(400,"Invalid Length")
   }
 
   let result: Message[] = [];

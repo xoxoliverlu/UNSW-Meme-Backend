@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
 
 /**
@@ -20,8 +20,8 @@ import HTTPError from 'http-errors';
  *
  * @returns {} - nil return if no errors.
  */
-export function adminUserPermissionChangeV1(token: string, uId: number, permissionId: number) {
-  const data = getData();
+export async function adminUserPermissionChangeV1(token: string, uId: number, permissionId: number) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -54,7 +54,7 @@ export function adminUserPermissionChangeV1(token: string, uId: number, permissi
   }
 
   userInfo.globalPerm = permissionId;
-  setData(data);
+  data.save();
 
   return {};
 }

@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import { countMessages, countUserMessages } from './helper';
 import { Message, Channel, DM } from './interfaces';
 import HTTPError from 'http-errors';
@@ -10,8 +10,8 @@ import HTTPError from 'http-errors';
  * @returns messageId - the message identifier
  */
 
-export function messageSendV2(token: string, channelId: number, message: string) {
-  const data = getData();
+export async function messageSendV2(token: string, channelId: number, message: string) {
+  const data = await dbGetData();
 
   const user = data.tokens.find((u) => u.token === token);
   if (!user) {
@@ -43,11 +43,11 @@ export function messageSendV2(token: string, channelId: number, message: string)
   };
   channel.messages.push(newMessage);
 
-  setData(data);
+  await data.save();
   let statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
   data.messageStats[statIndex].stat.push({numMessagesSent: countUserMessages(user.uId),timeStamp:Date.now()});
   data.msgsExistStat.push({numMessagesExist: countMessages(),timeStamp:Date.now()});
-  setData(data);
+  await data.save();
   
   return { messageId };
 }
@@ -60,8 +60,8 @@ export function messageSendV2(token: string, channelId: number, message: string)
  * @returns messageId - message identifier
  */
 
-export function messageSendDmV2(token: string, dmId: number, message: string) {
-  const data = getData();
+export async function messageSendDmV2(token: string, dmId: number, message: string) {
+  const data = await dbGetData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
 
@@ -90,11 +90,11 @@ export function messageSendDmV2(token: string, dmId: number, message: string) {
     timeSent: Math.floor(Date.now() / 1000)
   };
   dm.messages.push(newMessage);
-  setData(data);
+  await data.save();
   let statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
   data.messageStats[statIndex].stat.push({numMessagesSent: countUserMessages(user.uId),timeStamp:Date.now()})
   data.msgsExistStat.push({numMessagesExist: countMessages(),timeStamp:Date.now()});
-  setData(data);
+  await data.save();
   return { messageId };
 }
 /**
@@ -106,8 +106,8 @@ export function messageSendDmV2(token: string, dmId: number, message: string) {
  * @returns
  */
 
-export function messageEditV1 (token: string, messageId: number, message: string) {
-  const data = getData();
+export async function messageEditV1 (token: string, messageId: number, message: string) {
+  const data = await dbGetData();
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
@@ -175,7 +175,7 @@ export function messageEditV1 (token: string, messageId: number, message: string
     messageRemoveV1(token, messageId);
   } else {
     chosenMessage.message = message;
-    setData(data);
+    await data.save();
   }
   return {};
 }
@@ -188,8 +188,8 @@ export function messageEditV1 (token: string, messageId: number, message: string
  * @returns {}
  */
 
-export function messageRemoveV1(token: string, messageId: number) {
-  const data = getData();
+export async function messageRemoveV1(token: string, messageId: number) {
+  const data = await dbGetData();
   const user = data.tokens.find((u) => u.token === token);
   // checks if provided token is valid - checks if the user object exists
   if (!user) {
@@ -250,6 +250,6 @@ export function messageRemoveV1(token: string, messageId: number) {
     return { error: 'messageId does not refer to a valid message within a channel/DM that the authorised user has joined' };
   }
 
-  setData(data);
+  await data.save();
   return {};
 }

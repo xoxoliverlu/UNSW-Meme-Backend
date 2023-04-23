@@ -148,13 +148,12 @@ export async function channelInviteV1(token: string, channelId: number, uId: num
  * @returns {end: number} - end message index
  * @returns {object} - error if user id and channelid are invalid or start index is > 50
  */
-export function channelMessagesV1(token: string, channelId: number, start: number) {
-  const data = getData();
+export async function channelMessagesV1(token: string, channelId: number, start: number) {
+  const data = await dbGetData();
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
   const authUserId = authUser.uId;
-
   // Check for valid channelId
   const channel = data.channels.find((c) => c.channelId === channelId);
   if (!channel) return { error: 'channelId is not valid' };
@@ -184,7 +183,7 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
         message: m.message,
         timeSent: m.timeSent
       }));
-  setData(data);
+  await data.save();
   return { messages, end, start };
 }
 
