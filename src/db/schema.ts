@@ -16,6 +16,7 @@ const channelSchema = new Schema<Channel>({
     ownerMembers: [Number],
     allMembers: [Number],
     messages: [messageSchema],
+    isPublic: Boolean,
 })
 
 const tokenPairSchema = new Schema<TokenPair>({

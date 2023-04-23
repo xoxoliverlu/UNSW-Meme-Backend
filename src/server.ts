@@ -190,29 +190,29 @@ app.put('/user/profile/sethandle/v2', (req: Request, res: Response, next) => {
 /*****************
 * Channel Routes *
 *****************/
-app.get('/channel/details/v3', (req: Request, res: Response, next) => {
+app.get('/channel/details/v3', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     const channelId = parseInt(req.query.channelId as string);
-    res.json(channelDetailsV3(token, channelId));
+    res.json(await channelDetailsV3(token, channelId));
   } catch(e){
     next(e);
   }
 });
 
-app.post('/channel/join/v3', (req: Request, res: Response, next) => {
+app.post('/channel/join/v3', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     const { channelId } = req.body;
-    res.json(channelJoinV3(token, channelId));
+    res.json(await channelJoinV3(token, channelId));
   } catch(e){
     next(e);
   }
 });
 
-app.post('/channel/invite/v2', (req: Request, res: Response, next) => {
+app.post('/channel/invite/v2', async (req: Request, res: Response, next) => {
   const { token, channelId, uId } = req.body;
-  res.json(channelInviteV1(token, channelId, uId));
+  res.json(await channelInviteV1(token, channelId, uId));
 });
 
 
@@ -220,7 +220,7 @@ app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
   try{
     const { channelId, uId } = req.body;
     const token = req.header('token');
-    res.json(channelAddOwnerV2(token, channelId, uId));
+    res.json(await channelAddOwnerV2(token, channelId, uId));
   } catch(e){
     next(e);
   }
@@ -230,7 +230,7 @@ app.post('/channel/removeowner/v2', async (req: Request, res: Response, next) =>
   try{
     const { channelId, uId } = req.body;
     const token = req.header('token');
-    const result = channelRemoveOwnerV2(token,channelId,uId);
+    const result = await channelRemoveOwnerV2(token,channelId,uId);
     res.json(result);
   } catch (e) {
     next(e);
@@ -242,7 +242,7 @@ app.post('/channel/leave/v2', async (req: Request, res: Response, next) => {
   try{
     const { channelId } = req.body;
     const token = req.header('token');
-    const result = channelLeaveV2(token,channelId);
+    const result = await channelLeaveV2(token,channelId);
     res.json(result);
   } catch(e) {
     next(e);

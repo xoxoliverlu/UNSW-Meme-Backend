@@ -20,10 +20,10 @@ export function validUserId(id: number) {
 * that are in the members/owners array. It takes each uId and
 * returns basic information about the user.
 */
-export function memberObject(token: string, users: number[]) {
+export async function memberObject(token: string, users: number[]) {
   const result = [];
   for (const userId of users) {
-    const user = userProfileV3(token, userId);
+    const user = await userProfileV3(token, userId);
     result.push({
       uId: user.user.uId,
       nameFirst: user.user.nameFirst,
