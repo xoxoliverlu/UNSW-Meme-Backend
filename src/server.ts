@@ -30,7 +30,7 @@ app.use(morgan('dev'));
 
 // connect app to mongodb
 const mongoose = require('mongoose');
-const connection = mongoose.connect('mongodb://127.0.0.1:27017/test')
+const connection = mongoose.connect('mongodb+srv://z5295931:comp1531.23t1@comp1531.e0jq4sr.mongodb.net/?retryWrites=true&w=majority')
   .then(() => {
     console.log("mongodb successfully connected")
   })
@@ -336,6 +336,7 @@ app.delete('/message/remove/v2', async (req: Request, res: Response, next) => {
     const messageId = parseInt(req.query.messageId as string);
     res.json(await messageRemoveV1(token, messageId));
   } catch (error) {
+    console.log("catching: " + error);
     next(error);
   }
 });

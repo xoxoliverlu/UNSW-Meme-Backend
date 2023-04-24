@@ -47,28 +47,16 @@ function getData(): DataStore {
 // Hint: this function might be useful to edit in iteration 2
 function setData(newData: DataStore) {
   data = newData;
-  fileSaveData();
 }
 
 // Saves the data to a file dataStore.json
-function fileSaveData() {
-  fs.writeFileSync('data.json', JSON.stringify(data));
-}
+// function fileSaveData() {
+//   fs.writeFileSync('data.json', JSON.stringify(data));
+// }
 
 // Updates the data based on the contents of dataStore.json
 export async function fileLoadData() {
-  // Check that the file exists locally
-  if (!fs.existsSync('data.json')) {
-    fileSaveData();
-  } else {
-    // Read the file
-    data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-    // Drop previous data()
-    await DataStoreM.deleteMany({});
-    // create new data
-    const newData = new DataStoreM(data);
-    await newData.save();
-  }
+  return await dbGetData();
 }
 
 export async function dbGetData(){

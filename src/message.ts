@@ -178,7 +178,7 @@ export async function messageEditV1 (token: string, messageId: number, message: 
 
   // Change message
   if (message === '') {
-    messageRemoveV1(token, messageId);
+    await messageRemoveV1(token, messageId);
   } else {
     chosenMessage.message = message;
     await data.save();
