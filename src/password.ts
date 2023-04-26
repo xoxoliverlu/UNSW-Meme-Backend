@@ -1,8 +1,9 @@
-import { getData, setData } from "./dataStore"
+import { dbGetData, getData, setData } from "./dataStore"
 import { PwReset } from "./interfaces";
+import HTTPError from 'http-errors';
 
-export const pwResetReqeust = (email: string) => {
-  const data = getData();
+export const pwResetReqeust = async (email: string) => {
+  const data = await dbGetData();
   const nodemailer = require("nodemailer");
 
   const target = data.users.find(user => user.email === email);
@@ -45,18 +46,18 @@ export const pwResetReqeust = (email: string) => {
   data.tokens.filter(item => item.uId === target.uId).forEach(item => data.tokens.splice(data.tokens.indexOf(item),1));
   data.pwReset.push({uId: target.uId, code: resetCode});
 
-  setData(data);
+  await data.save();
   return {};
 }
 
-export const pwReset = (resetCode: string, newPassword: string) => {
-  const data = getData();
+export const pwReset = async (resetCode: string, newPassword: string) => {
+  const data = await dbGetData();
   let target = data.pwReset.find((item: PwReset) => item.code === resetCode);
   if (!target){
-    return {error: 'invalid reset code'};
+    throw HTTPError(400,"invalid reset code");
   }
   if (newPassword.length < 6){
-    return {error: 'length'};
+    throw HTTPError(400,"Invalid Length");
   }
   console.log('finding user');
   let index = data.users.findIndex(item => item.uId == target.uId);
@@ -67,6 +68,6 @@ export const pwReset = (resetCode: string, newPassword: string) => {
       data.users[index].password = hash;
     });
   });
-  setData(data);
+  data.save();
   return {};
 }

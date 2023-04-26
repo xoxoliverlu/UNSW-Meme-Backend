@@ -1,4 +1,4 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import { memberObject } from './helper';
 import { countUserChannels } from './helper';
 import HTTPError from 'http-errors';
@@ -18,8 +18,8 @@ import HTTPError from 'http-errors';
  * @returns {array} - List of owner members of the channel.
  * @returns {array} - List of all members of the channel.
  */
-export function channelDetailsV3(token: string, channelId: number) {
-  const data = getData();
+export async function channelDetailsV3(token: string, channelId: number) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find(item => item.token === token);
   if (!auth) {
@@ -28,6 +28,7 @@ export function channelDetailsV3(token: string, channelId: number) {
   const authUserId = auth.uId;
   // checks if the channelId is valid
   const channel = data.channels.find(element => element.channelId === channelId);
+  console.log(channel);
   if (!channel) {
     throw HTTPError(400, 'Invalid channelId.');
   }
@@ -36,8 +37,8 @@ export function channelDetailsV3(token: string, channelId: number) {
     throw HTTPError(403, 'User is not a member of the channel.');
   } 
   // Creates arrays using the helper function.
-  const owners = memberObject(token, channel.ownerMembers);
-  const members = memberObject(token, channel.allMembers);
+  const owners = await memberObject(token, channel.ownerMembers);
+  const members = await memberObject(token, channel.allMembers);
 
   return {
     name: channel.name,
@@ -61,8 +62,8 @@ export function channelDetailsV3(token: string, channelId: number) {
  *
  * @returns {} - returns nothing if there is no errors.
  */
-export function channelJoinV3(token: string, channelId: number) {
-  const data = getData();
+export async function channelJoinV3(token: string, channelId: number) {
+  const data = await dbGetData();
   // Checks if the token and userId is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -88,10 +89,10 @@ export function channelJoinV3(token: string, channelId: number) {
   }
   // Add member to channel
   channel.allMembers.push(authUserId);
-  setData(data);
+  await data.save();
   let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
   data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()})
-  setData(data);
+  await data.save();
   return {};
 }
 /**
@@ -106,8 +107,8 @@ export function channelJoinV3(token: string, channelId: number) {
  * @returns {}
  * @returns {object} - error if any of the Id's are invalid
  */
-export function channelInviteV1(token: string, channelId: number, uId: number) {
-  const data = getData();
+export async function channelInviteV1(token: string, channelId: number, uId: number) {
+  const data = await dbGetData();
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
   if (authUser === undefined) return { error: 'token is invalid' };
@@ -130,7 +131,7 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
   if (!authInChannel) return { error: 'authUserId is not in the channel' };
 
   data.channels[channelIndex].allMembers.push(uId);
-  setData(data);
+  data.save();
   return {};
 }
 /**
@@ -147,25 +148,28 @@ export function channelInviteV1(token: string, channelId: number, uId: number) {
  * @returns {end: number} - end message index
  * @returns {object} - error if user id and channelid are invalid or start index is > 50
  */
-export function channelMessagesV1(token: string, channelId: number, start: number) {
-  const data = getData();
+export async function channelMessagesV1(token: string, channelId: number, start: number) {
+  const data = await dbGetData();
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
-  if (authUser === undefined) return { error: 'token is invalid' };
+  if (!authUser) {
+    throw HTTPError(403, "Invalid Token");
+  }
   const authUserId = authUser.uId;
-
   // Check for valid channelId
   const channel = data.channels.find((c) => c.channelId === channelId);
-  if (!channel) return { error: 'channelId is not valid' };
+  if (!channel) {
+    throw HTTPError(400, "Invalid Channel Id");
+  }
 
-  if (!channel.allMembers.includes(authUserId)) return { error: 'user is not a member in the channel' };
+  if (!channel.allMembers.includes(authUserId)) {
+    throw HTTPError(403, "User is not a member of the channel");
+  }
 
   const numberOfMessages = channel.messages.length;
 
   if (start > numberOfMessages) {
-    return {
-      error: 'start parameter is greater than the total number of messages'
-    };
+    throw HTTPError(400, "Start is invalid");
   }
 
   let end: number;
@@ -183,7 +187,7 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
         message: m.message,
         timeSent: m.timeSent
       }));
-  setData(data);
+  await data.save();
   return { messages, end, start };
 }
 
@@ -197,13 +201,13 @@ export function channelMessagesV1(token: string, channelId: number, start: numbe
  * @returns {} - empty object on success
  * @returns {error: String} - error if user id and channelid are invalid
  */
-export function channelAddOwnerV2(
+export async function channelAddOwnerV2(
   token: string,
   channelId: number,
   uId: number
 ) {
   // Check for valid token
-  const data = getData();
+  const data = await dbGetData();
   const user = data.tokens.find((item) => item.token === token);
 
   if (!user) {
@@ -240,6 +244,8 @@ export function channelAddOwnerV2(
   }
 
   channel.ownerMembers.push(uId);
+  
+  await data.save();
   return {};
 }
 
@@ -253,13 +259,13 @@ export function channelAddOwnerV2(
  * @returns {} - empty object on success
  * @returns {error: String} - error if user id and channelid are invalid
  */
-export function channelRemoveOwnerV2(
+export async function channelRemoveOwnerV2(
   token: string,
   channelId: number,
   uId: number
 ) {
   // Valid token
-  const data = getData();
+  const data = await dbGetData();
   const user = data.tokens.find((item) => item.token === token);
 
   if (!user) {
@@ -304,7 +310,7 @@ export function channelRemoveOwnerV2(
   const index = channel.ownerMembers.indexOf(uId);
   channel.ownerMembers.splice(index, 1);
 
-  setData(data);
+  await data.save();
   return {};
 }
 
@@ -318,8 +324,8 @@ export function channelRemoveOwnerV2(
  * @returns {} - empty object on success
  * @returns {error: String} - error if token and channelid are invalid
  */
-export function channelLeaveV2(token: string, channelId: number) {
-  const data = getData();
+export async function channelLeaveV2(token: string, channelId: number) {
+  const data = await dbGetData();
   const user = data.tokens.find((item) => item.token === token);
 
   // valid token
@@ -345,6 +351,6 @@ export function channelLeaveV2(token: string, channelId: number) {
     channel.ownerMembers.splice(index, 1);
   }
 
-  setData(data);
+  await data.save();
   return {};
 }

@@ -13,14 +13,14 @@ describe('/channel/messages/v2', () => {
     test('channelId does not refer to a valid channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const data = requestChannelMessages(register.token, -1, 0);
-      expect(data).toStrictEqual({ error: 'channelId is not valid' });
+      expect(data).toStrictEqual(400);
     });
 
     test('start is greater than the total number of messages in the channel', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const data = requestChannelMessages(register.token, channel.channelId, 3);
-      expect(data).toStrictEqual({ error: 'start parameter is greater than the total number of messages' });
+      expect(data).toStrictEqual(400);
     });
 
     test('the user is not a member of the channel', () => {
@@ -28,13 +28,13 @@ describe('/channel/messages/v2', () => {
       const register2 = requestAuthRegister('dimpigarnepudi@gmail.com', 'dimpigarnepudi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const data = requestChannelMessages(register2.token, channel.channelId, 0);
-      expect(data).toStrictEqual({ error: 'user is not a member in the channel' });
+      expect(data).toStrictEqual(403);
     });
     test('token is invalidl', () => {
       const register = requestAuthRegister('dimpi@gmail.com', 'dimpidimpidimpi', 'dimpi', 'garnepudi');
       const channel = requestChannelsCreate(register.token, 'Birthday Party', true);
       const data = requestChannelMessages(register.token + '1', channel.channelId, 0);
-      expect(data).toStrictEqual({ error: 'token is invalid' });
+      expect(data).toStrictEqual(403);
     });
   });
   describe('success', () => {

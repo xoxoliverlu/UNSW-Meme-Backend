@@ -1,5 +1,5 @@
 
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import { Message } from './interfaces';
 import { countUserDms, memberObject } from './helper';
 import HTTPError from 'http-errors';
@@ -9,8 +9,8 @@ import HTTPError from 'http-errors';
  * @param uIds - array of users dm is directed to
  * @returns Object containing dmId
  */
-const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
-  const data = getData();
+const dmCreateV1 = async (token: string, uIds: number[]) => {
+  const data = await dbGetData();
 
   // Check for invalid and duplicate user IDs in uIds
   const uniqueUserIds = new Set<number>();
@@ -47,12 +47,12 @@ const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
   };
 
   data.dms.push(dm);
-  setData(data);
+  await data.save();
   // set Stat Data
   let statIndex = data.dmStats.findIndex(item => item.uId === auth.uId);
   data.dmStats[statIndex].stat.push({numDmsJoined:countUserDms(auth.uId), timeStamp: Date.now()});
   data.dmsExistStat.push({numDmsExist: data.dms.length, timeStamp: Date.now()});
-  setData(data);
+  await data.save();
 
   return {
     dmId: newId,
@@ -64,14 +64,14 @@ const dmCreateV1 = (token: string, uIds: number[]): { dmId: number} => {
  * @param {token} - the user making the call
  * @returns {dms} - array of objects with dms the user is in
 */
-const dmListV1 = (token: string) => {
+const dmListV1 = async (token: string) => {
   // check if token passed in is valid
   // Invalid token
-  const data = getData();
+  const data = await dbGetData();
 
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) throw HTTPError(403, "Invalid token");
-
+  console.log(data.dms);
   const dms = data.dms
     .filter((dm) => auth.uId === dm.ownerId || dm.uIds.includes(auth.uId))
     .map(({ dmId, name }) => ({ dmId, name }));
@@ -85,10 +85,10 @@ const dmListV1 = (token: string) => {
  * @param {number} dmId- dmId to be removed from
  * @returns {void}
 */
-const dmRemoveV1 = (token: string, dmId: number) => {
+const dmRemoveV1 = async (token: string, dmId: number) => {
   // Error check
   // Valid token
-  const data = getData();
+  const data = await dbGetData();
   // check if token passed in is valid
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) throw HTTPError(403, "Invalid Token");
@@ -99,10 +99,10 @@ const dmRemoveV1 = (token: string, dmId: number) => {
   // Check if user is original creator
   if (validDmId.ownerId !== auth.uId) throw HTTPError(403, "User is not the original creator or is no longer in the channel");
   data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
-  setData(data);
+  await data.save();
 
   data.dmsExistStat.push({numDmsExist: data.dms.length, timeStamp: Date.now()});
-  setData(data);
+  await data.save();
   return {};
 };
 
@@ -116,8 +116,8 @@ const dmRemoveV1 = (token: string, dmId: number) => {
  * @returns {name, member} - object with name and member properties
  * @returns {error: String} - error if token and dmId are invalid
  */
-const dmDetailsV2 = (token: string, dmId: number) => {
-  const data = getData();
+const dmDetailsV2 = async (token: string, dmId: number) => {
+  const data = await dbGetData();
   const user = data.tokens.find((item) => item.token === token);
   if (!user) {
     throw HTTPError(403, 'Invalid Token.');
@@ -135,7 +135,7 @@ const dmDetailsV2 = (token: string, dmId: number) => {
 
   const membersUIds = dm.uIds.slice();
   membersUIds.push(dm.ownerId);
-  const membersInfo = memberObject(token, membersUIds);
+  const membersInfo = await memberObject(token, membersUIds);
 
   return {
     name: dm.name,
@@ -156,8 +156,8 @@ const dmDetailsV2 = (token: string, dmId: number) => {
  *
  * @returns {} - no return if no errors.
  */
-const dmLeaveV2 = (token: string, dmId: number) => {
-  const data = getData();
+const dmLeaveV2 = async(token: string, dmId: number) => {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -173,7 +173,7 @@ const dmLeaveV2 = (token: string, dmId: number) => {
     // Since the owner isn't in the members array, setting
     // the id to -1 indicates that the owner has left.
     dm.ownerId = -1;
-    setData(data);
+    await data.save();
     return {};
   }
   // Checks if the user is a member of the dm.
@@ -185,7 +185,7 @@ const dmLeaveV2 = (token: string, dmId: number) => {
   const index = dm.uIds.indexOf(user.uId);
   if (index > -1) { dm.uIds.splice(index, 1); }
 
-  setData(data);
+  await data.save();
   return {};
 };
 /**
@@ -201,8 +201,8 @@ const dmLeaveV2 = (token: string, dmId: number) => {
  * @returns { }
  */
 
-const dmMessagesV1 = (token: string, dmId: number, start: number) => {
-  const data = getData();
+const dmMessagesV1 = async (token: string, dmId: number, start: number) => {
+  const data = await dbGetData();
   const dm = data.dms.find((d) => d.dmId === dmId);
   // searches for dm with the Id
   if (!dm) return { error: 'invalid dmId' };
@@ -244,7 +244,7 @@ const dmMessagesV1 = (token: string, dmId: number, start: number) => {
         message: m.message,
         timeSent: m.timeSent
       }));
-  setData(data);
+  await data.save();
   return { messages, end, start };
 };
 

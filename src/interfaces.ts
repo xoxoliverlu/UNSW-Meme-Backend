@@ -38,7 +38,7 @@ export interface DM {
 }
 
 export interface DataStore {
-    pwReset: any;
+    pwReset: pwReset[];
     users: User[];
     channels: Channel[];
     tokens: TokenPair[];
@@ -73,7 +73,7 @@ export interface Notif {
     notificationMessage: string;
 }
 
-interface channelStat {
+export interface channelStat {
     numChannelsJoined: number;
     timeStamp: number;
 }
@@ -83,7 +83,7 @@ export interface ChannelStat {
     stat: channelStat[];
 }
 
-interface dmStat {
+export interface dmStat {
     numDmsJoined: number;
     timeStamp: number;
 }
@@ -93,7 +93,7 @@ export interface DmStat {
     stat: dmStat[];
 }
 
-interface messageStat {
+export interface messageStat {
     numMessagesSent: number;
     timeStamp: number;
 }
@@ -103,15 +103,6 @@ export interface MessageStat {
     stat: messageStat[];
 }
 
-interface messageStat {
-    numMessagesSent: number;
-    timeStamp: number;
-}
-
-export interface MessageStat {
-    uId: number;
-    stat: messageStat[];
-}
 
 export interface ChannelsExistStat {
     numChannelsExist: number;
@@ -126,4 +117,9 @@ export interface DmsExistStat {
 export interface msgsExistStat {
     numMessagesExist: number;
     timeStamp: number;
+}
+
+export interface pwReset {
+    uId: number,
+    code: string,
 }

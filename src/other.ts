@@ -1,8 +1,8 @@
 import { setData } from './dataStore';
+import { DataStoreM } from './db/models';
 import { User, Channel, TokenPair, DM, PwReset, ChannelStat, DmStat, MessageStat, ChannelsExistStat, DmsExistStat, msgsExistStat } from './interfaces';
-type clearReturn = Record<string, never>;
 
-const clearV1 = (): clearReturn => {
+const clearV1 = async ()=> {
   const data = {
     users: [] as User[],
     channels: [] as Channel[],
@@ -22,6 +22,9 @@ const clearV1 = (): clearReturn => {
     msgsExistStat: [] as msgsExistStat[],
   };
   setData(data);
+  await DataStoreM.deleteMany({});
+  const newDataDb = new DataStoreM(data);
+  await newDataDb.save();
   return {};
 };
 

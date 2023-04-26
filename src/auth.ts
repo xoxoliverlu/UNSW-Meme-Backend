@@ -1,10 +1,11 @@
-import { getData, setData } from './dataStore';
+import { dbGetData, getData, setData } from './dataStore';
 import { Notif } from './interfaces';
 import config from './config.json';
 import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
 import { v4 as uuidv4 } from 'uuid';
+import { DataStoreM, UserM } from './db/models';
 
 const saltRounds = 10;
 
@@ -21,8 +22,8 @@ type authUserId = {
  * @param {number} uId - The user ID for which the token should be generated.
  * @returns {string} - The generated unique token.
  */
-const generateToken = (uId: number): string => {
-  const data = getData();
+const generateToken = async (uId: number) => {
+  const data = await dbGetData();
   // Generate unique token
   const tokenString = uuidv4().toString();
   // Add to dataset
@@ -48,8 +49,8 @@ const generateToken = (uId: number): string => {
  * @param {string} nameLast - The last name of the user.
  * @returns {string} - The generated unique handle.
  */
-const generateHandle = (nameFirst: string, nameLast: string): string => {
-  const data = getData();
+const generateHandle = async (nameFirst: string, nameLast: string) => {
+  const data = await dbGetData();
   const baseHandle = (nameFirst + nameLast).toLowerCase().replace(/[^a-z0-9]/gi, '').slice(0, 20);
 
   let newHandle = baseHandle;
@@ -75,11 +76,15 @@ const generateHandle = (nameFirst: string, nameLast: string): string => {
   * @return {string} = a unique string as the token
   * @returns {object} - error if email or password is invalid
 */
-const authLoginV2 = (email: string, password: string): authUserId => {
+const authLoginV2 = async (email: string, password: string) => {
   // Iteration 1
-  const login = authLoginV1(email, password);
+  const login = await authLoginV1(email, password);
   // Iteration 2 + 3
-  const token = generateToken(login.authUserId);
+  const token = await generateToken(login.authUserId);
+
+  const data = await dbGetData();
+  data.tokens.push({token: token, uId: login.authUserId})
+  await data.save();
   return {
     token: token,
     authUserId: login.authUserId
@@ -96,10 +101,11 @@ const authLoginV2 = (email: string, password: string): authUserId => {
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
-const authLoginV1 = (email: string, password: string): authUserId => {
-  const data = getData();
+const authLoginV1 = async (email: string, password: string)=> {
+  // const data = getData();
   // Error checking
   // change email to lowercase
+  const data = await dbGetData();
   email = email.toLowerCase();
   // Check if email exists
   const user = data.users.find((item) => item.email === email);
@@ -126,10 +132,14 @@ const authLoginV1 = (email: string, password: string): authUserId => {
   * @returns {object} - Invalid parameters from authRegisterV1
 */
 
-const authRegisterV2 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
+const authRegisterV2 = async (email: string, password: string, nameFirst: string, nameLast: string) => {
   // Iteration 1
-  const register = authRegisterV1(email, password, nameFirst, nameLast);
-  const token = generateToken(register.authUserId);
+  const register = await authRegisterV1(email, password, nameFirst, nameLast);
+  const token = await generateToken(register.authUserId);
+
+  const data = await dbGetData();
+  data.tokens.push({token: token, uId: register.authUserId})
+  await data.save();
   return {
     token: token,
     authUserId: register.authUserId,
@@ -150,8 +160,8 @@ const authRegisterV2 = (email: string, password: string, nameFirst: string, name
   * @returns {object} - error if email is invaid or already exists, password is too short,
   *                     or there is invalid length for firstName or lastName
 */
-const authRegisterV1 = (email: string, password: string, nameFirst: string, nameLast: string): authUserId => {
-  const data = getData();
+const authRegisterV1 = async (email: string, password: string, nameFirst: string, nameLast: string) => {
+  const data = await dbGetData();
   // Conver email to lowercase
   email = email.toLowerCase();
   // Eliminate white spaces in parameters
@@ -171,7 +181,7 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   if (nameFirst.length > 50 || nameLast.length > 50) { throw HTTPError(400, 'First name or last name is too long'); }
 
   // Generate handle
-  const newHandle = generateHandle(nameFirst, nameLast);
+  const newHandle = await generateHandle(nameFirst, nameLast);
   // Generate userID
   const newUserId = data.lastAuthUserId + 1;
   data.lastAuthUserId = newUserId;
@@ -207,7 +217,8 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
     data.dmsExistStat.push({numDmsExist: 0, timeStamp: Date.now()});
     data.msgsExistStat.push({numMessagesExist: 0, timeStamp: Date.now()});
   }
-  setData(data);
+
+  await data.save();
   return {
     authUserId: newUser.uId,
   };
@@ -222,16 +233,17 @@ const authRegisterV1 = (email: string, password: string, nameFirst: string, name
   * @returns {object} - empty object when the token is successfully deleted
   * @returns {object} - error if the token is not valid
 */
-const authLogoutV1 = (token: string) => {
-  const data = getData();
+const authLogoutV1 = async (token: string) => {
+  const data = await dbGetData();
   // Check for a valid token
   const auth = data.tokens.find(item => item.token === token);
+  console.log(data);
   if (!auth) {
     throw HTTPError(403, 'Invalid Token. ');
   }
   // Delete token
   data.tokens = data.tokens.filter((pair) => pair.token !== auth.token);
-  setData(data);
+  data.save();
   return {};
 };
 

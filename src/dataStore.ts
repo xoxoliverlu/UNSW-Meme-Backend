@@ -1,4 +1,5 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
+import { DataStoreM } from './db/models';
 import { User, Channel, TokenPair, DataStore, DM, PwReset, ChannelStat, DmStat, MessageStat, ChannelsExistStat, DmsExistStat, msgsExistStat } from './interfaces';
 import fs from 'fs';
 let data = {
@@ -46,23 +47,20 @@ function getData(): DataStore {
 // Hint: this function might be useful to edit in iteration 2
 function setData(newData: DataStore) {
   data = newData;
-  fileSaveData();
 }
 
 // Saves the data to a file dataStore.json
-function fileSaveData() {
-  fs.writeFileSync('data.json', JSON.stringify(data));
-}
+// function fileSaveData() {
+//   fs.writeFileSync('data.json', JSON.stringify(data));
+// }
 
 // Updates the data based on the contents of dataStore.json
-export function fileLoadData() {
-  // Check that the file exists locally
-  if (!fs.existsSync('data.json')) {
-    fileSaveData();
-  } else {
-    // Read the file
-    data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-  }
+export async function fileLoadData() {
+  return await dbGetData();
+}
+
+export async function dbGetData(){
+  return await DataStoreM.findOne({});
 }
 
 export { getData, setData };

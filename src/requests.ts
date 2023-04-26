@@ -419,12 +419,14 @@ export const requestDmLeave = (token: string, dmId: number) => {
 export const requestChannelMessages = (token: string, channelId: number, start: number) => {
   const res = request(
     'GET',
-        `${url}:${port}` + '/channel/messages/v2',
+        `${url}:${port}` + '/channel/messages/v3',
         {
           qs: {
-            token: token,
             channelId: channelId,
             start: start
+          },
+          headers: {
+            token
           }
         }
   );
@@ -495,11 +497,13 @@ export const requestMessageSendDm = (token: string, dmId: number, message: strin
 export const requestMessageRemove = (token: string, messageId: number) => {
   const res = request(
     'DELETE',
-        `${url}:${port}` + '/message/remove/v1',
+        `${url}:${port}` + '/message/remove/v2',
         {
           qs: {
-            token: token,
             messageId: messageId
+          },
+          headers: {
+            token
           }
         }
   );
@@ -512,12 +516,14 @@ export const requestMessageRemove = (token: string, messageId: number) => {
 export const requestMessageEdit = (token: string, messageId: number, message: string) => {
   const res = request(
     'PUT',
-        `${url}:${port}` + '/message/edit/v1',
+        `${url}:${port}` + '/message/edit/v2',
         {
           json: {
-            token: token,
             messageId: messageId,
             message: message
+          },
+          headers: {
+            token
           }
         }
   );

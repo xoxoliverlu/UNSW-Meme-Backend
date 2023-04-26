@@ -1,8 +1,8 @@
-import { getData } from "./dataStore";
+import { dbGetData, getData } from "./dataStore";
 import HTTPError from "http-errors";
 
-export function userStatsV1(token: string) {
-  const data = getData();
+export async function userStatsV1(token: string) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
@@ -60,8 +60,8 @@ export function userStatsV1(token: string) {
   };
 }
 
-export function usersStatsV1(token: string) {
-  const data = getData();
+export async function usersStatsV1(token: string) {
+  const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
