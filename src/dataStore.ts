@@ -2,6 +2,7 @@
 import { DataStoreM } from './db/models';
 import { User, Channel, TokenPair, DataStore, DM, PwReset, ChannelStat, DmStat, MessageStat, ChannelsExistStat, DmsExistStat, msgsExistStat } from './interfaces';
 import fs from 'fs';
+import { clearV1 } from './other';
 let data = {
   users: [] as User[],
   channels: [] as Channel[],
@@ -56,6 +57,7 @@ function setData(newData: DataStore) {
 
 // Updates the data based on the contents of dataStore.json
 export async function fileLoadData() {
+  await clearV1();
   return await dbGetData();
 }
 
