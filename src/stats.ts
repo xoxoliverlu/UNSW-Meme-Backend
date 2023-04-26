@@ -1,12 +1,12 @@
-import { dbGetData, getData } from "./dataStore";
-import HTTPError from "http-errors";
+import { dbGetData } from './dataStore';
+import HTTPError from 'http-errors';
 
 export async function userStatsV1(token: string) {
   const data = await dbGetData();
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
-    throw HTTPError(403, "Invalid Token.");
+    throw HTTPError(403, 'Invalid Token.');
   }
   const { uId } = auth;
 
@@ -65,7 +65,7 @@ export async function usersStatsV1(token: string) {
   // Checks if the token is valid.
   const auth = data.tokens.find((item) => item.token === token);
   if (!auth) {
-    throw HTTPError(403, "Invalid Token.");
+    throw HTTPError(403, 'Invalid Token.');
   }
   const { uId } = auth;
 

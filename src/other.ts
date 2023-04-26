@@ -2,7 +2,7 @@ import { setData } from './dataStore';
 import { DataStoreM } from './db/models';
 import { User, Channel, TokenPair, DM, PwReset, ChannelStat, DmStat, MessageStat, ChannelsExistStat, DmsExistStat, msgsExistStat } from './interfaces';
 
-const clearV1 = async ()=> {
+const clearV1 = async () => {
   const data = {
     users: [] as User[],
     channels: [] as Channel[],

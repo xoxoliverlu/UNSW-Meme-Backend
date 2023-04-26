@@ -1,4 +1,4 @@
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import validator from 'validator';
 import { Profile } from './interfaces';
 import HTTPError from 'http-errors';
@@ -106,10 +106,10 @@ export async function userProfileSetNameV2(
   nameLast = nameLast.trim();
 
   if (nameFirst.length < 1 || nameLast.length < 1) {
-    throw HTTPError(400, 'First name or last name is too short')
+    throw HTTPError(400, 'First name or last name is too short');
   }
   if (nameFirst.length > 50 || nameLast.length > 50) {
-    throw HTTPError(400, 'First name or last name is too long')
+    throw HTTPError(400, 'First name or last name is too long');
   }
 
   userInfo.nameFirst = nameFirst;

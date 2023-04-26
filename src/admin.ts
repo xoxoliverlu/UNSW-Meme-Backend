@@ -1,4 +1,4 @@
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import HTTPError from 'http-errors';
 
 /**

@@ -1,4 +1,4 @@
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import HTTPError from 'http-errors';
 import { countUserChannels } from './helper';
 
@@ -42,14 +42,13 @@ const channelsCreateV3 = async (token: string, name: string, isPublic: boolean) 
     ownerMembers: [authUserId],
   });
 
-
   await data.save();
   // add stat data
-  let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
-  data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()});
-  data.channelsExistStat.push({numChannelsExist: data.channels.length, timeStamp: Date.now()});
+  const statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
+  data.channelStats[statIndex].stat.push({ numChannelsJoined: countUserChannels(authUserId), timeStamp: Date.now() });
+  data.channelsExistStat.push({ numChannelsExist: data.channels.length, timeStamp: Date.now() });
   await data.save();
-  
+
   return {
     channelId: Id
   };

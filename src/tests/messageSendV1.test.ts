@@ -54,7 +54,7 @@ describe('Testing messagesendv1', () => {
   test('Token invalid', () => {
     const register = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
     const channel = requestChannelsCreate(register.token, 'channelNew', true);
-    const message = requestMessageSend(register.token + "Error", channel.channelId, 'money');
+    const message = requestMessageSend(register.token + 'Error', channel.channelId, 'money');
     expect(message).toStrictEqual(403);
   });
 });

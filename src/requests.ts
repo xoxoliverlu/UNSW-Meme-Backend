@@ -275,7 +275,7 @@ export const requestChannelAddOwner = (token: string, channelId: number, uId: nu
             channelId: channelId,
             uId: uId
           },
-          headers:{
+          headers: {
             token: token
           }
         }
@@ -550,7 +550,7 @@ export const requestSearch = (token: string, queryStr: string) => {
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-}
+};
 
 export const requestPwResetRequest = (email: string) => {
   const res = request(
@@ -566,7 +566,7 @@ export const requestPwResetRequest = (email: string) => {
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-}
+};
 
 export const requestPwReset = (resetCode:string, newPassword: string) => {
   const res = request(
@@ -583,7 +583,7 @@ export const requestPwReset = (resetCode:string, newPassword: string) => {
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-}
+};
 
 export const requestAdminUserPermissionChange = (token: string, uId: number, permissionId: number) => {
   const res = request(
@@ -603,7 +603,7 @@ export const requestAdminUserPermissionChange = (token: string, uId: number, per
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-}; 
+};
 
 export const requestUserStats = (token: string) => {
   const res = request(
@@ -619,8 +619,7 @@ export const requestUserStats = (token: string) => {
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-}; 
-
+};
 
 export const requestUsersStats = (token: string) => {
   const res = request(
@@ -636,4 +635,4 @@ export const requestUsersStats = (token: string) => {
     return JSON.parse(res.getBody() as string);
   }
   return res.statusCode;
-}; 
+};

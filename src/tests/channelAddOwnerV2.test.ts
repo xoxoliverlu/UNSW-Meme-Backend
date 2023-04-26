@@ -156,7 +156,7 @@ test('error uId is already an owner ', () => {
     channelId,
     authUserId1
   );
-  
+
   expect(res).toEqual(400);
 });
 
@@ -183,7 +183,6 @@ test("error user doesn't have owner permission ", () => {
     channelId,
     authUserId3
   );
-
 
   expect(res).toEqual(403);
 });

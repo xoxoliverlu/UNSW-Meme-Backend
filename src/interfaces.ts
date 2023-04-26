@@ -5,6 +5,56 @@ export interface Message {
     timeSent: number;
 }
 
+export interface channelStat {
+    numChannelsJoined: number;
+    timeStamp: number;
+}
+
+export interface ChannelStat {
+    uId: number;
+    stat: channelStat[];
+}
+
+export interface dmStat {
+    numDmsJoined: number;
+    timeStamp: number;
+}
+
+export interface DmStat {
+    uId: number;
+    stat: dmStat[];
+}
+
+export interface messageStat {
+    numMessagesSent: number;
+    timeStamp: number;
+}
+
+export interface MessageStat {
+    uId: number;
+    stat: messageStat[];
+}
+
+export interface ChannelsExistStat {
+    numChannelsExist: number;
+    timeStamp: number;
+}
+
+export interface DmsExistStat {
+    numDmsExist: number;
+    timeStamp: number;
+}
+
+export interface msgsExistStat {
+    numMessagesExist: number;
+    timeStamp: number;
+}
+
+export interface pwReset {
+    uId: number,
+    code: string,
+}
+
 export interface Channel {
     channelId: number;
     name: string;
@@ -62,7 +112,7 @@ export interface Profile {
     email: string;
     handleStr: string;
 }
- 
+
 export interface PwReset {
     uId: number;
     code: string;
@@ -71,55 +121,4 @@ export interface Notif {
     channelId: number;
     dmId: number;
     notificationMessage: string;
-}
-
-export interface channelStat {
-    numChannelsJoined: number;
-    timeStamp: number;
-}
-
-export interface ChannelStat {
-    uId: number;
-    stat: channelStat[];
-}
-
-export interface dmStat {
-    numDmsJoined: number;
-    timeStamp: number;
-}
-
-export interface DmStat {
-    uId: number;
-    stat: dmStat[];
-}
-
-export interface messageStat {
-    numMessagesSent: number;
-    timeStamp: number;
-}
-
-export interface MessageStat {
-    uId: number;
-    stat: messageStat[];
-}
-
-
-export interface ChannelsExistStat {
-    numChannelsExist: number;
-    timeStamp: number;
-}
-
-export interface DmsExistStat {
-    numDmsExist: number;
-    timeStamp: number;
-}
-
-export interface msgsExistStat {
-    numMessagesExist: number;
-    timeStamp: number;
-}
-
-export interface pwReset {
-    uId: number,
-    code: string,
 }

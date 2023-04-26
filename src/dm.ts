@@ -1,5 +1,5 @@
 
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import { Message } from './interfaces';
 import { countUserDms, memberObject } from './helper';
 import HTTPError from 'http-errors';
@@ -16,14 +16,14 @@ const dmCreateV1 = async (token: string, uIds: number[]) => {
   const uniqueUserIds = new Set<number>();
   uIds.forEach((id) => {
     const user = data.users.find((element) => element.uId === id);
-    if (!user) throw HTTPError(400, "Invalid uId in uIds");
+    if (!user) throw HTTPError(400, 'Invalid uId in uIds');
     if (uniqueUserIds.has(id)) throw HTTPError(400, "Duplicate uId's in uIds");
     uniqueUserIds.add(id);
   });
 
   // Invalid token
   const auth = data.tokens.find((item) => item.token === token);
-  if (!auth) throw HTTPError(403, "Invalid token");
+  if (!auth) throw HTTPError(403, 'Invalid token');
 
   // Increment lastDmId and create a new DM
   const newId = ++data.lastDmId;
@@ -49,9 +49,9 @@ const dmCreateV1 = async (token: string, uIds: number[]) => {
   data.dms.push(dm);
   await data.save();
   // set Stat Data
-  let statIndex = data.dmStats.findIndex(item => item.uId === auth.uId);
-  data.dmStats[statIndex].stat.push({numDmsJoined:countUserDms(auth.uId), timeStamp: Date.now()});
-  data.dmsExistStat.push({numDmsExist: data.dms.length, timeStamp: Date.now()});
+  const statIndex = data.dmStats.findIndex(item => item.uId === auth.uId);
+  data.dmStats[statIndex].stat.push({ numDmsJoined: countUserDms(auth.uId), timeStamp: Date.now() });
+  data.dmsExistStat.push({ numDmsExist: data.dms.length, timeStamp: Date.now() });
   await data.save();
 
   return {
@@ -70,7 +70,7 @@ const dmListV1 = async (token: string) => {
   const data = await dbGetData();
 
   const auth = data.tokens.find((item) => item.token === token);
-  if (!auth) throw HTTPError(403, "Invalid token");
+  if (!auth) throw HTTPError(403, 'Invalid token');
   console.log(data.dms);
   const dms = data.dms
     .filter((dm) => auth.uId === dm.ownerId || dm.uIds.includes(auth.uId))
@@ -91,17 +91,17 @@ const dmRemoveV1 = async (token: string, dmId: number) => {
   const data = await dbGetData();
   // check if token passed in is valid
   const auth = data.tokens.find((item) => item.token === token);
-  if (!auth) throw HTTPError(403, "Invalid Token");
+  if (!auth) throw HTTPError(403, 'Invalid Token');
 
   // check if dmId passed in is valid
   const validDmId = data.dms.find((item) => item.dmId === dmId);
-  if (!validDmId) throw HTTPError(400, "Invalid dmId");
+  if (!validDmId) throw HTTPError(400, 'Invalid dmId');
   // Check if user is original creator
-  if (validDmId.ownerId !== auth.uId) throw HTTPError(403, "User is not the original creator or is no longer in the channel");
+  if (validDmId.ownerId !== auth.uId) throw HTTPError(403, 'User is not the original creator or is no longer in the channel');
   data.dms = data.dms.filter((dm) => dm.dmId !== dmId);
   await data.save();
 
-  data.dmsExistStat.push({numDmsExist: data.dms.length, timeStamp: Date.now()});
+  data.dmsExistStat.push({ numDmsExist: data.dms.length, timeStamp: Date.now() });
   await data.save();
   return {};
 };

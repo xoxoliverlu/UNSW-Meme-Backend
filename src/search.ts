@@ -1,6 +1,5 @@
-import { channel } from "diagnostics_channel";
-import { dbGetData, getData } from "./dataStore";
-import { Message } from "./interfaces";
+import { dbGetData } from './dataStore';
+import { Message } from './interfaces';
 import HTTPError from 'http-errors';
 /**
  * Given a query substring, returns a collection of messages in all of the channels/DMs
@@ -18,32 +17,32 @@ export async function searchV1(token: string, queryStr: string) {
 
   // valid token
   if (!user) {
-    throw HTTPError(403,"Invalid Token");
+    throw HTTPError(403, 'Invalid Token');
   }
-  const {uId} = user;
+  const { uId } = user;
   // qreryStr Length
-  if (queryStr.length < 1 || queryStr.length > 1000){
-    throw HTTPError(400,"Invalid Length")
+  if (queryStr.length < 1 || queryStr.length > 1000) {
+    throw HTTPError(400, 'Invalid Length');
   }
 
-  let result: Message[] = [];
-  let channels = data.channels.filter(item => item.allMembers.includes(uId)).map(channel => channel.messages)
+  const result: Message[] = [];
+  const channels = data.channels.filter(item => item.allMembers.includes(uId)).map(channel => channel.messages);
   channels.forEach(messages => {
     messages.forEach(message => {
-      if (message.message.toLowerCase().includes(queryStr.toLowerCase())){
+      if (message.message.toLowerCase().includes(queryStr.toLowerCase())) {
         result.push(message);
       }
-    })
-  })
+    });
+  });
 
-  let dms = data.dms.filter(item => item.uIds.includes(uId) || item.ownerId === (uId)).map(dm => dm.messages)
+  const dms = data.dms.filter(item => item.uIds.includes(uId) || item.ownerId === (uId)).map(dm => dm.messages);
   dms.forEach(messages => {
     messages.forEach(message => {
-      console.log(message.message)
-      if (message.message.toLowerCase().includes(queryStr.toLowerCase())){
+      console.log(message.message);
+      if (message.message.toLowerCase().includes(queryStr.toLowerCase())) {
         result.push(message);
       }
-    })
-  })
-  return {result};
+    });
+  });
+  return { result };
 }

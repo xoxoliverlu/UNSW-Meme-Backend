@@ -1,20 +1,12 @@
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import { Notif } from './interfaces';
 import config from './config.json';
 import validator from 'validator';
 import HTTPError from 'http-errors';
 const bcrypt = require('bcrypt');
 import { v4 as uuidv4 } from 'uuid';
-import { DataStoreM, UserM } from './db/models';
 
 const saltRounds = 10;
-
-// Return type(s)
-type authUserId = {
-  token?: string;
-  authUserId?: number;
-  error?: string;
-};
 
 /**
  * Generates a unique token for the given user ID and stores it in the data object.
@@ -33,7 +25,7 @@ const generateToken = async (uId: number) => {
       uId: uId
     }
   );
-  setData(data);
+  await data.save();
   return tokenString;
 };
 
@@ -83,7 +75,7 @@ const authLoginV2 = async (email: string, password: string) => {
   const token = await generateToken(login.authUserId);
 
   const data = await dbGetData();
-  data.tokens.push({token: token, uId: login.authUserId})
+  data.tokens.push({ token: token, uId: login.authUserId });
   await data.save();
   return {
     token: token,
@@ -101,7 +93,7 @@ const authLoginV2 = async (email: string, password: string) => {
   * @returns {number} -  a unique integer as the userId
   * @returns {object} - error if email or password is invalid
 */
-const authLoginV1 = async (email: string, password: string)=> {
+const authLoginV1 = async (email: string, password: string) => {
   // const data = getData();
   // Error checking
   // change email to lowercase
@@ -138,7 +130,7 @@ const authRegisterV2 = async (email: string, password: string, nameFirst: string
   const token = await generateToken(register.authUserId);
 
   const data = await dbGetData();
-  data.tokens.push({token: token, uId: register.authUserId})
+  data.tokens.push({ token: token, uId: register.authUserId });
   await data.save();
   return {
     token: token,
@@ -209,13 +201,13 @@ const authRegisterV1 = async (email: string, password: string, nameFirst: string
   };
   // Update data
   data.users.push(newUser);
-  data.channelStats.push({uId: newUserId, stat:[{numChannelsJoined: 0, timeStamp: Date.now()}]});
-  data.dmStats.push({uId: newUserId, stat:[{numDmsJoined: 0, timeStamp: Date.now()}]});
-  data.messageStats.push({uId: newUserId, stat:[{numMessagesSent: 0, timeStamp: Date.now()}]});
-  if(data.users.length === 1){
-    data.channelsExistStat.push({numChannelsExist: 0, timeStamp: Date.now()});
-    data.dmsExistStat.push({numDmsExist: 0, timeStamp: Date.now()});
-    data.msgsExistStat.push({numMessagesExist: 0, timeStamp: Date.now()});
+  data.channelStats.push({ uId: newUserId, stat: [{ numChannelsJoined: 0, timeStamp: Date.now() }] });
+  data.dmStats.push({ uId: newUserId, stat: [{ numDmsJoined: 0, timeStamp: Date.now() }] });
+  data.messageStats.push({ uId: newUserId, stat: [{ numMessagesSent: 0, timeStamp: Date.now() }] });
+  if (data.users.length === 1) {
+    data.channelsExistStat.push({ numChannelsExist: 0, timeStamp: Date.now() });
+    data.dmsExistStat.push({ numDmsExist: 0, timeStamp: Date.now() });
+    data.msgsExistStat.push({ numMessagesExist: 0, timeStamp: Date.now() });
   }
 
   await data.save();

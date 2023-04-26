@@ -1,4 +1,4 @@
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import { memberObject } from './helper';
 import { countUserChannels } from './helper';
 import HTTPError from 'http-errors';
@@ -35,7 +35,7 @@ export async function channelDetailsV3(token: string, channelId: number) {
   // Checks if the user is a member of the channel.
   if (!channel.allMembers.includes(authUserId)) {
     throw HTTPError(403, 'User is not a member of the channel.');
-  } 
+  }
   // Creates arrays using the helper function.
   const owners = await memberObject(token, channel.ownerMembers);
   const members = await memberObject(token, channel.allMembers);
@@ -90,8 +90,8 @@ export async function channelJoinV3(token: string, channelId: number) {
   // Add member to channel
   channel.allMembers.push(authUserId);
   await data.save();
-  let statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
-  data.channelStats[statIndex].stat.push({numChannelsJoined: countUserChannels(authUserId),timeStamp:Date.now()})
+  const statIndex = data.channelStats.findIndex(item => item.uId === authUserId);
+  data.channelStats[statIndex].stat.push({ numChannelsJoined: countUserChannels(authUserId), timeStamp: Date.now() });
   await data.save();
   return {};
 }
@@ -153,23 +153,23 @@ export async function channelMessagesV1(token: string, channelId: number, start:
   // Check for valid token
   const authUser = data.tokens.find(item => item.token === token);
   if (!authUser) {
-    throw HTTPError(403, "Invalid Token");
+    throw HTTPError(403, 'Invalid Token');
   }
   const authUserId = authUser.uId;
   // Check for valid channelId
   const channel = data.channels.find((c) => c.channelId === channelId);
   if (!channel) {
-    throw HTTPError(400, "Invalid Channel Id");
+    throw HTTPError(400, 'Invalid Channel Id');
   }
 
   if (!channel.allMembers.includes(authUserId)) {
-    throw HTTPError(403, "User is not a member of the channel");
+    throw HTTPError(403, 'User is not a member of the channel');
   }
 
   const numberOfMessages = channel.messages.length;
 
   if (start > numberOfMessages) {
-    throw HTTPError(400, "Start is invalid");
+    throw HTTPError(400, 'Start is invalid');
   }
 
   let end: number;
@@ -244,7 +244,7 @@ export async function channelAddOwnerV2(
   }
 
   channel.ownerMembers.push(uId);
-  
+
   await data.save();
   return {};
 }

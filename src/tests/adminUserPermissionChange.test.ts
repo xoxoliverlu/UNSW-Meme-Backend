@@ -4,9 +4,9 @@ import {
   requestChannelsCreate,
   requestChannelJoin,
   requestClear
-} from "../requests";
+} from '../requests';
 
-require("sync-request");
+require('sync-request');
 
 beforeEach(() => {
   requestClear();
@@ -63,4 +63,3 @@ test('Successful permission change.', () => {
   const channelJoin = requestChannelJoin(registerUser.token, channel.channelId);
   expect(channelJoin).toEqual({});
 });
- 

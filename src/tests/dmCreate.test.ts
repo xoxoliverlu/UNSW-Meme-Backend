@@ -67,28 +67,28 @@ describe('dm Create valid inputs', () => {
 });
 
 describe('Invalid inputs for dmCreate', () => {
-    test('Invalid uId in uIds', () => {
-      const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
-      const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
-      const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-      const uIds = [user2.authUserId + 4, user3.authUserId];
-      const dm = requestDmCreate(user.token, uIds);
-      expect(dm).toStrictEqual(400);
-    });
-    test('Duplicate uId in uIds', () => {
-      const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
-      const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
-      const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-      const uIds = [user2.authUserId, user2.authUserId, user3.authUserId];
-      const dm = requestDmCreate(user.token, uIds);
-      expect(dm).toStrictEqual(400);
-    });
-    test('Invalid token', () => {
-      const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
-      const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
-      const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-      const uIds = [user2.authUserId, user3.authUserId];
-      const dm = requestDmCreate(user.token + 'Invalid', uIds);
-      expect(dm).toStrictEqual(403);
-    });
+  test('Invalid uId in uIds', () => {
+    const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
+    const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
+    const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    const uIds = [user2.authUserId + 4, user3.authUserId];
+    const dm = requestDmCreate(user.token, uIds);
+    expect(dm).toStrictEqual(400);
+  });
+  test('Duplicate uId in uIds', () => {
+    const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
+    const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
+    const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    const uIds = [user2.authUserId, user2.authUserId, user3.authUserId];
+    const dm = requestDmCreate(user.token, uIds);
+    expect(dm).toStrictEqual(400);
+  });
+  test('Invalid token', () => {
+    const user = requestAuthRegister('AKANKSHAS08@gmail.com', 'Password', 'Akanksha', 'Sood');
+    const user2 = requestAuthRegister('HaydenS@gmail.com', 'Hayden', 'Hayden', 'Smith');
+    const user3 = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    const uIds = [user2.authUserId, user3.authUserId];
+    const dm = requestDmCreate(user.token + 'Invalid', uIds);
+    expect(dm).toStrictEqual(403);
+  });
 });

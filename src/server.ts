@@ -1,6 +1,5 @@
 
-
-import express, { json, query, Request, Response } from 'express';
+import express, { json, Request, Response } from 'express';
 import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
@@ -30,19 +29,16 @@ app.use(morgan('dev'));
 
 // connect app to mongodb
 const mongoose = require('mongoose');
-const connection = mongoose.connect('mongodb+srv://z5295931:comp1531.23t1@comp1531.e0jq4sr.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://z5295931:comp1531.23t1@comp1531.e0jq4sr.mongodb.net/?retryWrites=true&w=majority')
   .then(() => {
-    console.log("mongodb successfully connected")
+    console.log('mongodb successfully connected');
   })
   .catch((err: any) => {
     console.log(err);
-  })
-
+  });
 
 const PORT: number = parseInt(process.env.PORT || config.port);
 const HOST: string = process.env.IP || 'localhost';
-
-
 
 // Example get request
 app.get('/echo', (req: Request, res: Response, next) => {
@@ -107,7 +103,7 @@ app.post('/channels/create/v3', async (req: Request, res: Response, next) => {
 });
 
 app.get('/channels/list/v3', async (req: Request, res: Response, next) => {
-  try{
+  try {
     const token = req.header('token');
     const result = await channelsListV3(token);
     res.json(result);
@@ -117,12 +113,12 @@ app.get('/channels/list/v3', async (req: Request, res: Response, next) => {
 });
 
 app.get('/channels/listall/v3', async (req: Request, res: Response, next) => {
-  try{
+  try {
     const token = req.header('token');
     const result = await channelsListAllV3(token);
     res.json(result);
-  } catch (e){
-    next(e)
+  } catch (e) {
+    next(e);
   }
 });
 /*****************
@@ -144,7 +140,7 @@ app.get('/user/profile/v3', async (req: Request, res: Response, next) => {
     const token = req.header('token');
     const uId = parseInt(req.query.uId as string);
     res.json(await userProfileV3(token, uId));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -153,7 +149,7 @@ app.get('/users/all/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     res.json(await usersAllV2(token));
-  }catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -163,7 +159,7 @@ app.put('/user/profile/setname/v2', async (req: Request, res: Response, next) =>
     const { nameFirst, nameLast } = req.body;
     const token = req.header('token');
     res.json(await userProfileSetNameV2(token, nameFirst, nameLast));
-  } catch(e) {
+  } catch (e) {
     next(e);
   }
 });
@@ -173,7 +169,7 @@ app.put('/user/profile/setemail/v2', async (req: Request, res: Response, next) =
     const token = req.header('token');
     const { email } = req.body;
     res.json(await userProfileSetEmailV2(token, email));
-  }catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -183,7 +179,7 @@ app.put('/user/profile/sethandle/v2', async (req: Request, res: Response, next) 
     const token = req.header('token');
     const { handleStr } = req.body;
     res.json(await userProfileSetHandleV2(token, handleStr));
-  }catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -195,7 +191,7 @@ app.get('/channel/details/v3', async (req: Request, res: Response, next) => {
     const token = req.header('token');
     const channelId = parseInt(req.query.channelId as string);
     res.json(await channelDetailsV3(token, channelId));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -205,7 +201,7 @@ app.post('/channel/join/v3', async (req: Request, res: Response, next) => {
     const token = req.header('token');
     const { channelId } = req.body;
     res.json(await channelJoinV3(token, channelId));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -215,36 +211,34 @@ app.post('/channel/invite/v2', async (req: Request, res: Response, next) => {
   res.json(await channelInviteV1(token, channelId, uId));
 });
 
-
 app.post('/channel/addowner/v2', async (req: Request, res: Response, next) => {
-  try{
+  try {
     const { channelId, uId } = req.body;
     const token = req.header('token');
     res.json(await channelAddOwnerV2(token, channelId, uId));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
 
 app.post('/channel/removeowner/v2', async (req: Request, res: Response, next) => {
-  try{
+  try {
     const { channelId, uId } = req.body;
     const token = req.header('token');
-    const result = await channelRemoveOwnerV2(token,channelId,uId);
+    const result = await channelRemoveOwnerV2(token, channelId, uId);
     res.json(result);
   } catch (e) {
     next(e);
   }
 });
 
-
 app.post('/channel/leave/v2', async (req: Request, res: Response, next) => {
-  try{
+  try {
     const { channelId } = req.body;
     const token = req.header('token');
-    const result = await channelLeaveV2(token,channelId);
+    const result = await channelLeaveV2(token, channelId);
     res.json(result);
-  } catch(e) {
+  } catch (e) {
     next(e);
   }
 });
@@ -284,17 +278,17 @@ app.get('/dm/details/v2', async (req: Request, res: Response, next) => {
     const token = req.header('token');
     const dmId = parseInt(req.query.dmId as string);
     res.json(await dmDetailsV2(token, dmId));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
 
 app.post('/dm/leave/v2', async (req: Request, res: Response, next) => {
-  try{
+  try {
     const { dmId } = req.body;
     const token = req.header('token');
     res.json(await dmLeaveV2(token, dmId));
-  }catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -323,7 +317,7 @@ app.post('/message/senddm/v2', async (req: Request, res: Response, next) => {
 app.put('/message/edit/v2', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
-    const {  messageId, message } = req.body;
+    const { messageId, message } = req.body;
     res.json(await messageEditV1(token, messageId, message));
   } catch (error) {
     next(error);
@@ -336,7 +330,7 @@ app.delete('/message/remove/v2', async (req: Request, res: Response, next) => {
     const messageId = parseInt(req.query.messageId as string);
     res.json(await messageRemoveV1(token, messageId));
   } catch (error) {
-    console.log("catching: " + error);
+    console.log('catching: ' + error);
     next(error);
   }
 });
@@ -367,12 +361,12 @@ app.get('/search/v1', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     const queryStr = req.query.queryStr as string;
-    const result = await searchV1(token,queryStr);
+    const result = await searchV1(token, queryStr);
     res.json(result);
   } catch (error) {
     next(error);
   }
-})
+});
 
 /****************
 *  Password Routes  *
@@ -385,7 +379,7 @@ app.post('/auth/passwordreset/request/v1', async (req: Request, res: Response, n
   } catch (error) {
     next(error);
   }
-})
+});
 
 app.post('/auth/passwordreset/reset/v1', async (req: Request, res: Response, next) => {
   try {
@@ -396,7 +390,7 @@ app.post('/auth/passwordreset/reset/v1', async (req: Request, res: Response, nex
   } catch (error) {
     next(error);
   }
-})
+});
 
 /****************
 * admin Routes  *
@@ -407,7 +401,7 @@ app.post('/admin/userpermission/change/v1', async (req: Request, res: Response, 
     const token = req.header('token');
     const { uId, permissionId } = req.body;
     res.json(await adminUserPermissionChangeV1(token, uId, permissionId));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -420,7 +414,7 @@ app.get('/user/stats/v1', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     res.json(await userStatsV1(token));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -429,7 +423,7 @@ app.get('/users/stats/v1', async (req: Request, res: Response, next) => {
   try {
     const token = req.header('token');
     res.json(await usersStatsV1(token));
-  } catch(e){
+  } catch (e) {
     next(e);
   }
 });

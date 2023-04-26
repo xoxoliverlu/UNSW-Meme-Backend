@@ -53,7 +53,6 @@ test('error token', () => {
   token2 += 'error';
   const res = requestChannelRemoveOwner(token2, channelId, authUserId1);
 
- 
   expect(res).toEqual(403);
 });
 
@@ -101,7 +100,7 @@ test('error invalid channelID', () => {
     channelId + 1,
     authUserId1
   );
-  
+
   expect(res).toEqual(403);
 });
 
@@ -119,7 +118,6 @@ test('error user not a part of channel ', () => {
 
   const res = requestChannelRemoveOwner(token1, channelId, authUserId2);
 
- 
   expect(res).toEqual(400);
 });
 
@@ -137,7 +135,7 @@ test('error uId is not an owner ', () => {
   requestChannelInvite(token1, channelId, authUserId2);
 
   const res = requestChannelRemoveOwner(token1, channelId, authUserId2);
-  
+
   expect(res).toEqual(400);
 });
 
@@ -159,7 +157,7 @@ test("error user doesn't have owner permission ", () => {
 
   requestChannelAddOwner(token1, channelId, authUserId2);
   const res = requestChannelRemoveOwner(token3, channelId, authUserId1);
- 
+
   expect(res).toEqual(403);
 });
 

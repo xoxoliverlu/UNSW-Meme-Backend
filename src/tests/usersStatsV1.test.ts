@@ -1,4 +1,4 @@
-import { requestChannelsCreate, requestAuthRegister, requestMessageSend, requestClear, requestUserStats, requestDmCreate, requestMessageSendDm, requestUsersStats } from '../requests';
+import { requestChannelsCreate, requestAuthRegister, requestMessageSend, requestClear, requestDmCreate, requestMessageSendDm, requestUsersStats } from '../requests';
 
 beforeEach(() => {
   requestClear();
@@ -12,7 +12,7 @@ describe('Successful', () => {
   test('Successful Case', () => {
     const register = requestAuthRegister('dimpi.garnepudi@gmail.com', 'dimpi123', 'Dimpi', 'Garnepudi');
     const register2 = requestAuthRegister('oilverwlu@gmail.com', 'cl3cl3vul4', 'Oliver', 'Lu');
-    const {workspaceStats} = requestUsersStats(register2.token);
+    const { workspaceStats } = requestUsersStats(register2.token);
     expect(workspaceStats).toHaveProperty('channelsExist');
     expect(workspaceStats).toHaveProperty('dmsExist');
     expect(workspaceStats).toHaveProperty('messagesExist');
@@ -21,10 +21,10 @@ describe('Successful', () => {
     expect(workspaceStats.dmsExist.length).toBe(1);
     expect(workspaceStats.messagesExist.length).toBe(1);
     const channel = requestChannelsCreate(register.token, 'channelNew', true);
-    const {dmId} = requestDmCreate(register.token,[register2.authUserId]);
+    const { dmId } = requestDmCreate(register.token, [register2.authUserId]);
     requestMessageSend(register.token, channel.channelId, 'cat');
-    requestMessageSendDm(register2.token,dmId, "Hello");
-    const {workspaceStats: workspaceStats1} = requestUsersStats(register.token);
+    requestMessageSendDm(register2.token, dmId, 'Hello');
+    const { workspaceStats: workspaceStats1 } = requestUsersStats(register.token);
     expect(workspaceStats1).toHaveProperty('channelsExist');
     expect(workspaceStats1).toHaveProperty('dmsExist');
     expect(workspaceStats1).toHaveProperty('messagesExist');

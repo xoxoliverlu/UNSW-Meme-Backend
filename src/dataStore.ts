@@ -1,7 +1,6 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
 import { DataStoreM } from './db/models';
 import { User, Channel, TokenPair, DataStore, DM, PwReset, ChannelStat, DmStat, MessageStat, ChannelsExistStat, DmsExistStat, msgsExistStat } from './interfaces';
-import fs from 'fs';
 import { clearV1 } from './other';
 let data = {
   users: [] as User[],
@@ -61,7 +60,7 @@ export async function fileLoadData() {
   return await dbGetData();
 }
 
-export async function dbGetData(){
+export async function dbGetData() {
   return await DataStoreM.findOne({});
 }
 

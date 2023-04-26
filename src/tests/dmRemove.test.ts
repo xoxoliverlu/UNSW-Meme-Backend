@@ -43,7 +43,6 @@ describe('Invalid inputs for dmRemove', () => {
   });
 });
 
-
 describe('Valid inputs for dmRemove', () => {
   test('Correct return', () => {
     const user = requestAuthRegister('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');

@@ -1,4 +1,4 @@
-import { dbGetData, getData, setData } from './dataStore';
+import { dbGetData } from './dataStore';
 import { countMessages, countUserMessages } from './helper';
 import { Message, Channel, DM } from './interfaces';
 import HTTPError from 'http-errors';
@@ -24,7 +24,6 @@ export async function messageSendV2(token: string, channelId: number, message: s
     throw HTTPError(400, 'channelId is invalid');
   }
 
-
   if (message.length < 1 || message.length > 1000) {
     throw HTTPError(400, 'message length is invalid');
   }
@@ -44,11 +43,11 @@ export async function messageSendV2(token: string, channelId: number, message: s
   channel.messages.push(newMessage);
 
   await data.save();
-  let statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
-  data.messageStats[statIndex].stat.push({numMessagesSent: countUserMessages(user.uId),timeStamp:Date.now()});
-  data.msgsExistStat.push({numMessagesExist: countMessages(),timeStamp:Date.now()});
+  const statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
+  data.messageStats[statIndex].stat.push({ numMessagesSent: countUserMessages(user.uId), timeStamp: Date.now() });
+  data.msgsExistStat.push({ numMessagesExist: countMessages(), timeStamp: Date.now() });
   await data.save();
-  
+
   return { messageId };
 }
 
@@ -64,7 +63,6 @@ export async function messageSendDmV2(token: string, dmId: number, message: stri
   const data = await dbGetData();
   const dm = data.dms.find(i => i.dmId === dmId);
   const user = data.tokens.find(i => i.token === token);
-
 
   if (!dm) {
     throw HTTPError(400, 'dmId is invalid');
@@ -91,9 +89,9 @@ export async function messageSendDmV2(token: string, dmId: number, message: stri
   };
   dm.messages.push(newMessage);
   await data.save();
-  let statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
-  data.messageStats[statIndex].stat.push({numMessagesSent: countUserMessages(user.uId),timeStamp:Date.now()})
-  data.msgsExistStat.push({numMessagesExist: countMessages(),timeStamp:Date.now()});
+  const statIndex = data.messageStats.findIndex(item => item.uId === user.uId);
+  data.messageStats[statIndex].stat.push({ numMessagesSent: countUserMessages(user.uId), timeStamp: Date.now() });
+  data.msgsExistStat.push({ numMessagesExist: countMessages(), timeStamp: Date.now() });
   await data.save();
   return { messageId };
 }
@@ -111,7 +109,7 @@ export async function messageEditV1 (token: string, messageId: number, message: 
   // Check for valid token
   const authUser = data.tokens.find((u) => u.token === token);
   if (!authUser) {
-    throw HTTPError(403,'Invalid Token');
+    throw HTTPError(403, 'Invalid Token');
   }
   const authPerm = data.users.find((item) => item.uId === authUser.uId);
   // checks message length
@@ -168,7 +166,7 @@ export async function messageEditV1 (token: string, messageId: number, message: 
   }
 
   if (!validToEdit) {
-    throw HTTPError(403,'No permission to edit');
+    throw HTTPError(403, 'No permission to edit');
   }
 
   // checking if the messages to be edited exists in a DM
@@ -199,7 +197,7 @@ export async function messageRemoveV1(token: string, messageId: number) {
   const user = data.tokens.find((u) => u.token === token);
   // checks if provided token is valid - checks if the user object exists
   if (!user) {
-    throw HTTPError(403,'Invalid Token');
+    throw HTTPError(403, 'Invalid Token');
   }
 
   const { uId } = user;
@@ -222,7 +220,7 @@ export async function messageRemoveV1(token: string, messageId: number) {
 
     const channelPermission = channel.ownerMembers.includes(uId);
     if (!channelPermission) {
-      throw HTTPError(403,'No permission');
+      throw HTTPError(403, 'No permission');
     }
     if (channelMsg && channelPermission) {
       channel.messages.splice(channelMsg, 1);
